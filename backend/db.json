@@ -1,0 +1,10 @@
+{
+    "users": [
+        { "id": 1, "name": "Alice" },
+        { "id": 2, "name": "Bob" }
+    ],
+    "doctors": [
+        { "id": 1, "name": "Dr. Smith" },
+        { "id": 2, "name": "Dr. Jones" }
+    ]
+}
