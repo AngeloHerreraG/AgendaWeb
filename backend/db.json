@@ -1,10 +1,14 @@
 {
-    "users": [
-        { "id": 1, "name": "Alice" },
-        { "id": 2, "name": "Bob" }
+    "patients": [
+        { "id": 1, "name": "Alice", "password": "password123" },
+        { "id": 2, "name": "Bob", "password": "password456" }
     ],
     "doctors": [
-        { "id": 1, "name": "Dr. Smith" },
-        { "id": 2, "name": "Dr. Jones" }
+        { "id": 1, "name": "Dr. Smith", "password": "doctor123" },
+        { "id": 2, "name": "Dr. Jones", "password": "doctor456" }
+    ],
+    "schedules": [
+        { "id": 1, "doctorId": 1, "patientId": 1, "date": "2023-10-01", "time": "10:00", "length": 30 },
+        { "id": 2, "doctorId": 2, "patientId": 2, "date": "2023-10-02", "time": "11:00", "length": 30 }
     ]
 }
