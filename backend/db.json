@@ -1,14 +1,57 @@
 {
-    "patients": [
-        { "id": 1, "name": "Alice", "password": "password123" },
-        { "id": 2, "name": "Bob", "password": "password456" }
-    ],
-    "doctors": [
-        { "id": 1, "name": "Dr. Smith", "password": "doctor123" },
-        { "id": 2, "name": "Dr. Jones", "password": "doctor456" }
-    ],
-    "schedules": [
-        { "id": 1, "doctorId": 1, "patientId": 1, "date": "2023-10-01", "time": "10:00", "length": 30 },
-        { "id": 2, "doctorId": 2, "patientId": 2, "date": "2023-10-02", "time": "11:00", "length": 30 }
-    ]
+  "patients": [
+    {
+      "id": "1",
+      "name": "Alice",
+      "password": "password123"
+    },
+    {
+      "id": "2",
+      "name": "Bob",
+      "password": "password456"
+    }
+  ],
+  "doctors": [
+    {
+      "id": "1",
+      "name": "Dr. Smith",
+      "password": "doctor123"
+    },
+    {
+      "id": "2",
+      "name": "Dr. Jones",
+      "password": "doctor456"
+    }
+  ],
+  "horarios": [
+    {
+      "profesionalId": 2,
+      "dias": [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes"
+      ],
+      "bloquexhora": 3,
+      "horainicio": 10,
+      "horafin": 18,
+      "disponibilidad": [
+        {
+          "dia": 4,
+          "inicio": 0,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": false
+        },
+        {
+          "dia": 2,
+          "inicio": 0,
+          "ocupadoProfesional": false,
+          "ocupadoPaciente": true,
+          "idPaciente": 3
+        }
+      ],
+      "id": 1
+    }
+  ]
 }
