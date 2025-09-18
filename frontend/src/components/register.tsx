@@ -22,6 +22,7 @@ const Register = () => {
                 const newUser: Omit<User, 'id'> = {
                     name: usernameRegister,
                     password: passwordRegister,
+                    role: 'patient'
                 };
 
                 userServices.createUser(newUser)

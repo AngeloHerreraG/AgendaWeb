@@ -17,7 +17,7 @@ const Login = () => {
         user.then((data) => {
             if (data?.password === passwordLogin) {
                 console.log("Usuario y contraseña correctos");
-                // ir a la vista del horario
+                navigate(`/home/${data.id}`);
             }
             else {
                 alert("Usuario o contraseña incorrectos");
