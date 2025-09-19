@@ -10,8 +10,8 @@ const createUser = (newUser: Omit<User, 'id'>) => {
 };
 
 const getUserById = (id: number) => {
-    const response = axios.get<User[]>(`${baseUrl}/users`, { params: { id: id } });
-    return response.then(res => res.data[0] ?? null);
+    const response = axios.get<User>(`${baseUrl}/users/${id}`);
+    return response.then(res => res.data ?? null);
 }
 
 const getUserByUsername = (username: string) => {
@@ -24,9 +24,14 @@ const getAllUsers = () => {
     return response.then(res => res.data);
 }
 
+const getAllDoctors = () => {
+    const response = axios.get<User[]>(`${baseUrl}/users`, { params: { role: 'doctor' } });
+    return response.then(res => res.data);
+}
+
 const deleteUser = (id: number) => {
     const response = axios.delete(`${baseUrl}/${id}`);
     return response.then(res => res.data);
 };
 
-export default { createUser, getUserById, getUserByUsername, getAllUsers, deleteUser };
+export default { createUser, getUserById, getUserByUsername, getAllUsers, getAllDoctors, deleteUser };

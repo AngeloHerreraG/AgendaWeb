@@ -28,11 +28,4 @@ interface HorarioConfig {
     horafin: number;
 }
 
-// Interfaz para las props del componente de horario
-interface HorarioProps {
-    userId?: number
-    professionalId: number
-    isProfessional?: boolean
-}
-
-export type { HorarioType, Bloque, HorarioConfig, HorarioProps };
+export type { HorarioType, Bloque, HorarioConfig };

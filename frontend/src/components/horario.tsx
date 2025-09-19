@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import horarioServices from '../services/horario'
-import type { HorarioType, HorarioProps, Bloque } from '../types/horario'
+import type { HorarioType, Bloque } from '../types/horario'
 import '../styles/horario.css'
+import { Navigate, useParams } from 'react-router'
+import { useAuth } from '../auth/auth'
 
 // Configuración del horario, mas adelante podriamos hacer que el profesional escoja estos datos
 const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
@@ -9,8 +11,16 @@ const bloquesxhora = 3 // 20 minutos por bloque
 const horainicio = 10 // 10 AM
 const horafin = 18   // 6 PM
 
-const HorarioComponent = (props: HorarioProps) => {
-    const { userId, professionalId, isProfessional } = props
+const HorarioComponent = () => {
+    const loggedUser = useAuth().user
+
+    if (!loggedUser) {
+        return <Navigate to="/login" replace />;
+    }
+
+    const { id } = useParams();
+    const professionalId = Number(id)
+    const isProfessional = loggedUser.id === professionalId
     const [horario, setHorario] = useState<HorarioType | null>(null)
 
     // Iremos actualizando periodicamente el horario
@@ -89,7 +99,7 @@ const HorarioComponent = (props: HorarioProps) => {
             // Si no, es paciente y puede reservar o desreservar
             else {
                 bloque.ocupadoPaciente = !bloque.ocupadoPaciente;
-                bloque.idPaciente = bloque.ocupadoPaciente ? userId : undefined;
+                bloque.idPaciente = bloque.ocupadoPaciente ? loggedUser.id : undefined;
             }
             // Si el bloque queda libre lo eliminamos
             if (!bloque.ocupadoProfesional && !bloque.ocupadoPaciente && !bloque.idPaciente) {
@@ -107,7 +117,7 @@ const HorarioComponent = (props: HorarioProps) => {
                 inicio: fila,
                 ocupadoProfesional: isProfessional ? true : false,
                 ocupadoPaciente: isProfessional ? false : true,
-                idPaciente: isProfessional ? undefined : userId
+                idPaciente: isProfessional ? undefined : loggedUser.id
             };
             nuevaDisponibilidad.push(nuevoBloque);
         }
@@ -127,7 +137,7 @@ const HorarioComponent = (props: HorarioProps) => {
 
     return (
         <div className="container">
-            <h2>{!isProfessional && <span>Horario del Paciente {userId}</span>}</h2>
+            <h2>{!isProfessional && <span>Horario del Paciente {loggedUser.id}</span>}</h2>
             <h2>Horario del Profesional {professionalId}</h2>
             <table className='table'>
                 <thead>

@@ -27,7 +27,7 @@
   ],
   "horarios": [
     {
-      "profesionalId": 2,
+      "profesionalId": 3,
       "dias": [
         "Lunes",
         "Martes",
@@ -54,6 +54,21 @@
         }
       ],
       "id": 1
+    },
+    {
+      "profesionalId": 4,
+      "dias": [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes"
+      ],
+      "bloquexhora": 3,
+      "horainicio": 10,
+      "horafin": 18,
+      "disponibilidad": [],
+      "id": 2
     }
   ]
 }
