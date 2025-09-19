@@ -2,9 +2,12 @@ import { useState } from "react";
 import userServices from "../services/user";
 import type { User } from "../types/user";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/auth";
 
 
 const Login = () => {
+    const { login } = useAuth();
+
     const navigate = useNavigate();
 
     const [usernameLogin, setUsernameLogin] = useState<string>("");
@@ -17,7 +20,9 @@ const Login = () => {
         user.then((data) => {
             if (data?.password === passwordLogin) {
                 console.log("Usuario y contraseña correctos");
+                login(data);
                 // ir a la vista del horario
+                navigate('schedule');
             }
             else {
                 alert("Usuario o contraseña incorrectos");

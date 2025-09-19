@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Login from './components/login'
 import Register from './components/register'
 import './App.css'
+import { AuthProvider } from './auth/auth'
 //import Horario from './services/horario'
 
 function App() {
@@ -45,13 +46,15 @@ function App() {
     // )
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/" element={<Login />} />
-            </Routes>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/" element={<Login />} />
+                </Routes>
+            </Router>
+        </AuthProvider>
     )
 }
 
