@@ -22,10 +22,11 @@ const Login = () => {
                 console.log("Usuario y contraseña correctos");
                 login(data);
                 // ir a la vista del horario
-                navigate('schedule');
+                navigate(`/home/${data.id}`);
             }
             else {
                 alert("Usuario o contraseña incorrectos");
+                
             }
         })
         .catch (err => console.error(err));

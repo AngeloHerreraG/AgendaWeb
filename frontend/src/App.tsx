@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Login from './components/login'
 import Register from './components/register'
 import './App.css'
+import Home from './components/home'
 import { AuthProvider } from './auth/auth'
 //import Horario from './services/horario'
 
@@ -11,7 +12,7 @@ function App() {
     // const [patients, setPatients] = useState<User[]>([])
     // const [doctores, setDoctors] = useState<User[]>([])
 
-    // fetch('http://localhost:9002/patients')
+    // fetch('http://localhost:9002/users')
     //     .then(res => res.json())
     //     .then(data => setPatients(data))
     //     .catch(err => console.error(err))
@@ -52,6 +53,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/" element={<Login />} />
+                    <Route path="/home/:id" element={<Home />} />
                 </Routes>
             </Router>
         </AuthProvider>

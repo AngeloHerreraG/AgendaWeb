@@ -1,31 +1,28 @@
 {
-  "patients": [
+  "users": [
     {
-      "id": "1",
+      "id": 1,
       "name": "Alice",
-      "password": "password123"
+      "password": "password123",
+      "role": "patient"
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "Bob",
-      "password": "password456"
+      "password": "password456",
+      "role": "patient"
     },
     {
-      "name": "Andres",
-      "password": "facilito",
-      "id": "k9VvTfu"
-    }
-  ],
-  "doctors": [
-    {
-      "id": "1",
+      "id": 3,
       "name": "Dr. Smith",
-      "password": "doctor123"
+      "password": "doctor123",
+      "role": "doctor"
     },
     {
-      "id": "2",
+      "id": 4,
       "name": "Dr. Jones",
-      "password": "doctor456"
+      "password": "doctor456",
+      "role": "doctor"
     }
   ],
   "horarios": [

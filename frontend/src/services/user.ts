@@ -5,17 +5,22 @@ import type { User } from '../types/user';
 const baseUrl = "http://localhost:9002";
 
 const createUser = (newUser: Omit<User, 'id'>) => {
-    const response = axios.post<User>(`${baseUrl}/patients`, newUser);
+    const response = axios.post<User>(`${baseUrl}/users`, newUser);
     return response.then(res => res.data);
 };
 
+const getUserById = (id: number) => {
+    const response = axios.get<User[]>(`${baseUrl}/users`, { params: { id: id } });
+    return response.then(res => res.data[0] ?? null);
+}
+
 const getUserByUsername = (username: string) => {
-    const response = axios.get<User[]>(`${baseUrl}/patients`, { params: { name: username } });
+    const response = axios.get<User[]>(`${baseUrl}/users`, { params: { name: username } });
     return response.then(res => res.data[0] ?? null);
 }
 
 const getAllUsers = () => {
-    const response = axios.get<User[]>(`${baseUrl}/patients`);
+    const response = axios.get<User[]>(`${baseUrl}/users`);
     return response.then(res => res.data);
 }
 
@@ -24,4 +29,4 @@ const deleteUser = (id: number) => {
     return response.then(res => res.data);
 };
 
-export default { createUser, getUserByUsername, getAllUsers, deleteUser };
+export default { createUser, getUserById, getUserByUsername, getAllUsers, deleteUser };
