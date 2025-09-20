@@ -1,13 +1,10 @@
-// import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-//import HorarioComponent from './components/horario'
 import Login from './components/login'
 import Register from './components/register'
 import './App.css'
 import Home from './components/home'
 import Horario from './components/horario'
 import { AuthProvider } from './auth/auth'
-//import Horario from './services/horario'
 
 function App() {
     // const [patients, setPatients] = useState<User[]>([])
@@ -55,7 +52,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/" element={<Login />} />
                     <Route path="/home/:id" element={<Home />} />
-                <Route path="/doctors/:id/schedule" element={<Horario />} />
+                    <Route path="/doctors/:id/schedule" element={<Horario />} />
                 </Routes>
             </Router>
         </AuthProvider>
