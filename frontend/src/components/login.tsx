@@ -39,13 +39,35 @@ const Login = () => {
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "40px",
             backgroundColor: "#f5ececff", height: "100vh" }}>
+
+            {/* Columna izquierda, logo y frase de la app */}
             <div style={{ textAlign: "left", marginBottom: "150px" }}>
                 <img
                     src="/Abba.png"
                     alt="Abba"
                     style={{ transform: "scale(0.5)", display: "block", margin: "0 0 -20px -80px" }}
                 />
-                <h2 style={{ margin: "0"}}>Organiza tu tiempo, <br /> simplifica tu vida (facilito)</h2>
+                <h2 style={{ margin: "0", fontFamily: "Arial, sans-serif" }}>
+                    Organiza tu tiempo, <br /> simplifica tu vida
+                </h2>
+                
+                {/* messi */}
+                <h4>
+                    ⢀⣄⣠⣄⠀⠀⠀⠀<br />
+ ⠀⡤⣾⣿⣿⠿⣦⡀⠀⠀⠀⠀⢀⣼⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀<br />
+⠀⣸⢼⢿⠵⣈⣧⣙⣗⠀⠀⠀⠀⡼⠁⠊⠀⠀⠀⠈⢻⡇⠀⠀⠀⠀⠀⠀<br />
+⠀⠆⡛⡹⠑⠺⡽⡷⠼⠀⠀⠀⢰⣇⣾⣿⡆⢰⣦⣄⢸⡇⠀⠀⠀⠀⠀⠀<br />
+⠀⠈⢯⣳⣴⣄⡸⡿⢴⠀⠀⠀⣾⠀⠀⣮⣀⣈⠀⠁⢸⣻⠀⠀⠀⠀⠀⠀<br />
+⠀⠀⢈⠜⣩⠴⣻⡇⣔⡂⠀⠀⠈⣷⣿⠿⠿⠵⣄⣤⡇⠏⠀⠀⠀⠀⠀⠀<br />
+⠀⠀⠀⣦⣣⢊⡽⢠⢋⡁⠀⠀⢀⢹⣿⣽⣣⣼⣿⠿⠀⠀⠀⠀⠀⠀⠀⠀<br />
+⠀⠀⠀⠙⣤⠘⡷⣳⣿⣷⣠⣴⡆⠈⠻⠿⠿⠟⠁⣄⠀⠀⠀⠀⠀⠀⠀⠀<br />
+⠀⠀⠀⠀⠐⠂⣇⣼⣿⣭⣭⣿⡷⡀⠀⠀⠀⠀⠀⣽⡿⣶⢄⡀⠀⠀⠀⠀<br />
+⠀⠀⠀⢀⢼⣿⣿⣿⣿⣿⣿⡿⠃⠙⠢⢄⣀⣀⠜⠉⠀⠌⡉⠙⠷⣄⠀⠀<br />
+⠀⠀⠀⡀⢠⢻⣿⣟⠛⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢄⠀⠑⠀⠈⢷⠀<br />
+⠀⠀⢀⢡⣽⣏⢭⡅⡅⣴⢀⣤⠀⠀⢸⡩⡿⢹⠀⠀⣬⡓⡇⢀⠀⠀⠸⠇<br />
+                </h4>
+                {/* fin messi */}
+
             </div>
 
             {/* Columna derecha: formulario */}
@@ -56,23 +78,30 @@ const Login = () => {
                         placeholder="Usuario"
                         value={usernameLogin}
                         onChange={(e) => setUsernameLogin(e.target.value)}
+                        minLength={1}
                     />
                     <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
                         type="password"
                         placeholder="Contraseña"
                         value={passwordLogin}
                         onChange={(e) => setPasswordLogin(e.target.value)}
+                        minLength={8}
                     />
                     <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", cursor: "pointer", color: "white", backgroundColor: "#4CAF50" }} 
                         type="submit">
                             Iniciar sesión
                     </button>
-                    <button 
-                        style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", marginTop: "10px", color: "white", backgroundColor: "#071c56ff", cursor: "pointer" }}
+                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", marginTop: "10px", color: "white", backgroundColor: "#171ae1ff", cursor: "pointer" }}
                         type="button" onClick={() => navigate("/register")}>
                             ¿No tienes cuenta? Regístrate
                     </button>
                 </form>
+            </div>
+
+            <div>
+                <h4>
+                    
+                </h4>
             </div>
         </div>
     )

@@ -40,18 +40,36 @@ const Register = () => {
     }
 
     return (
-        <div>
-            <h2>Regístrate en Horario</h2>
-            <form onSubmit={handleUserRegister}>
-                <input type="text" placeholder="Usuario" value={usernameRegister} onChange={(e) => setUsernameRegister(e.target.value)} />
-                <input type="password" placeholder="Contraseña" value={passwordRegister} onChange={(e) => setPasswordRegister(e.target.value)} />
-                <button type="submit">Registrarse</button>
-            </form>
-            <br />
-            <button onClick={() => navigate('/login')}>¿Ya tienes cuenta? Inicia sesión</button>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            backgroundColor: "#f5ececff", height: "100vh" }}>
+            <img style={{ height: "180px" }}
+                src="/AbbaSchedule.png" alt="Abba" />
+            <div style={{ backgroundColor: "#ffffffff", padding: "20px", borderRadius: "4px", marginBottom: "150px" }}>
+                <h2 style={{ margin: "0px", textAlign: "center", marginBottom: "30px", fontSize: "26px", fontFamily: "Arial, sans-serif" }}>Crea tu cuenta</h2>
+                <form onSubmit={handleUserRegister} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "250px" }}>
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                        type="text" 
+                        placeholder="Usuario" 
+                        value={usernameRegister} 
+                        onChange={(e) => setUsernameRegister(e.target.value)} 
+                        minLength={1}
+                    />
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                        type="password" 
+                        placeholder="Contraseña" 
+                        value={passwordRegister} 
+                        onChange={(e) => setPasswordRegister(e.target.value)} 
+                        minLength={8}
+                    />
+                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", color: "white", backgroundColor: "#171ae1ff", cursor: "pointer" }}
+                        type="submit">Registrarse</button>
+                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", marginTop: "10px", color: "white", backgroundColor: "#3866e6ff", cursor: "pointer" }}
+                        type="button" onClick={() => navigate('/login')}>
+                            ¿Ya tienes cuenta? Inicia sesión
+                    </button>
+                </form>
+            </div>
         </div>
-
-        
     )
 }
 
