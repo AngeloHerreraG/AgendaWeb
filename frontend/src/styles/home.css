@@ -1,0 +1,41 @@
+.home-container {
+    font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    background-color: var(--color11);
+}
+
+.home-header {
+    background-color: var(--color1);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.home-update-link {
+    color: var(--color6);
+    text-decoration: none;
+}
+
+.home-link {
+    color: var(--color3);
+    text-decoration: none;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
+
+.home-doctor-list {
+    list-style-type: none;
+    padding: 2rem;
+}
+
+.home-doctor-item {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+}

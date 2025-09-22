@@ -1,7 +1,7 @@
 import { Link, useParams, Navigate } from 'react-router-dom';
 import userServices from '../services/user';
 import type { User } from '../types/user';
-
+import '../styles/home.css';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/auth';
 
@@ -48,16 +48,16 @@ const Home = () => {
     }
 
     return (
-        <div>
-            <div>
+        <div className="home-container">
+            <div className="home-header">
             <h2>Bienvenido {user.name} a la página principal, tu rol es {user.role}</h2>
-            {user.role === "doctor" && <Link to={`/doctors/${user.id}/schedule`}>Editar mi horario</Link>}
+            {user.role === "doctor" && <Link to={`/doctors/${user.id}/schedule`} className='home-update-link'>Editar mi horario</Link>}
             </div>
-            <ul>
+            <ul className='home-doctor-list'>
                 {doctors.map((doctor) => (
-                    <li key={doctor.id}>
+                    <li key={doctor.id} className='home-doctor-item'>
                         {doctor.name}{" "}
-                        <Link to={`/doctors/${doctor.id}/schedule`}>
+                        <Link to={`/doctors/${doctor.id}/schedule`} className='home-link'>
                             Ver horario
                         </Link>
                     </li>
