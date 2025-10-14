@@ -67,7 +67,57 @@
       "bloquexhora": 3,
       "horainicio": 10,
       "horafin": 18,
-      "disponibilidad": [],
+      "disponibilidad": [
+        {
+          "dia": 0,
+          "inicio": 3,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        },
+        {
+          "dia": 0,
+          "inicio": 4,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        },
+        {
+          "dia": 0,
+          "inicio": 5,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        },
+        {
+          "dia": 0,
+          "inicio": 9,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        },
+        {
+          "dia": 0,
+          "inicio": 8,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        },
+        {
+          "dia": 0,
+          "inicio": 7,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        },
+        {
+          "dia": 0,
+          "inicio": 6,
+          "ocupadoProfesional": true,
+          "ocupadoPaciente": true,
+          "idPaciente": 1
+        }
+      ],
       "id": 2
     }
   ]
