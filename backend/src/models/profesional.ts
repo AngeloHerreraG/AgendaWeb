@@ -1,21 +1,24 @@
 import mongoose from "mongoose";
+import { IUser } from "./client";
 
-export interface IProfesional {
-    userId: { type: mongoose.Types.ObjectId, ref: 'User' };
+export interface IProfesional extends IUser {
     speciality: string;
     description: string;
-    schedules: [{ type: mongoose.Types.ObjectId, ref: 'Reserve' }];
-    createdAt: Date;
-    updatedAt: Date;
+    interests?: string[];
 }
 
 const profesionalSchema = new mongoose.Schema<IProfesional>({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    passwordHash: { type: String, required: true },
+    birthDate: { type: Date, required: true },
+    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule' }],
+    role: { type: String, enum: ['client', 'profesional', 'admin'], default: 'profesional' },
     speciality: { type: String, required: true },
     description: { type: String, required: true },
-    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reserve' }]
+    interests: [{ type: String }]
 }, {
-    timestamps: true
+    timestamps: true,
 });
 
 const ProfesionalModel = mongoose.model<IProfesional>('Profesional', profesionalSchema);

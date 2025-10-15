@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 export interface ISchedule {
-    profesionalId: { type: mongoose.Types.ObjectId, ref: 'Profesional' };
-    userId: { type: mongoose.Types.ObjectId, ref: 'User' };
+    profesionalId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     startDate: Date;
     finishDate: Date;
     status: 'pending' | 'confirmed' | 'cancelled' | null;

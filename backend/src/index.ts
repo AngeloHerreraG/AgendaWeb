@@ -2,12 +2,13 @@ import dotenv from "dotenv";
 dotenv.config();
 import app from "./app";
 
+// Extend Express Request interface to include userId
 declare global {
-  namespace Express {
-    interface Request {
-      userId?: string;
+    namespace Express {
+        interface Request {
+            userId?: string;
+        }
     }
-  }
 }
 
 const PORT = process.env.PORT || 3001;
