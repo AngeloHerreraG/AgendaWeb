@@ -8,7 +8,7 @@ export interface IUser {
     updatedAt: Date;
     birthDate: Date;
     schedules: mongoose.Types.ObjectId[];
-    role: 'client' | 'profesional' | 'admin';
+    admin?: boolean;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema<IUser>({
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     birthDate: { type: Date, required: true },
-    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule' }],
-    role: { type: String, enum: ['client', 'profesional', 'admin'], default: 'client' }
+    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule', default: [] }],
+    admin: { type: Boolean, default: false }
 }, {
     timestamps: true,
 });

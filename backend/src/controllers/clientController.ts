@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import bcrypt from 'bcrypt';
-import UserModel from '../models/client';
+import ClientModel from '../models/client';
 import { authenticate } from '../middleware/authMiddleware';
+import { get } from 'http';
 
 const router = express.Router();
 
@@ -10,10 +11,9 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
 
     try {
         const { name, email, password, birthDate } = req.body;
-        const role = 'client'; // Default role for new clients
 
         // Regex for name validation
-        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]{2,50}$/;
+        const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
         if (!nameRegex.test(name)) {
             res.status(400).json({ error: 'Name not valid' });
         }
@@ -27,7 +27,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         }
 
         // If email already exists, return an error
-        const existingUser = await UserModel.findOne({ email });
+        const existingUser = await ClientModel.findOne({ email });
         if (existingUser) {
             res.status(400).json({ error: 'Email already in use' });
         }
@@ -45,13 +45,11 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         const saltRounds = 11;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const newUser = new UserModel({
+        const newUser = new ClientModel({
             name,
             email,
             passwordHash,
-            birthDate,
-            schedules: [],
-            role
+            birthDate: new Date(birthDate),
         });
 
         await newUser.save();
@@ -63,9 +61,9 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
     }  
 };
 
-const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+const getClients = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await UserModel.find({}).populate('schedules', {
+        const users = await ClientModel.find({}).populate('schedules', {
             profesionalId: 1,
             startDate: 1,
             finishDate: 1,
@@ -80,9 +78,9 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+const getClientById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await UserModel.findById(req.params.id).populate('schedules', {
+        const user = await ClientModel.findById(req.params.id).populate('schedules', {
             profesionalId: 1,
             startDate: 1,
             finishDate: 1,
@@ -103,7 +101,7 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 
 
 router.post('/users', createClient);
-router.get('/users', getUsers);
-router.get('/users/:id', getUserById);
+router.get('/users', getClients);
+router.get('/users/:id', getClientById);
 
 export default router;

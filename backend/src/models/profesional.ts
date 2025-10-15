@@ -12,11 +12,11 @@ const profesionalSchema = new mongoose.Schema<IProfesional>({
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     birthDate: { type: Date, required: true },
-    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule' }],
-    role: { type: String, enum: ['client', 'profesional', 'admin'], default: 'profesional' },
+    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule', default: [] }],
+    admin: { type: Boolean, default: false },
     speciality: { type: String, required: true },
     description: { type: String, required: true },
-    interests: [{ type: String }]
+    interests: [{ type: String, required: false }]
 }, {
     timestamps: true,
 });
