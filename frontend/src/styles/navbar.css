@@ -1,0 +1,37 @@
+.navbar-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--color1);
+    color: white;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.45);
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.navbar-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    width: 80%;
+}
+
+.navbar-navbar h1 {
+    cursor: pointer;
+}
+
+.navbar-right-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}

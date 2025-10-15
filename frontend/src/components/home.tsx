@@ -5,17 +5,15 @@ import '../styles/home.css';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/auth';
 
+import Navbar from './navbar';
+
 const Home = () => {
     const { id } = useParams();
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [doctors, setDoctors] = useState<User[]>([]);
     const logedUser = useAuth().user;
-
-    if (!logedUser) {
-        return <Navigate to="/login" replace />;
-    }
-
+    
     useEffect(() => {
         const fetchDoctors = async () => {
             const fetchedDoctors = await userServices.getAllDoctors();
@@ -23,14 +21,14 @@ const Home = () => {
         };
         fetchDoctors();
     }, []);
-
+    
     useEffect(() => {
         const fetchUser = async () => {
             if (id) {
                 try {
                     const fetchedUser = await userServices.getUserById(Number(id));
                     setUser(fetchedUser);
-                } catch (error) {
+                } catch {
                     setUser(null);
                 }
             }
@@ -38,6 +36,10 @@ const Home = () => {
         };
         fetchUser();
     }, [id]);
+    
+    if (!logedUser) {
+        return <Navigate to="/login" replace />;
+    }
 
     if (loading) {
         return <div>Cargando...</div>;
@@ -49,9 +51,10 @@ const Home = () => {
 
     return (
         <div className="home-container">
+            <Navbar profile={user} />
             <div className="home-header">
-            <h2>Bienvenido {user.name} a la página principal, tu rol es {user.role}</h2>
-            {user.role === "doctor" && <Link to={`/doctors/${user.id}/schedule`} className='home-update-link'>Editar mi horario</Link>}
+                <h2>Bienvenido {user.name} a la página principal, tu rol es {user.role}</h2>
+                {user.role === "doctor" && <Link to={`/doctors/${user.id}/schedule`} className='home-update-link'>Editar mi horario</Link>}
             </div>
             <ul className='home-doctor-list'>
                 {doctors.map((doctor) => (

@@ -1,6 +1,12 @@
 {
   "users": [
     {
+      "id": 0,
+      "name": "admin",
+      "password": "",
+      "role": "admin"
+    },
+    {
       "id": 1,
       "name": "Alice",
       "password": "password123",
