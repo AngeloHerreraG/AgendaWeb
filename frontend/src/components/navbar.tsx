@@ -28,7 +28,6 @@ const menuItemStyle = {
     '&:hover': {
         backgroundColor: '#03045e',
         color: 'white',
-        transform: 'scale(1.05)',
     },
 };
 

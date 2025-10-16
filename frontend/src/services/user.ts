@@ -1,37 +1,48 @@
 import axios from "axios";
 
 import type { User } from '../types/user';
+import type { profesionalSchedule } from '../types/horario';
 
-const baseUrl = "http://localhost:9002";
+const baseUrl = "http://localhost:9002/users";
 
-const createUser = (newUser: Omit<User, 'id'>) => {
-    const response = axios.post<User>(`${baseUrl}/users`, newUser);
-    return response.then(res => res.data);
+const createUser = async (newUser: Omit<User, 'id'>) => {
+    const response = await axios.post<User>(`${baseUrl}`, newUser);
+    return response.data;
 };
 
-const getUserById = (id: number) => {
-    const response = axios.get<User>(`${baseUrl}/users/${id}`);
-    return response.then(res => res.data ?? null);
+const getUserById = async (id: number) => {
+    const response = await axios.get<User>(`${baseUrl}/${id}`);
+    return response.data ?? null;
 }
 
-const getUserByUsername = (username: string) => {
-    const response = axios.get<User[]>(`${baseUrl}/users`, { params: { name: username } });
-    return response.then(res => res.data[0] ?? null);
+const getUserSchedule = async (userId: number) => {
+    const response = await axios.get<User>(`${baseUrl}/${userId}`);
+    return response.data.schedule ?? null;
 }
 
-const getAllUsers = () => {
-    const response = axios.get<User[]>(`${baseUrl}/users`);
-    return response.then(res => res.data);
-}
-
-const getAllDoctors = () => {
-    const response = axios.get<User[]>(`${baseUrl}/users`, { params: { role: 'doctor' } });
-    return response.then(res => res.data);
-}
-
-const deleteUser = (id: number) => {
-    const response = axios.delete(`${baseUrl}/${id}`);
-    return response.then(res => res.data);
+const updateUserSchedule = async (userId: number, schedule: profesionalSchedule) => {
+    const response = await axios.patch<User>(`${baseUrl}/${userId}`, { schedule });
+    return response.data;
 };
 
-export default { createUser, getUserById, getUserByUsername, getAllUsers, getAllDoctors, deleteUser };
+const getUserByUsername = async (username: string) => {
+    const response = await axios.get<User[]>(`${baseUrl}`, { params: { name: username } });
+    return response.data[0] ?? null;
+}
+
+const getAllUsers = async () => {
+    const response = await axios.get<User[]>(`${baseUrl}`);
+    return response.data;
+}
+
+const getAllDoctors = async () => {
+    const response = await axios.get<User[]>(`${baseUrl}`, { params: { role: 'doctor' } });
+    return response.data;
+}
+
+const deleteUser = async (id: number) => {
+    const response = await axios.delete(`${baseUrl}/${id}`);
+    return response.data;
+};
+
+export default { createUser, getUserById, getUserSchedule, updateUserSchedule, getUserByUsername, getAllUsers, getAllDoctors, deleteUser };

@@ -1,169 +1,56 @@
-import { useEffect, useState } from 'react'
-import horarioServices from '../services/horario'
-import type { HorarioType, Bloque } from '../types/horario'
+import { useState } from 'react'
+import type { User } from '../types/user'
 import '../styles/horario.css'
 import { Navigate, useParams } from 'react-router'
 import { useAuth } from '../auth/auth'
+import CalendarSelector from './horario/calendar';
+import DateChips from './horario/date-chips';
 
-// Configuración del horario, mas adelante podriamos hacer que el profesional escoja estos datos
-const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
-const bloquesxhora = 3 // 20 minutos por bloque
-const horainicio = 10 // 10 AM
-const horafin = 18   // 6 PM
 
 const HorarioComponent = () => {
-    const loggedUser = useAuth().user
+    const loggedUser: User | null = useAuth().user
+    const { id } = useParams();
+    const professionalId = Number(id)
+    const isProfessional = loggedUser?.id === professionalId
 
+    const [selectedDay, setSelectedDay] = useState<string>("")
+
+    
     if (!loggedUser) {
         return <Navigate to="/login" replace />;
     }
-
-    const { id } = useParams();
-    const professionalId = Number(id)
-    const isProfessional = loggedUser.id === professionalId
-    const [horario, setHorario] = useState<HorarioType | null>(null)
-
-    // Iremos actualizando periodicamente el horario
-    useEffect(() => {
-        if (!professionalId) {
-            return;
-        }
-
-        // Función para obtener el horario
-        const fetchHorario = async () => {
-            const data = await horarioServices.createGetHorario({
-                profesionalId: professionalId,
-                dias: dias,
-                bloquexhora: bloquesxhora,
-                horainicio: horainicio,
-                horafin: horafin
-            });
-
-            setHorario(data);
-        };
-
-        // LLamada inicial
-        fetchHorario();
-
-        // Lo iremos recargando cada 5 segundos
-        const interval = setInterval(fetchHorario, 5000);
-        return () => clearInterval(interval);
-
-    }, [professionalId]);
-
-    // Para evitar renderizar si no tenemos el horario
-    if (!horario){
-        return <div>Cargando horario...</div>
-    }
     
-    // Calculo del total de bloques
-    const totalBloques = 1 + (horario.horafin - horario.horainicio) * horario.bloquexhora;
-
-    // Función para obtener el estado de la celda
-    const obtenerBloque = (fila: number, col: number) => {
-        return horario.disponibilidad.find(b => b.dia === col && b.inicio === fila);
-    };
-
-    // Funcion para darle estilo a cada bloque
-    const getBlockStyle = (bloque: Bloque | undefined) => {
-        if (!bloque) return 'free';
-        if (bloque.ocupadoProfesional && !isProfessional) return 'blocked-user';
-        if (bloque.ocupadoProfesional) return 'blocked';
-        if (bloque.ocupadoPaciente) return 'booked';
-        return 'free';
-    };
-
-    // Función para manejar el click en un bloque, ya sea para reservar o bloquear la hora
-    const toggleBloque = async (fila: number, col: number) => {
-        // Para ser consistentes con la base de datos antes de hacer un put primero
-        // obtenemos el horario actual y haremos merge de los cambios
-        const horarioBD = await horarioServices.getHorario(professionalId);
-        if (!horarioBD) return;
-        const nuevaDisponibilidad = [...horarioBD.disponibilidad];
-
-        // Buscar si el bloque ya existe
-        const index = nuevaDisponibilidad.findIndex(b => b.dia === col && b.inicio === fila);
-
-        // Si ya existe lo modificamos
-        if (index >= 0) {
-            // Tomamos la lista de bloques
-            const bloque = { ...nuevaDisponibilidad[index] };
-            // Si no es profesional pero esta ocupado por el profesional no puede reservar
-            if (!isProfessional && bloque.ocupadoProfesional) {
-                return;
-            }
-            // Si es profesional puede bloquear o desbloquear
-            if (isProfessional) {
-                bloque.ocupadoProfesional = !bloque.ocupadoProfesional;
-            }
-            // Si no, es paciente y puede reservar o desreservar
-            else {
-                bloque.ocupadoPaciente = !bloque.ocupadoPaciente;
-                bloque.idPaciente = bloque.ocupadoPaciente ? loggedUser.id : undefined;
-            }
-            // Si el bloque queda libre lo eliminamos
-            if (!bloque.ocupadoProfesional && !bloque.ocupadoPaciente && !bloque.idPaciente) {
-                nuevaDisponibilidad.splice(index, 1);
-            } 
-            // Si no, lo actualizamos
-            else {
-                nuevaDisponibilidad[index] = bloque;
-            }
-        }
-        else {
-            // Si no existe lo creamos
-            const nuevoBloque: Bloque = {
-                dia: col,
-                inicio: fila,
-                ocupadoProfesional: isProfessional ? true : false,
-                ocupadoPaciente: isProfessional ? false : true,
-                idPaciente: isProfessional ? undefined : loggedUser.id
-            };
-            nuevaDisponibilidad.push(nuevoBloque);
-        }
-
-        const horarioActualizado = { ...horario, disponibilidad: nuevaDisponibilidad };
-        setHorario(horarioActualizado);
-        await horarioServices.updateHorario(horarioActualizado);
-    };
-
-    // Función para mostrar la hora en formato HH:MM, calcula la posición del bloque y la hora de inicio
-    const mostrarHora = (bloqueIndex: number, horainicio: number, bloquexhora: number) => {
-        const totalMinutos = horainicio * 60 + bloqueIndex * (60 / bloquexhora);
-        const horas = Math.floor(totalMinutos / 60);
-        const minutos = totalMinutos % 60;
-        return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
-    };
+    // Funcion para volver al home
+    const goHome = () => {
+        window.history.back();
+    }
 
     return (
-        <div className="container">
-            <h2>{!isProfessional && <span>Horario del Paciente {loggedUser.id}</span>}</h2>
-            <h2>Horario del Profesional {professionalId}</h2>
-            <table className='table'>
-                <thead>
-                    <tr>
-                        <th>Hora</th>
-                        {dias.map((dia, index) => (
-                            <th key={index}>{dia}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {Array.from({ length: totalBloques }).map((_, fila) => (
-                        <tr key={fila}>
-                            <td className='hora'>{mostrarHora(fila, horainicio, bloquesxhora)}</td>
-                            {dias.map((_, col) => {
-                                const bloque = obtenerBloque(fila, col);
-                                return (
-                                    <td className={getBlockStyle(bloque)} key={col} onClick={() => toggleBloque(fila, col)}>
-                                        {bloque ? (bloque.ocupadoProfesional ? 'Ocupado' : ((bloque && bloque.ocupadoPaciente) && 'Reservado')) : 'Libre'}
-                                    </td>
-                                );
-                            })}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className='horario-container'>
+            <div className="horario-bg"></div>
+            <div>
+                <button onClick={goHome}>Volver Atras</button>
+            </div>
+            <div className='horario-data'>
+                <div className="horario-info">
+                    <h2> Informacion del Profesional </h2>
+                </div>
+                <div className="horario-calendar">
+                    <h2> Días disponibles </h2>
+                    <CalendarSelector 
+                        professionalId={professionalId}
+                        selectedDay={selectedDay}
+                        setSelectedDay={setSelectedDay}
+                    />
+                </div>
+                <div className="horario-dates">
+                    <DateChips
+                        userId={loggedUser.id}
+                        professionalId={professionalId}
+                        selectedDay={selectedDay}
+                    />
+                </div>
+            </div>
         </div>
     )
 }
