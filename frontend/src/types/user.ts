@@ -5,7 +5,20 @@ type UserRole = 'patient' | 'doctor' | 'admin';
 export interface User {
     id: number
     name: string
+    email: string
     password: string
-    role: UserRole
+    birthDate: string
     schedule?: profesionalSchedule
+    role: UserRole
+}
+
+export interface Client extends User {
+    role: 'patient'
+}
+
+export interface Doctor extends User {
+    role: 'doctor'
+    speciality: string
+    description: string
+    interests?: string[]
 }

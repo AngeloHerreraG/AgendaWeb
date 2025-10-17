@@ -4,6 +4,7 @@ import Register from './components/register'
 import './App.css'
 import Home from './components/home'
 import Horario from './components/horario'
+import Profile from './components/profile'
 import { AuthProvider } from './auth/auth'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/home/:id" element={<Home />} />
                     <Route path="/doctors/:id/schedule" element={<Horario />} />
+                    <Route path="/profile/:id" element={<Profile />} />
                 </Routes>
             </Router>
         </AuthProvider>

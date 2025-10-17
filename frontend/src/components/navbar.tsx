@@ -36,7 +36,7 @@ const menuItemStyle = {
 const Navbar = (props: Props) => {
     const { notifications, userId } = props;
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [userProfile, setUserProfile] = useState<User | null>(null); // Para despues ver el perfil
+    const [userProfile, setUserProfile] = useState<User | null>(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
 
@@ -69,14 +69,12 @@ const Navbar = (props: Props) => {
 
     const handleProfile = () => {
         handleClose();
-        console.log("Ver perfil");
-        // Aca vemos que hacemos para ver el perfil
+        return navigate(`/profile/${userId}`, { replace: true });
     };
 
     const handleLogout = () => {
         handleClose();
-        console.log("Cerrar sesión");
-        // Aca hacemos el logout
+        return navigate('/login', { replace: true });
     };
 
 

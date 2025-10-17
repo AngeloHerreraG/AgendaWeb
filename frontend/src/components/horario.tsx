@@ -29,6 +29,10 @@ const HorarioComponent = () => {
         return navigate(`/home/${loggedUser?.id}`, { replace: true });
     }
 
+    const handleProfile = () => {
+        return navigate(`/profile/${professionalId}`, { replace: true });
+    }
+
     return (
         <div className='horario-container'>
             <Navbar userId={loggedUser.id} />
@@ -40,6 +44,7 @@ const HorarioComponent = () => {
                 <div className="horario-info">
                     <h2> Informacion del Profesional </h2>
                     <InfoProfesional professionalId={professionalId} />
+                    <button onClick={handleProfile}>Ver Perfil</button>
                 </div>
                 <div className="horario-calendar">
                     <h2> Días disponibles </h2>
