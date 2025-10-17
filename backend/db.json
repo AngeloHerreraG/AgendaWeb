@@ -24,7 +24,7 @@
       "password": "doctor123",
       "role": "doctor",
       "schedule": {
-        "days": ["Monday", "Wednesday", "Friday"],
+        "days": ["Lunes", "Miércoles", "Viernes"],
         "blocksPerHour": 2,
         "startHour": 10,
         "endHour": 18
@@ -36,8 +36,8 @@
       "password": "doctor456",
       "role": "doctor",
       "schedule": {
-        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "blocksPerHour": 4,
+        "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
+        "blocksPerHour": 6,
         "startHour": 9,
         "endHour": 17
       }

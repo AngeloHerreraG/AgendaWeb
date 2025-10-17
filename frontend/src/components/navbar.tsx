@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import type { User } from '../types/user';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import "../styles/navbar.css";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
+import type { User } from '../types/user';
+import userServices from '../services/user';
 
 interface Props {
     // De momento quedan pendiente los props de la navbar
     notifications?: number;
-    profile: User;
+    userId?: number;
 }
 
 const iconStyle = {
@@ -32,9 +34,21 @@ const menuItemStyle = {
 };
 
 const Navbar = (props: Props) => {
-    const { notifications, profile } = props;
+    const { notifications, userId } = props;
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [userProfile, setUserProfile] = useState<User | null>(null); // Para despues ver el perfil
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            if (userId) {
+                const data = await userServices.getUserById(userId);
+                setUserProfile(data);
+            }
+        };
+        fetchUserProfile();
+    }, [userId]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -45,8 +59,7 @@ const Navbar = (props: Props) => {
     };
 
     const handleHome = () => {
-        console.log("Ir al home");
-        // Aca vemos que hacemos para ir al home
+        return navigate(`/home/${userId}`, { replace: true });
     };
 
     const handleNotifications = () => {

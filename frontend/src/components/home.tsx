@@ -12,7 +12,7 @@ const Home = () => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [doctors, setDoctors] = useState<User[]>([]);
-    const logedUser = useAuth().user;
+    const loggedUser = useAuth().user;
     
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -37,7 +37,7 @@ const Home = () => {
         fetchUser();
     }, [id]);
     
-    if (!logedUser) {
+    if (!loggedUser) {
         return <Navigate to="/login" replace />;
     }
 
@@ -51,7 +51,7 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <Navbar profile={user} />
+            <Navbar userId={loggedUser.id} />
             <div className="home-header">
                 <h2>Bienvenido {user.name} a la página principal, tu rol es {user.role}</h2>
                 {user.role === "doctor" && <Link to={`/doctors/${user.id}/schedule`} className='home-update-link'>Editar mi horario</Link>}

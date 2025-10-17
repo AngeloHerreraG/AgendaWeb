@@ -1,32 +1,37 @@
 import { useState } from 'react'
 import type { User } from '../types/user'
 import '../styles/horario.css'
-import { Navigate, useParams } from 'react-router'
+import { useNavigate, useParams, Navigate } from 'react-router'
 import { useAuth } from '../auth/auth'
+
+import Navbar from './navbar'
+import InfoProfesional from './horario/information'
 import CalendarSelector from './horario/calendar';
 import DateChips from './horario/date-chips';
 
 
 const HorarioComponent = () => {
+    const navigate = useNavigate();
     const loggedUser: User | null = useAuth().user
     const { id } = useParams();
     const professionalId = Number(id)
-    const isProfessional = loggedUser?.id === professionalId
 
-    const [selectedDay, setSelectedDay] = useState<string>("")
-
+    const [selectedDay, setSelectedDay] = useState<string | null>(null)
+    const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)  // Para mostrar el modal de información de la cita
     
+    // Si no esta loggeado, redirigir al login
     if (!loggedUser) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to='/login' replace />;
     }
-    
+
     // Funcion para volver al home
     const goHome = () => {
-        window.history.back();
+        return navigate(`/home/${loggedUser?.id}`, { replace: true });
     }
 
     return (
         <div className='horario-container'>
+            <Navbar userId={loggedUser.id} />
             <div className="horario-bg"></div>
             <div>
                 <button onClick={goHome}>Volver Atras</button>
@@ -34,6 +39,7 @@ const HorarioComponent = () => {
             <div className='horario-data'>
                 <div className="horario-info">
                     <h2> Informacion del Profesional </h2>
+                    <InfoProfesional professionalId={professionalId} />
                 </div>
                 <div className="horario-calendar">
                     <h2> Días disponibles </h2>

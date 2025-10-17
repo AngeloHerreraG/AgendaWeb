@@ -28,7 +28,7 @@ const chipStyle = {
 interface Props {
     userId: number;
     professionalId: number;
-    selectedDay: string;
+    selectedDay: string | null;
 }
 
 const DateChips = (props: Props) => {
@@ -44,7 +44,6 @@ const DateChips = (props: Props) => {
 
     dayjs.locale('es'); // Establece el idioma español para dayjs
 
-    // Iremos actualizando periodicamente el horario
     useEffect(() => {
         if (!professionalId) {
             return;
@@ -70,21 +69,11 @@ const DateChips = (props: Props) => {
         // LLamada inicial
         fetchProfesionalSchedule();
         fetchHorario();
-        
-        // Lo iremos recargando cada 5 segundos
-        const interval = setInterval(fetchHorario, 5000);
-        return () => clearInterval(interval);
-        
     }, [professionalId]);
 
     // Para evitar renderizar si no tenemos el horario
     if (!horario){
         return <div>Cargando horario...</div>
-    }
-    
-    // Funcion para volver al home
-    const goHome = () => {
-        window.history.back();
     }
 
     // Funcion para manejar el click en un bloque
@@ -151,8 +140,8 @@ const DateChips = (props: Props) => {
     return (
         <>
             <h2> Bloques disponibles </h2>
-            Día: {selectedDay ? dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY') : 'No seleccionado'}
-            {generarChips()}
+            <p>Día: {selectedDay ? dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY') : 'No seleccionado'}</p>
+            {selectedDay && generarChips()}
         </>
     )
 };

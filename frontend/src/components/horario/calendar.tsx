@@ -2,21 +2,13 @@ import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import horarioServices from '../../services/horario';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 interface Props {
     professionalId: number;
     selectedDay: string | null;
     setSelectedDay: (value: string) => void;
-}
-
-const selectStyle = {
-    fontFamily: 'Poppins, sans-serif',
-    padding: '8px',
-    borderRadius: '1000px',
-    border: '1px solid black',
-    width: "100%",
-    fontSize: '1.2em',
-    textAlign: 'center' as const,
 }
 
 const CalendarSelector = (props: Props) => {
@@ -36,14 +28,14 @@ const CalendarSelector = (props: Props) => {
 
     // Días de la semana (lunes primero)
     const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-    const weekDaysEnglish: { [key: string]: string } = {
-        'lunes': 'Monday',
-        'martes': 'Tuesday',
-        'miércoles': 'Wednesday',
-        'jueves': 'Thursday',
-        'viernes': 'Friday',
-        'sábado': 'Saturday',
-        'domingo': 'Sunday'
+    const weekDaysEnglishToSpanish: { [key: string]: string } = {
+        'monday': 'lunes',
+        'tuesday': 'martes',
+        'wednesday': 'miércoles',
+        'thursday': 'jueves',
+        'friday': 'viernes',
+        'saturday': 'sábado',
+        'sunday': 'domingo'
     }
 
     // Primer día del mes
@@ -63,7 +55,7 @@ const CalendarSelector = (props: Props) => {
 
     const handleDayClick = (date: dayjs.Dayjs) => {
         const daySpanish = date.format('dddd').toLowerCase();
-        const dayEnglish = weekDaysEnglish[daySpanish].toLowerCase();
+        const dayEnglish = weekDaysEnglishToSpanish[daySpanish]?.toLowerCase() || daySpanish;
         if (days.map(d => d.toLowerCase()).includes(daySpanish) || days.map(d => d.toLowerCase()).includes(dayEnglish)) {
             setSelectedDay(date.format('YYYY-MM-DD'));
         }
@@ -71,8 +63,7 @@ const CalendarSelector = (props: Props) => {
 
     const isDayAvailable = (date: dayjs.Dayjs): boolean => {
         const daySpanish = date.format('dddd').toLowerCase();
-        const dayEnglish = weekDaysEnglish[daySpanish].toLowerCase();
-        console.log(days, daySpanish);
+        const dayEnglish = weekDaysEnglishToSpanish[daySpanish]?.toLowerCase() || daySpanish;
         return days.map(d => d.toLowerCase()).includes(daySpanish) || days.map(d => d.toLowerCase()).includes(dayEnglish);
     };
 
@@ -80,8 +71,45 @@ const CalendarSelector = (props: Props) => {
         <div style={{ margin: '0 auto', fontFamily: 'Poppins', gap: '10px' }}>
 
             {/* Selector mes y año */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                <select
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                {/* Flecha izquierda */}
+                <button
+                    onClick={() => {
+                        const previousMonth = selectedMonth.subtract(1, 'month');
+                        if (previousMonth.isBefore(dayjs(), 'month')) return; // bloquea meses pasados
+                        setSelectedMonth(previousMonth);
+                    }}
+                    style={{
+                        border: 'none',
+                        background: 'transparent',
+                        fontSize: '1.5rem',
+                        cursor: selectedMonth.isAfter(dayjs(), 'month') ? 'pointer' : 'not-allowed',
+                        opacity: selectedMonth.isAfter(dayjs(), 'month') ? 1 : 0.5,
+                        color: selectedMonth.isAfter(dayjs(), 'month') ? 'black' : 'gray',
+                    }}
+                >
+                    <NavigateBeforeIcon sx={{fontSize: "50px"}}/>
+                </button>
+
+                {/* Mes y año actual */}
+                <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+                    {selectedMonth.format('MMMM YYYY')}
+                </p>
+
+                {/* Flecha derecha */}
+                <button
+                    onClick={() => setSelectedMonth(selectedMonth.add(1, 'month'))}
+                    style={{
+                        border: 'none',
+                        background: 'transparent',
+                        fontSize: '1.5rem',
+                        cursor: 'pointer',
+                    }}
+                >
+                    <NavigateNextIcon sx={{fontSize: "50px"}}/>
+                </button>
+
+                {/* <select
                     style={selectStyle}
                     value={selectedMonth.month()}
                     onChange={(e) => setSelectedMonth(selectedMonth.month(Number(e.target.value)))}
@@ -105,7 +133,7 @@ const CalendarSelector = (props: Props) => {
                             </option>
                         );
                     })}
-                </select>
+                </select> */}
             </div>
 
             {/* Encabezado días */}
@@ -130,11 +158,10 @@ const CalendarSelector = (props: Props) => {
                             style={{
                                 padding: '10px',
                                 backgroundColor: isSelected ? '#5170ff' : 
-                                               isValid ? '#9deaff' : '#03045e',
+                                                isValid ? '#9deaff' : '#03045e',
                                 color: isSelected ? 'white' : 
-                                       isValid ? 'black' : '#ffffffff',
+                                        isValid ? 'black' : '#ffffffff',
                                 fontWeight: isValid ? 'bold' : 'normal',
-                                // borderRadius: '8px',
                                 textAlign: 'center',
                                 cursor: isValid ? 'pointer' : 'not-allowed',
                                 border: isToday ? '3px solid black' : '1px solid black',
