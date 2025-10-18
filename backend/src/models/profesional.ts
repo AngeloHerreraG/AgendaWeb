@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
 import { IUser } from "./client";
 
+// Interfaz que define la estructura del horario de un profesional
+export interface ProfesionalDisponibility {
+    days: string[];
+    blocksPerHour: number;
+    startHour: number;
+    endHour: number;
+}
+
 export interface IProfesional extends IUser {
     speciality: string;
     description: string;
     interests?: string[];
+    disponibility?: ProfesionalDisponibility;
 }
 
 const profesionalSchema = new mongoose.Schema<IProfesional>({
@@ -16,7 +25,13 @@ const profesionalSchema = new mongoose.Schema<IProfesional>({
     admin: { type: Boolean, default: false },
     speciality: { type: String, required: true },
     description: { type: String, required: true },
-    interests: [{ type: String, required: false }]
+    interests: [{ type: String, required: false }],
+    disponibility: {
+        days: [{ type: String }],
+        blocksPerHour: { type: Number },
+        startHour: { type: Number },
+        endHour: { type: Number }
+    },
 }, {
     timestamps: true,
 });
@@ -26,11 +41,12 @@ const ProfesionalModel = mongoose.model<IProfesional>('Profesional', profesional
 profesionalSchema.set("toJSON", {
   transform: (
     _,
-    returnedObject: { id?: string; _id?: mongoose.Types.ObjectId; __v?: number; }
+    returnedObject: { id?: string; _id?: mongoose.Types.ObjectId; __v?: number; passwordHash?: string }
   ) => {
     returnedObject.id = returnedObject._id?.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
+    delete returnedObject.passwordHash; // Ensure passwordHash is not returned
   },
 });
 
