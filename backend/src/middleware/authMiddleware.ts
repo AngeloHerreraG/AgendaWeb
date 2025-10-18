@@ -12,8 +12,7 @@ export const authenticate = async (
         const authReq = req;
         const token = req.cookies?.token;
         if (!token) {
-            authReq.userId = undefined;
-            next();
+            res.status(401).json({ error: "token missing" });
         } else {
             const decodedToken = jwt.verify(token, config.JWT_SECRET);
             const csrfToken = req.headers["x-csrf-token"];
