@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import bcrypt from 'bcrypt';
 import ClientModel from '../models/client';
-import { authenticate } from '../middleware/authMiddleware';
-import { get } from 'http';
 
 const router = express.Router();
 
@@ -100,8 +98,8 @@ const getClientById = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 
-router.post('/users', createClient);
-router.get('/users', getClients);
-router.get('/users/:id', getClientById);
+router.post('/', createClient);
+router.get('/', getClients);
+router.get('/:id', getClientById);
 
 export default router;

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import ProfesionalModel from '../models/profesional';
 import bcrypt from 'bcrypt';
+import {authenticate, authorize } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -93,8 +94,8 @@ const getProfesionalById = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-router.post('/profesionals', createProfesional);
-router.get('/profesionals', getProfesionals);
-router.get('/profesionals/:id', getProfesionalById);
+router.post('/', authenticate, authorize(['admin']), createProfesional);
+router.get('/', getProfesionals);
+router.get('/:id', getProfesionalById);
 
 export default router;

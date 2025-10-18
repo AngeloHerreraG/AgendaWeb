@@ -23,6 +23,7 @@ export const authenticate = async (
                 decodedToken.csrf == csrfToken
             ) {
                 authReq.userId = decodedToken.id;
+                authReq.userRole = decodedToken.role;
                 next();
             } else {
                 res.status(401).json({ error: "invalid token" });
@@ -33,3 +34,11 @@ export const authenticate = async (
     }
 };
 
+export const authorize = (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
+    const authReq = req;
+    const userRole = authReq.userRole;
+    if (!userRole || !roles.includes(userRole)) {
+        return res.status(403).json({ error: "Forbidden: insufficient privileges" });
+    }
+    next();
+};
