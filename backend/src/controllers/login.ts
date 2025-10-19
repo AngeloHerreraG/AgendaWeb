@@ -5,6 +5,7 @@ import Client from "../models/client";
 import Profesional from "../models/profesional";
 import config from "../utils/config";
 import { authenticate } from "../middleware/authMiddleware";
+import { scheduler } from "timers/promises";
 
 const router = express.Router();
 
@@ -45,7 +46,15 @@ router.post("/", async (request, response) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
             });
-            response.status(200).send({ email: user.email, name: user.name });
+            response.status(200).send({ 
+                id: user._id,
+                name: user.name, 
+                email: user.email, 
+                password: user.passwordHash,
+                birthDate: user.birthDate,
+                schedule: user.schedules,
+                role: role
+            });
         }
     } else {
         response.status(401).json({

@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useState} from "react";
-
+import { createContext, useContext, useMemo, useState, useEffect} from "react";
+import loginService from "../services/login";
 import type { User } from "../types/user";
 
 interface AuthContext {
@@ -13,6 +13,14 @@ const AuthContext = createContext<AuthContext | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
+    useEffect(() => {
+        const init = async () => {
+            const user = await loginService.restoreLogin();
+            setUser(user);
+        };
+        init();
+    }, []);
+
     const login = (u: User) => {
         setUser(u);
     }
@@ -23,8 +31,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const value = useMemo(() => ({ user, login, logout }), [user]);
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
 export const useAuth = () => {
