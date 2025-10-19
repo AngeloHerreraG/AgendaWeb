@@ -3,15 +3,20 @@ import axios from "axios";
 import type { User } from '../types/user';
 import type { profesionalSchedule } from '../types/horario';
 
-const baseUrl = "http://localhost:9002/users";
+const baseUrl = "/api/users";
 
-const createUser = async (newUser: Omit<User, 'id'>) => {
+const createUser = async (newUser: Omit<User, 'id' | 'role'>) => {
     const response = await axios.post<User>(`${baseUrl}`, newUser);
     return response.data;
 };
 
 const getUserById = async (id: number) => {
     const response = await axios.get<User>(`${baseUrl}/${id}`);
+    return response.data ?? null;
+}
+
+const getUserByEmail = async (email: string) => {
+    const response = await axios.post<User>(`${baseUrl}/exists`, { email });
     return response.data ?? null;
 }
 
@@ -45,4 +50,6 @@ const deleteUser = async (id: number) => {
     return response.data;
 };
 
-export default { createUser, getUserById, getUserSchedule, updateUserSchedule, getUserByUsername, getAllUsers, getAllDoctors, deleteUser };
+export default { createUser, getUserById, getUserSchedule, updateUserSchedule, getUserByUsername, 
+    getAllUsers, getAllDoctors, deleteUser, getUserByEmail
+ };

@@ -1,42 +1,48 @@
 import { useState } from "react";
-import userServices from "../services/user";
+import userService from "../services/user";
 import type { User } from "../types/user";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
     const navigate = useNavigate();
 
-    const [usernameRegister, setUsernameRegister] = useState<string>("");
+    const [emailRegister, setEmailRegister] = useState<string>("");
     const [passwordRegister, setPasswordRegister] = useState<string>("");
+    const [nameRegister, setNameRegister] = useState<string>("");
+    const [birthDateRegister, setBirthDateRegister] = useState<string>("");
 
-
-    const handleUserRegister = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleUserRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const user = userServices.getUserByUsername(usernameRegister);
+        const user = await userService.getUserByEmail(emailRegister);
 
-        user.then((data) => {
-            if (data) {
-                alert("El usuario ya existe");
-            } else {
-                const newUser: Omit<User, 'id'> = {
-                    name: usernameRegister,
+        if (user) {
+            alert("El usuario ya existe");
+        }
+
+        else {
+            try {
+                const newUser: Omit<User, 'id' | 'role'> = {
+                    name: nameRegister,
+                    email: emailRegister,
                     password: passwordRegister,
-                    role: 'patient'
+                    birthDate: birthDateRegister
                 };
 
-                userServices.createUser(newUser)
-                    .then((data) => {
-                        console.log("Usuario registrado:", data);
-                        navigate('/login');
-                    })
-                    .catch((err) => console.error(err));
-            }
-        })
-        .catch((err) => console.error(err));
+                await userService.createUser(newUser);
+                console.log("Usuario registrado:", newUser);
 
-        setUsernameRegister("");
+                navigate('/login');
+            }
+            catch (err) {
+                console.error(err);
+            }
+        }
+
+        setEmailRegister("");
         setPasswordRegister("");
+        setNameRegister("");
+        setBirthDateRegister("");
     }
 
     return (
@@ -49,10 +55,26 @@ const Register = () => {
                 <form onSubmit={handleUserRegister} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "250px" }}>
                     <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
                         type="text" 
-                        placeholder="Usuario" 
-                        value={usernameRegister} 
-                        onChange={(e) => setUsernameRegister(e.target.value)} 
-                        minLength={1}
+                        placeholder="Nombre" 
+                        value={nameRegister} 
+                        onChange={(e) => setNameRegister(e.target.value)} 
+                        minLength={3}
+                        required
+                    />
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                        type="text" 
+                        placeholder="Email" 
+                        value={emailRegister} 
+                        onChange={(e) => setEmailRegister(e.target.value)} 
+                        minLength={3}
+                        required
+                    />
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                        type="date" 
+                        placeholder="Fecha de nacimiento" 
+                        value={birthDateRegister} 
+                        onChange={(e) => setBirthDateRegister(e.target.value)} 
+                        required
                     />
                     <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
                         type="password" 

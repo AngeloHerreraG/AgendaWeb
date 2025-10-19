@@ -76,19 +76,16 @@ const getClients = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const getClientById = async (req: Request, res: Response, next: NextFunction) => {
+const getClientByEmail = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await ClientModel.findById(req.params.id).populate('schedules', {
+        const email = req.body.email;
+        const user = await ClientModel.findOne({ email }).populate('schedules', {
             profesionalId: 1,
             startDate: 1,
             finishDate: 1,
             status: 1,
             notes: 1
         });
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
 
         res.json(user);
 
@@ -100,6 +97,6 @@ const getClientById = async (req: Request, res: Response, next: NextFunction) =>
 
 router.post('/', createClient);
 router.get('/', getClients);
-router.get('/:id', getClientById);
+router.post('/exists', getClientByEmail);
 
 export default router;
