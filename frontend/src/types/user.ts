@@ -1,6 +1,6 @@
 import type { profesionalSchedule } from "./horario";
 // Interfaz que define la estructura de un usuario
-type UserRole = 'patient' | 'doctor' | 'admin';
+type UserRole = 'client' | 'profesional' | 'admin';
 
 export interface User {
     id: number
@@ -13,11 +13,11 @@ export interface User {
 }
 
 export interface Client extends User {
-    role: 'patient'
+    role: 'client'
 }
 
-export interface Doctor extends User {
-    role: 'doctor'
+export interface Profesional extends User {
+    role: 'profesional'
     speciality: string
     description: string
     interests?: string[]
