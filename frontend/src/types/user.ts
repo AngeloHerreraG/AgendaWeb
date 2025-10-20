@@ -1,9 +1,9 @@
 import type { profesionalSchedule } from "./horario";
 // Interfaz que define la estructura de un usuario
-type UserRole = 'client' | 'profesional' | 'admin';
+export type UserRole = 'client' | 'profesional' | 'admin';
 
 export interface User {
-    id: number
+    id: string
     name: string
     email: string
     password: string

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import userServices from '../../services/user'
+import userServices from '../../services/client'
 import type { User } from '../../types/user';
 import type { profesionalSchedule } from '../../types/horario';
 import PersonIcon from '@mui/icons-material/Person';

@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Schedule, profesionalSchedule } from '../types/horario';
-import userService from './user';
+import userService from './client';
 
 const baseUrl = "http://localhost:9002/schedules";
 

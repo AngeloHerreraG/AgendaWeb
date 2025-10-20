@@ -22,7 +22,7 @@ app.use(express.static("dist"));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("api/clients", clientRouter);
+app.use("/api/clients", clientRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/profesionals", profesionalRouter);
 app.use("/api/schedules", scheduleRouter);

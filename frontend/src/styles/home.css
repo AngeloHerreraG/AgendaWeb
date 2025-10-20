@@ -28,12 +28,12 @@
     text-decoration: underline;
 }
 
-.home-doctor-list {
+.home-profesional-list {
     list-style-type: none;
     padding: 2rem;
 }
 
-.home-doctor-item {
+.home-profesional-item {
     background-color: #f9f9f9;
     margin: 10px 0;
     padding: 10px;

@@ -63,7 +63,7 @@ router.post("/", async (request, response) => {
     }
 });
 
-router.get("/me", authenticate, async (request, response, next) => {
+router.get("/me", async (request, response, next) => {
     const role = request.userRole;
     let user;
     if (role === "client") {

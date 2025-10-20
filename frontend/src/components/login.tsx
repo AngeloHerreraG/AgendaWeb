@@ -2,6 +2,7 @@ import { useState } from "react";
 import loginService from "../services/login";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth";
+import type { User } from "../types/user";
 
 
 const Login = () => {
@@ -11,20 +12,22 @@ const Login = () => {
 
     const [emailLogin, setEmailLogin] = useState<string>("");
     const [passwordLogin, setPasswordLogin] = useState<string>("");
+    const [roleLogin, setRoleLogin] = useState<string>("");
 
     const handleUserLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
-            const user = await loginService.login({
+            const user: User = await loginService.login({
                 email: emailLogin,
                 password: passwordLogin,
+                role: roleLogin as 'client' | 'profesional' | 'admin'
             });
 
             login(user);
             setEmailLogin("");
             setPasswordLogin("");
-            navigate(`/home/${user?.id}`);
+            navigate(`/home/${user?.id}`, { replace: true });
 
         } catch (error) {
             console.error("Wrong credentials", error);
@@ -51,9 +54,17 @@ const Login = () => {
             {/* Columna derecha: formulario */}
             <div style={{ backgroundColor: "#ffffffff", padding: "20px", borderRadius: "4px", marginBottom: "150px" }}>
                 <form onSubmit={handleUserLogin} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "250px" }}>
+                    {/* Crear campos de seleccion  entre cliente o profesional */}
+                    <select style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px" }}
+                        onChange={(e) => setRoleLogin(e.target.value)} 
+                        value={roleLogin}>
+                        <option value="" disabled>Selecciona tu rol</option>
+                        <option value="client">Cliente</option>
+                        <option value="profesional">Profesional</option>
+                    </select>
                     <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
                         type="text"
-                        placeholder="Usuario"
+                        placeholder="Email"
                         value={emailLogin}
                         onChange={(e) => setEmailLogin(e.target.value)}
                         minLength={1}

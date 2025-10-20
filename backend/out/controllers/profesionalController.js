@@ -1,72 +1,69 @@
-import { Request, Response, NextFunction } from 'express';
-import express from "express"
-import ProfesionalModel from '../models/profesional';
-import bcrypt from 'bcrypt';
-import {authenticate, authorize } from '../middleware/authMiddleware';
-import { ProfesionalDisponibility } from '../models/profesional';
-
-const router = express.Router();
-
-const createProfesional = async (req: Request, res: Response, next: NextFunction) => {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const profesional_1 = __importDefault(require("../models/profesional"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const router = express_1.default.Router();
+const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password, birthDate, speciality, description, interests, disponibility } = req.body;
-
         // Regex for name validation
         const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
         if (!nameRegex.test(name)) {
             res.status(400).json({ error: 'Name not valid' });
         }
-
         // Regex for email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
         // If the email input is not valid, return an error
         if (!emailRegex.test(email)) {
             res.status(400).json({ error: 'Invalid email format' });
         }
-
         // If email already exists, return an error
-        const existingUser = await ProfesionalModel.findOne({ email });
+        const existingUser = yield profesional_1.default.findOne({ email });
         if (existingUser) {
             res.status(400).json({ error: 'Email already in use' });
         }
-
         // Verify that birthDate is a valid date
         const actualYear = new Date().getFullYear();
         const birthYear = new Date(birthDate).getFullYear();
-
         if (isNaN(Date.parse(birthDate)) ||
-            actualYear - birthYear < 18 ) {
+            actualYear - birthYear < 18) {
             res.status(400).json({ error: 'Invalid birth date format or age restriction not satisfied' });
         }
-
         const textRegex = /^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ0-9.,;:!?()'"%\-–—/@#&+\s]{3,1000}$/;
-
         if (!textRegex.test(speciality) || !textRegex.test(description)) {
             res.status(400).json({ error: 'Speciality or description not valid' });
         }
-
         if (!Array.isArray(interests) || interests.some(interest => !textRegex.test(interest))) {
             res.status(400).json({ error: 'Interests must be an array of valid strings' });
         }
-
         if (disponibility) {
             const { days, blocksPerHour, startHour, endHour } = disponibility;
-            if (!Array.isArray(days) || days.some((day: any) => typeof day !== 'string')) {
+            if (!Array.isArray(days) || days.some((day) => typeof day !== 'string')) {
                 res.status(400).json({ error: 'Disponibility days must be an array of strings' });
             }
             if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
                 res.status(400).json({ error: 'Disponibility hours must be numbers' });
             }
         }
-
-        const disponibilityData = disponibility as ProfesionalDisponibility | undefined;
-
+        const disponibilityData = disponibility;
         // Hash the password before saving
         const saltRounds = 11;
-        const passwordHash = await bcrypt.hash(password, saltRounds);
-
-        const newProfesional = new ProfesionalModel({
+        const passwordHash = yield bcrypt_1.default.hash(password, saltRounds);
+        const newProfesional = new profesional_1.default({
             name,
             email,
             passwordHash,
@@ -76,81 +73,71 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
             interests,
             disponibility: disponibilityData
         });
-
-        await newProfesional.save();
+        yield newProfesional.save();
         res.status(201).json(newProfesional);
-
-    } catch (error) {
+    }
+    catch (error) {
         next(error);
     }
-};
-
-const getProfesionals = async (req: Request, res: Response, next: NextFunction) => {
+});
+const getProfesionals = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const profesionals = await ProfesionalModel.find({});
+        const profesionals = yield profesional_1.default.find({});
         res.json(profesionals);
-    } catch (error) {
+    }
+    catch (error) {
         next(error);
     }
-};
-
-const getProfesionalById = async (req: Request, res: Response, next: NextFunction) => {
+});
+const getProfesionalById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const profesional = await ProfesionalModel.findById(req.params.id);
+        const profesional = yield profesional_1.default.findById(req.params.id);
         if (!profesional) {
             return res.status(404).json({ error: 'Profesional not found' });
         }
-
         res.json(profesional);
-
-    } catch (error) {
+    }
+    catch (error) {
         next(error);
     }
-};
-
-const getProfesionalByEmail = async (req: Request, res: Response, next: NextFunction) => {
+});
+const getProfesionalByEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const email = req.body.email;
-        const profesional = await ProfesionalModel.findOne({ email });
+        const profesional = yield profesional_1.default.findOne({ email });
         res.json(profesional);
-    } catch (error) {
+    }
+    catch (error) {
         next(error);
     }
-};
-
-const changeProfesionalDisponibility = async (req: Request, res: Response, next: NextFunction) => {
+});
+const changeProfesionalDisponibility = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const profesionalId = req.params.id;
         const { disponibility } = req.body;
-
         if (profesionalId !== req.userId) {
             return res.status(403).json({ error: 'Not authorized to update this profesional' });
         }
-
         // Validate the new disponibility data
         if (disponibility) {
             const { days, blocksPerHour, startHour, endHour } = disponibility;
-
-            if (!Array.isArray(days) || days.some((day: any) => typeof day !== 'string')) {
+            if (!Array.isArray(days) || days.some((day) => typeof day !== 'string')) {
                 return res.status(400).json({ error: 'Disponibility days must be an array of strings' });
             }
             if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
                 return res.status(400).json({ error: 'Disponibility hours must be numbers' });
             }
         }
-
-        await ProfesionalModel.findByIdAndUpdate(profesionalId, { disponibility }, { new: true });
+        yield profesional_1.default.findByIdAndUpdate(profesionalId, { disponibility }, { new: true });
         res.status(200).json({ message: 'Disponibility updated successfully' });
-
-    } catch (error) {
+    }
+    catch (error) {
         next(error);
     }
-};
-
+});
 router.post('/', createProfesional);
 router.get('/', getProfesionals);
 router.get('/:id', getProfesionalById);
 router.post('/exists', getProfesionalByEmail);
-router.put('/:id/disponibility', authenticate, authorize(['profesional']), changeProfesionalDisponibility);
-
-export default router;
+router.put('/:id/disponibility', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['profesional']), changeProfesionalDisponibility);
+exports.default = router;

@@ -7,12 +7,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import type { User } from '../types/user';
-import userServices from '../services/user';
+import userServices from '../services/client';
 
 interface Props {
     // De momento quedan pendiente los props de la navbar
     notifications?: number;
-    userId?: number;
+    userId?: string;
 }
 
 const iconStyle = {
@@ -43,7 +43,7 @@ const Navbar = (props: Props) => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             if (userId) {
-                const data = await userServices.getUserById(userId);
+                const data = await userServices.getClientById(userId);
                 setUserProfile(data);
             }
         };
