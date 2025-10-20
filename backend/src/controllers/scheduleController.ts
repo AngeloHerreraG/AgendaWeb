@@ -5,6 +5,7 @@ import ClientModel from '../models/client';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
 import UserModel from '../models/client';
+import ProfesionalModel from '../models/profesional';
 
 const router = express.Router();
 
@@ -31,6 +32,14 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
         });
 
         await newSchedule.save();
+
+        // Linkear el schedule al profesional
+        const profesional = await ProfesionalModel.findById(profesionalId);
+        if (profesional) {
+            profesional.schedules.push(newSchedule._id);
+            await profesional.save();
+        }
+
         res.status(201).json(newSchedule);
 
     } catch (error) {

@@ -57,7 +57,6 @@ router.post("/", (request, response) => __awaiter(void 0, void 0, void 0, functi
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                password: user.passwordHash,
                 birthDate: user.birthDate,
                 schedule: user.schedules,
                 role: role

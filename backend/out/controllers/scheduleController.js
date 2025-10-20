@@ -17,6 +17,7 @@ const schedule_1 = __importDefault(require("../models/schedule"));
 const client_1 = __importDefault(require("../models/client"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const mongoose_1 = __importDefault(require("mongoose"));
+const profesional_1 = __importDefault(require("../models/profesional"));
 const router = express_1.default.Router();
 const createSchedule = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -38,6 +39,12 @@ const createSchedule = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             notes
         });
         yield newSchedule.save();
+        // Linkear el schedule al profesional
+        const profesional = yield profesional_1.default.findById(profesionalId);
+        if (profesional) {
+            profesional.schedules.push(newSchedule._id);
+            yield profesional.save();
+        }
         res.status(201).json(newSchedule);
     }
     catch (error) {

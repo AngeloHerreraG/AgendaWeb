@@ -50,7 +50,6 @@ router.post("/", async (request, response) => {
                 id: user._id,
                 name: user.name, 
                 email: user.email, 
-                password: user.passwordHash,
                 birthDate: user.birthDate,
                 schedule: user.schedules,
                 role: role
