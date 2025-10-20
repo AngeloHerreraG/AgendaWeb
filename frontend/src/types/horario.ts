@@ -1,7 +1,7 @@
 // Interfaz que define la estructura del contenido de un bloque antes de ser formateado
 export interface selectedBlock {
-    userId: number
-    professionalId: number
+    userId: string;
+    professionalId: string;
     day: string;
     startHour: number;    // Hora de inicio en formato 24 horas (0-23)
     endHour: number;      // Hora de fin en formato 24 horas (0-23)
@@ -10,9 +10,9 @@ export interface selectedBlock {
 
 // Interfaz que define la estructura de un bloque de horario
 export interface Schedule {
-    id: number;
-    profesionalId: number;
-    userId: number;
+    id: string;
+    profesionalId: string;
+    userId: string;
     startDate: Date;
     finishDate: Date;
     status?: 'pending' | 'confirmed' | 'cancelled';

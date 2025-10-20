@@ -44,6 +44,15 @@ const createSchedule = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next(error);
     }
 });
+const getSchedules = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const schedules = yield schedule_1.default.find({});
+        res.status(200).json(schedules);
+    }
+    catch (error) {
+        next(error);
+    }
+});
 const getClientSchedules = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
@@ -102,6 +111,7 @@ const updateScheduleStatus = (req, res, next) => __awaiter(void 0, void 0, void 
     }
 });
 router.post('/', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['admin', 'profesional']), createSchedule);
+router.get('/', getSchedules);
 router.get('/my-schedules', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['client']), getClientSchedules);
 router.get('/profesionals/:id', getProfesionalSchedules);
 router.put('/status', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['client']), updateScheduleStatus);

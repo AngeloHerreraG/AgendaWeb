@@ -9,7 +9,10 @@ const router = express.Router();
 
 const createProfesional = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name, email, password, birthDate, speciality, description, interests, disponibility } = req.body;
+        const {
+            name, email, password, birthDate, speciality, description,
+            interests, days, blocksPerHour, startHour, endHour
+        } = req.body;
 
         // Regex for name validation
         const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
@@ -50,18 +53,14 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
             res.status(400).json({ error: 'Interests must be an array of valid strings' });
         }
 
-        if (disponibility) {
-            const { days, blocksPerHour, startHour, endHour } = disponibility;
-            if (!Array.isArray(days) || days.some((day: any) => typeof day !== 'string')) {
-                res.status(400).json({ error: 'Disponibility days must be an array of strings' });
-            }
-            if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
-                res.status(400).json({ error: 'Disponibility hours must be numbers' });
-            }
+        if (!Array.isArray(days) || days.some((day: any) => typeof day !== 'string')) {
+            res.status(400).json({ error: 'Disponibility days must be an array of strings' });
         }
 
-        const disponibilityData = disponibility as ProfesionalDisponibility | undefined;
-
+        if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
+            res.status(400).json({ error: 'Disponibility hours must be numbers' });
+        }
+        
         // Hash the password before saving
         const saltRounds = 11;
         const passwordHash = await bcrypt.hash(password, saltRounds);
@@ -74,7 +73,12 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
             speciality,
             description,
             interests,
-            disponibility: disponibilityData
+            disponibility: {
+                days,
+                blocksPerHour,
+                startHour,
+                endHour
+            }
         });
 
         await newProfesional.save();

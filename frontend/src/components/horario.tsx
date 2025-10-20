@@ -13,8 +13,7 @@ import DateChips from './horario/date-chips';
 const HorarioComponent = () => {
     const navigate = useNavigate();
     const loggedUser: User | null = useAuth().user
-    const { id } = useParams();
-    const professionalId = Number(id)
+    const professionalId = useParams().id;
 
     const [selectedDay, setSelectedDay] = useState<string | null>(null)
     const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)  // Para mostrar el modal de información de la cita
@@ -43,23 +42,24 @@ const HorarioComponent = () => {
             <div className='horario-data'>
                 <div className="horario-info">
                     <h2> Informacion del Profesional </h2>
-                    <InfoProfesional professionalId={professionalId} />
+
+                    {professionalId && <InfoProfesional professionalId={professionalId} />}
                     <button onClick={handleProfile}>Ver Perfil</button>
                 </div>
                 <div className="horario-calendar">
                     <h2> Días disponibles </h2>
-                    <CalendarSelector 
+                    {professionalId && <CalendarSelector
                         professionalId={professionalId}
                         selectedDay={selectedDay}
                         setSelectedDay={setSelectedDay}
-                    />
+                    />}
                 </div>
                 <div className="horario-dates">
-                    <DateChips
+                    { professionalId && <DateChips
                         userId={loggedUser.id}
                         professionalId={professionalId}
                         selectedDay={selectedDay}
-                    />
+                    />}
                 </div>
             </div>
         </div>

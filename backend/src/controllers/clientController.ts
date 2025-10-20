@@ -12,7 +12,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         const { name, email, password, birthDate } = req.body;
 
         // Regex for name validation
-        const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
+        const nameRegex = /^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ0-9.,;:!?()'"%\-–—/@#&+\s]{3,20}$/;
         if (!nameRegex.test(name)) {
             res.status(400).json({ error: 'Name not valid' });
         }

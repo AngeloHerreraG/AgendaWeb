@@ -38,6 +38,15 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const getSchedules = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const schedules = await ScheduleModel.find({});
+        res.status(200).json(schedules);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const getClientSchedules = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
@@ -108,6 +117,7 @@ const updateScheduleStatus = async (req: Request, res: Response, next: NextFunct
 };
 
 router.post('/', authenticate, authorize(['admin', 'profesional']), createSchedule);
+router.get('/', getSchedules);
 router.get('/my-schedules', authenticate, authorize(['client']), getClientSchedules);
 router.get('/profesionals/:id', getProfesionalSchedules);
 router.put('/status', authenticate, authorize(['client']), updateScheduleStatus);

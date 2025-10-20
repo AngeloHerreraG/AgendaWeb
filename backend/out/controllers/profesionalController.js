@@ -19,7 +19,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password, birthDate, speciality, description, interests, disponibility } = req.body;
+        const { name, email, password, birthDate, speciality, description, interests, days, blocksPerHour, startHour, endHour } = req.body;
         // Regex for name validation
         const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
         if (!nameRegex.test(name)) {
@@ -50,16 +50,12 @@ const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         if (!Array.isArray(interests) || interests.some(interest => !textRegex.test(interest))) {
             res.status(400).json({ error: 'Interests must be an array of valid strings' });
         }
-        if (disponibility) {
-            const { days, blocksPerHour, startHour, endHour } = disponibility;
-            if (!Array.isArray(days) || days.some((day) => typeof day !== 'string')) {
-                res.status(400).json({ error: 'Disponibility days must be an array of strings' });
-            }
-            if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
-                res.status(400).json({ error: 'Disponibility hours must be numbers' });
-            }
+        if (!Array.isArray(days) || days.some((day) => typeof day !== 'string')) {
+            res.status(400).json({ error: 'Disponibility days must be an array of strings' });
         }
-        const disponibilityData = disponibility;
+        if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
+            res.status(400).json({ error: 'Disponibility hours must be numbers' });
+        }
         // Hash the password before saving
         const saltRounds = 11;
         const passwordHash = yield bcrypt_1.default.hash(password, saltRounds);
@@ -71,7 +67,12 @@ const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             speciality,
             description,
             interests,
-            disponibility: disponibilityData
+            disponibility: {
+                days,
+                blocksPerHour,
+                startHour,
+                endHour
+            }
         });
         yield newProfesional.save();
         res.status(201).json(newProfesional);

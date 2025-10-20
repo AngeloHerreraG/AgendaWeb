@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import userServices from '../../services/client'
-import type { User } from '../../types/user';
+import profesionalServices from '../../services/profesional'
+import type { Profesional, User } from '../../types/user';
 import type { profesionalSchedule } from '../../types/horario';
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -14,19 +14,20 @@ const infoStyle = {
 }
 
 interface Props {
-    professionalId: number;
+    professionalId: string;
 }
 
 const InfoProfesional = (props: Props) => {
     const { professionalId } = props;
-    const [info, setInfo] = useState<User | null>(null);
+    const [info, setInfo] = useState<Profesional | null>(null);
     const [scheduleInfo, setScheduleInfo] = useState<profesionalSchedule | null>(null);
 
     useEffect(() => {
         const fetchInfo = async () => {
-            const data = await userServices.getUserById(professionalId);
+            const data = await profesionalServices.getProfesionalById(professionalId);
             setInfo(data);
-            setScheduleInfo(data?.schedule || null);
+            setScheduleInfo(data?.disponibility || null);
+            console.log(data.disponibility);
         };
         fetchInfo();
     }, [professionalId]);
@@ -35,7 +36,6 @@ const InfoProfesional = (props: Props) => {
         <div style={infoStyle}>
             <PersonIcon sx={{ fontSize: 200, color: 'black' }} />
             <p>Nombre: {info?.name}</p>
-            <p>Rol: {info?.role}</p>
             <p>Atiende: {scheduleInfo?.days.map((item) => (item)).join(', ')}</p>
             <p>Horario: {scheduleInfo?.startHour} hrs - {scheduleInfo?.endHour} hrs</p>
             <p>Duracion de cita: {60 / (scheduleInfo?.blocksPerHour ?? 1)} minutos</p>

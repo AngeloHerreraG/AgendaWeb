@@ -1,6 +1,6 @@
 import { useState } from "react";
-import clientServices from "../services/profesional";
-import type { Profesional, User } from "../types/user";
+import clientServices from "../services/client";
+import type { Client } from "../types/user";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
@@ -14,7 +14,7 @@ const Register = () => {
     const handleUserRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const user = await clientServices.getProfesionalByEmail(emailRegister);
+        const user = await clientServices.getClientByEmail(emailRegister);
 
         if (user) {
             alert("El usuario ya existe");
@@ -22,23 +22,15 @@ const Register = () => {
 
         else {
             try {
-                const newUser: Omit<Profesional, 'id' | 'role'> = {
+                const newUser: Omit<Client, 'id'> = {
                     name: nameRegister,
                     email: emailRegister,
                     password: passwordRegister,
                     birthDate: birthDateRegister,
-                    speciality: "Cardiologo",
-                    description: "Soy un profesional",
-                    interests: [],
-                    schedule: {
-                        days: ["lunes", "martes", "miércoles", "jueves", "viernes"],
-                        blocksPerHour: 4,
-                        startHour: 9,
-                        endHour: 17
-                    }
+                    role: 'client'
                 };
 
-                const response = await clientServices.createProfesional(newUser);
+                const response = await clientServices.createClient(newUser);
                 console.log("Usuario registrado:", response);
 
                 navigate('/login');

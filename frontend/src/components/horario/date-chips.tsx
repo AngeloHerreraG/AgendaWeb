@@ -26,8 +26,8 @@ const chipStyle = {
 }
 
 interface Props {
-    userId: number;
-    professionalId: number;
+    userId: string;
+    professionalId: string;
     selectedDay: string | null;
 }
 

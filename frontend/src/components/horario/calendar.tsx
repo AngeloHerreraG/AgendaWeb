@@ -6,7 +6,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 interface Props {
-    professionalId: number;
+    professionalId: string;
     selectedDay: string | null;
     setSelectedDay: (value: string) => void;
 }
