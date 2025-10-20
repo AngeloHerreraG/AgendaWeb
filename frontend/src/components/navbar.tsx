@@ -8,6 +8,8 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import type { User } from '../types/user';
 import userServices from '../services/client';
+import loginServices from '../services/login'
+import { useAuth } from '../auth/auth'
 
 interface Props {
     // De momento quedan pendiente los props de la navbar
@@ -39,6 +41,7 @@ const Navbar = (props: Props) => {
     const [userProfile, setUserProfile] = useState<User | null>(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -72,8 +75,10 @@ const Navbar = (props: Props) => {
         return navigate(`/profile/${userId}`, { replace: true });
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         handleClose();
+        await loginServices.logout();
+        logout();
         return navigate('/login', { replace: true });
     };
 

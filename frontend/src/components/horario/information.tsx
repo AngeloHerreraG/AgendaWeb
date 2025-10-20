@@ -27,7 +27,6 @@ const InfoProfesional = (props: Props) => {
             const data = await profesionalServices.getProfesionalById(professionalId);
             setInfo(data);
             setScheduleInfo(data?.disponibility || null);
-            console.log(data.disponibility);
         };
         fetchInfo();
     }, [professionalId]);

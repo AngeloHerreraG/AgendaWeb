@@ -18,11 +18,12 @@ const express_1 = __importDefault(require("express"));
 const client_1 = __importDefault(require("../models/client"));
 const profesional_1 = __importDefault(require("../models/profesional"));
 const config_1 = __importDefault(require("../utils/config"));
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
-router.post("/", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, role } = request.body;
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password, role } = req.body;
     if (role !== "client" && role !== "profesional" && role !== "admin") {
-        return response.status(400).json({ error: "Invalid role specified" });
+        return res.status(400).json({ error: "Invalid role specified" });
     }
     let user;
     if (role === "client") {
@@ -34,7 +35,7 @@ router.post("/", (request, response) => __awaiter(void 0, void 0, void 0, functi
     if (user) {
         const passwordCorrect = yield bcrypt_1.default.compare(password, user.passwordHash);
         if (!passwordCorrect) {
-            response.status(401).json({
+            res.status(401).json({
                 error: "invalid username or password",
             });
         }
@@ -48,12 +49,12 @@ router.post("/", (request, response) => __awaiter(void 0, void 0, void 0, functi
             const token = jsonwebtoken_1.default.sign(userForToken, config_1.default.JWT_SECRET, {
                 expiresIn: 60 * 60,
             });
-            response.setHeader("X-CSRF-Token", userForToken.csrf);
-            response.cookie("token", token, {
+            res.setHeader("X-CSRF-Token", userForToken.csrf);
+            res.cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
             });
-            response.status(200).send({
+            res.status(200).send({
                 id: user._id,
                 name: user.name,
                 email: user.email,
@@ -64,26 +65,33 @@ router.post("/", (request, response) => __awaiter(void 0, void 0, void 0, functi
         }
     }
     else {
-        response.status(401).json({
+        res.status(401).json({
             error: "invalid email or password",
         });
     }
-}));
-router.get("/me", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const role = request.userRole;
+});
+const getLoggedInUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    const role = req.userRole;
     let user;
-    if (role === "client") {
-        user = yield client_1.default.findById(request.userId);
+    if (!userId || !role) {
+        user = null;
+    }
+    else if (role === "client") {
+        user = yield client_1.default.findById(userId);
     }
     else if (role === "profesional") {
-        user = yield profesional_1.default.findById(request.userId);
+        user = yield profesional_1.default.findById(userId);
     }
-    response.status(200).send(user);
-}));
-router.post("/logout", (request, response) => {
-    response.clearCookie("token");
-    response.status(200).send({
+    res.status(200).send(user);
+});
+const logout = (req, res, next) => {
+    res.clearCookie("token");
+    res.status(200).send({
         message: "Logged out successfully"
     });
-});
+};
+router.post("/", login);
+router.get("/me", authMiddleware_1.authenticate, getLoggedInUser);
+router.post("/logout", logout);
 exports.default = router;

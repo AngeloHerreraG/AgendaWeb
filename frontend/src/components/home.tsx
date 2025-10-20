@@ -11,6 +11,7 @@ import Navbar from './navbar';
 const Home = () => {
     const [profesionals, setProfesionals] = useState<User[]>([]);
     const loggedUser = useAuth().user;
+    const loading = useAuth().loading;
     
     useEffect(() => {
         const fetchProfesionals = async () => {
@@ -20,7 +21,10 @@ const Home = () => {
         fetchProfesionals();
     }, []);
     
-    
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
     if (!loggedUser) {
         return <Navigate to="/login" replace />;
     }

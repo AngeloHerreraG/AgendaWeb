@@ -21,7 +21,9 @@ const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         const authReq = req;
         const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
         if (!token) {
-            res.status(401).json({ error: "token missing" });
+            authReq.userId = undefined;
+            authReq.userRole = undefined;
+            next();
         }
         else {
             const decodedToken = jsonwebtoken_1.default.verify(token, config_1.default.JWT_SECRET);

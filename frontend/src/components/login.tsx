@@ -1,6 +1,6 @@
 import { useState } from "react";
 import loginService from "../services/login";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth";
 import type { User } from "../types/user";
 
@@ -30,11 +30,21 @@ const Login = () => {
             navigate(`/home/${user?.id}`, { replace: true });
 
         } catch (error) {
-            console.error("Wrong credentials", error);
+            console.error("Wrong credentialsXD", error);
         }
     }
 
-    
+    const loggedUser: User | null = useAuth().user;
+    const loading = useAuth().loading;
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (loggedUser) {
+        return <Navigate to={`/home/${loggedUser.id}`} replace />;
+    }
+
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "40px",
             backgroundColor: "#f5ececff", height: "100vh" }}>

@@ -6,17 +6,26 @@ interface AuthContext {
     user: User | null;
     login: (u: User) => void;
     logout: () => void;
+    loading: boolean;
 };
 
 const AuthContext = createContext<AuthContext | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const init = async () => {
-            const user = await loginService.restoreLogin();
-            setUser(user);
+            try {
+                const user = await loginService.restoreLogin();
+                setUser(user);
+            } catch {
+                setUser(null);
+            }
+            finally {
+                setLoading(false);
+            }
         };
         init();
     }, []);
@@ -29,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
     }
 
-    const value = useMemo(() => ({ user, login, logout }), [user]);
+    const value = useMemo(() => ({ user, login, logout, loading }), [user, loading]);
 
     return (
         <AuthContext.Provider value={value}>
