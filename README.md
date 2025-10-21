@@ -38,7 +38,7 @@ La plataforma permite a los profesionales definir su disponibilidad, y a los cli
 
 - Node.js (v18+ recomendado)
 - npm o yarn
-- MongoDB (una instancia local o en la nube como MongoDB Atlas)
+- MongoDB en puerto 27017 (una instancia local o en la nube como MongoDB Atlas)
 
 ## Instalación y Ejecución Local
 
