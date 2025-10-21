@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IUser } from "./client";
+import initialProfesionals from "../utils/initialProfesionals"
 
 // Interfaz que define la estructura del horario de un profesional
 export interface ProfesionalDisponibility {
@@ -50,5 +51,14 @@ profesionalSchema.set("toJSON", {
     delete returnedObject.passwordHash; // Ensure passwordHash is not returned
   },
 });
+
+
+// ESTO SE DEBE EJECUTAR SOLO LA PRIMERA VEZ PARA AGREGAR PROFESIONALES A LA BASE DE DATOS AUTOMATICAMENTE.
+// LUEGO, COMENTAR DESDE LA LINEA 58 A LA 61 PARA NO AGREGAR DUPLICADOS.
+initialProfesionals.forEach(profesional => {
+    const newProfesional = new ProfesionalModel(profesional);
+    newProfesional.save();
+});
+
 
 export default ProfesionalModel;

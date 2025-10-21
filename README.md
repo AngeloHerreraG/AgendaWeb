@@ -62,6 +62,8 @@ Sigue estos pasos para levantar el proyecto en tu máquina local.
         ```npm run dev```
         - El servidor se ejecutará en http://localhost:9002 (o el puerto que definas).
 
+    PRECAUCIÓN: En el archivo models/profesional.ts, el código desde la linea 58 a la 61 es para añadir profesionales a la base de datos automáticamente una vez de ejecuta el servidor. Por lo tanto, desde la segunda ejecución, se deben comentar esas lineas para que no se intente agregar datos duplicados a la base de datos.
+
 3. Configuración del Frontend
     1. Abre una nueva terminal y navega a la carpeta del frontend
         
