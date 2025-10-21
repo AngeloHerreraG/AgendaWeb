@@ -1,5 +1,4 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
-import clientServices from '../services/client';
+import { Link, Navigate } from 'react-router-dom';
 import profesionalServices from '../services/profesional';
 import type { User } from '../types/user';
 import '../styles/home.css';

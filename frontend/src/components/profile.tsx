@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
-import userServices from "../services/client";
+import clientServices from "../services/client";
+import profesionalServices from "../services/profesional";
 import type { User, Profesional } from "../types/user";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -20,7 +21,7 @@ const ProfileComponent = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             if (!userId) return;
-            const data = await userServices.getUserById(userId);
+            const data = await clientServices.getClientById(userId) || await profesionalServices.getProfesionalById(userId);
             setUserProfile(data);
             setLoading(false);
         };

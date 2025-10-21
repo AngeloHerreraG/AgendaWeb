@@ -21,12 +21,12 @@ const getProfesionalByEmail = async (email: string) => {
 }
 
 const getProfesionalSchedule = async (profesionalId: string) => {
-    const response = await axios.get<Profesional>(`${baseUrl}/${profesionalId}`);
-    return response.data.schedule ?? null;
+    const response = await axios.get<profesionalSchedule>(`${baseUrl}/${profesionalId}`);
+    return response.data ?? null;
 }
 
 const updateProfesionalSchedule = async (profesionalId: string, schedule: profesionalSchedule) => {
-    const response = await axios.patch<Profesional>(`${baseUrl}/${profesionalId}`, { schedule });
+    const response = await axios.patch<profesionalSchedule>(`${baseUrl}/${profesionalId}`, { schedule });
     return response.data;
 };
 

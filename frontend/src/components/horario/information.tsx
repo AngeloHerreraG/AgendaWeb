@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import profesionalServices from '../../services/profesional'
-import type { Profesional, User } from '../../types/user';
+import type { Profesional } from '../../types/user';
 import type { profesionalSchedule } from '../../types/horario';
 import PersonIcon from '@mui/icons-material/Person';
 

@@ -1,18 +1,11 @@
 import axios from "axios";
-import type { Schedule, profesionalSchedule } from '../types/horario';
-import profesionalService from "./profesional";
+import type { Schedule } from '../types/horario';
 
 const baseUrl = "/api/schedules";
 
 // En las funciones usamos async/await para manejar las llamadas asincronas
 // y asi podemos usar try/catch en caso de error, el codigo es mas limpio
 // y manejamos la respuesta directamente
-
-// Obtener el horario de un profesional
-const getProfesionalSchedule = async (profesionalId: string) => {
-    const request = await profesionalService.getProfesionalSchedule(profesionalId);
-    return request;
-}
 
 const getHorario = async (profesionalId: string) => {
     const request = await axios.get<Schedule[]>(`${baseUrl}`);
@@ -31,4 +24,4 @@ const updateHorario = async(newSchedule: Schedule) => {
     return request.data;
 }
 
-export default { getProfesionalSchedule, getHorario, createHorario, updateHorario };
+export default { getHorario, createHorario, updateHorario };

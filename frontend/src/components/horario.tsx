@@ -16,7 +16,7 @@ const HorarioComponent = () => {
     const professionalId = useParams().id;
 
     const [selectedDay, setSelectedDay] = useState<string | null>(null)
-    const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)  // Para mostrar el modal de información de la cita
+    // const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)  // Para mostrar el modal de información de la cita
     
     // Si no esta loggeado, redirigir al login
     if (!loggedUser) {

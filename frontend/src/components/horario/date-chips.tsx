@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
 import horarioServices from '../../services/horario'
+import profesionalServices from '../../services/profesional'
 import type { selectedBlock, Schedule, profesionalSchedule } from '../../types/horario'
 import '../../styles/horario.css'
 
@@ -40,7 +41,7 @@ const DateChips = (props: Props) => {
     const [startHour, setStartHour] = useState<number | null>(null)
     const [endHour, setEndHour] = useState<number | null>(null)
 
-    const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null)
+    // const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) // Hito 3
 
     dayjs.locale('es'); // Establece el idioma español para dayjs
 
@@ -51,7 +52,7 @@ const DateChips = (props: Props) => {
 
         // Obtener datos de atencion del profesional
         const fetchProfesionalSchedule = async () => {
-            const data: profesionalSchedule | null = await horarioServices.getProfesionalSchedule(professionalId);
+            const data: profesionalSchedule | null = await profesionalServices.getProfesionalSchedule(professionalId);
             if (data) {
                 setDays(data.days);
                 setBlocksPerHour(data.blocksPerHour);
@@ -78,13 +79,13 @@ const DateChips = (props: Props) => {
 
     // Funcion para manejar el click en un bloque
     const handleChipClick = (bloque: selectedBlock) => {
-        setSelectedScheduleBlock(bloque);
+        // setSelectedScheduleBlock(bloque); // Hito 3
         console.log("Bloque seleccionado: ", bloque);
     }
 
-    const closeBlock = () => {
-        setSelectedScheduleBlock(null);
-    }
+    // const closeBlock = () => {
+    //     setSelectedScheduleBlock(null); // Hito 3
+    // }
 
     // // Función para mostrar la hora en formato HH:MM, calcula la posición del bloque y la hora de inicio}
     const generarChips = () => {

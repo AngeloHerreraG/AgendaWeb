@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import "../styles/navbar.css";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -6,8 +6,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
-import type { User } from '../types/user';
-import userServices from '../services/client';
 import loginServices from '../services/login'
 import { useAuth } from '../auth/auth'
 
@@ -38,20 +36,9 @@ const menuItemStyle = {
 const Navbar = (props: Props) => {
     const { notifications, userId } = props;
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [userProfile, setUserProfile] = useState<User | null>(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
     const { logout } = useAuth();
-
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            if (userId) {
-                const data = await userServices.getClientById(userId);
-                setUserProfile(data);
-            }
-        };
-        fetchUserProfile();
-    }, [userId]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
