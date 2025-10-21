@@ -1,47 +1,76 @@
 # AgendaWeb – Agenda Dinámica para Profesionales
 
-AgendaWeb es una aplicación web para que profesionales independientes y sus clientes gestionen citas de manera simple y segura.
+AgendaWeb es una aplicación web Full-Stack construida con el stack MERN (MongoDB, Express, React, Node.js) y TypeScript, diseñada para que profesionales independientes y sus clientes gestionen citas de manera simple y segura.
 
+La plataforma permite a los profesionales definir su disponibilidad, y a los clientes agendar horas de forma intuitiva. Además, incorpora un asistente de IA (Gemini API) para ayudar a los profesionales a completar la descripción de sus perfiles.
 
-## Estructura del proyecto
+## Tecnologías Utilizadas
+### Frontend:
+- React 18 con Vite
+- TypeScript
+- CSS tradicional para estilos
+- Axios para peticiones HTTP
+### Backend:
+- Node.js con Express
+- TypeScript
+- MongoDB como base de datos
+- Mongoose
+- JSON Web Tokens (JWT) para autenticación
+- Cookies y Headers para protección CSRF
 
+## Estructura del ProyectoAgendaWeb/
 ```
-AgendaWeb/
-├── frontend/       # React + TypeScript (Vite)
-│   ├── public/
-│   ├── src/
-│   ├── package.json
-│   └── vite.config.ts
-├── backend/        # json-server mock API
-│   ├── db.json
-│   ├── package.json
-│   └── README.md
-└── README.md       # este archivo
-
+├── frontend/           # Aplicación en React + TypeScript
+│   └── src/
+│       ├── components/
+│       ├── services/
+│       └── ...
+├── backend/            # Servidor en Node.js + Express + TypeScript
+│   └── src/
+│       ├── controllers/
+│       ├── models/
+│       ├── middleware/
+│       └── ...
+└── README.md           # Este archivo
 ```
 
-## Requisitos
+## Pre-requisitos
 
-- Node.js
-- npm
-- Navegador moderno como Chrome o Edge
+- Node.js (v18+ recomendado)
+- npm o yarn
+- MongoDB (una instancia local o en la nube como MongoDB Atlas)
 
-## Instrucciones
+## Instalación y Ejecución Local
 
-### 1. Para el backend
-- Abrir la terminal parados en ```/backend```
-- Instalar las dependencias (solo la primera vez) con ```npm install```
-- Levantar el servidor con ```npm start```
-    - Esto levantara el servidor en localhost en el puerto 9002
-    - Un ejemplo de llamado a la API ```GET http://localhost:9002/users```
+Sigue estos pasos para levantar el proyecto en tu máquina local.
+1. Clonar el Repositorio
+ [https://github.com/AngeloHerreraG/AgendaWeb](https://github.com/AngeloHerreraG/AgendaWeb)
 
-### 2. Para el frontend
-- Abrir otra terminal parados en ```/frontend```
-- Instalar las dependencias (solo la primera vez) con ```npm install```
-- Ejecutar la app con ```npm run dev```
-    - Esto levantara el front en localhost en el puerto 9001
+2. Configuración del Backend
+    1. Navega a la carpeta del backend
 
-## Notas
-- Los dos servicios o procesos deben estar levantados en simultaneo, para que se comuniquen
-- Los procesos deben correr en puertos distintos
-- Asegurarse de correr primero el backend para que el front funcione correctamente
+        ```cd backend```
+    2. Instala las dependencias
+    
+        ```npm install```
+    3. Asegurarse de tener las variables de entorno en 
+
+        ```backend/```
+        - Si bien no se deberia subir las variables al repositorio, esto es netamente pedagogico y no afecta que este en el repositorio
+    4. Ejecuta el servidor en modo de desarrollo
+    
+        ```npm run dev```
+        - El servidor se ejecutará en http://localhost:9002 (o el puerto que definas).
+
+3. Configuración del Frontend
+    1. Abre una nueva terminal y navega a la carpeta del frontend
+        
+        ```cd frontend```
+    2. Instala las dependencias
+
+        ```npm install```
+
+    3. Ejecuta la aplicación de React
+        
+        ```npm run dev``` o ```npm run build```
+        - El frontend estará disponible en http://localhost:9001
