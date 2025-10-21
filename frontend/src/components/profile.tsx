@@ -42,7 +42,7 @@ const ProfileComponent = () => {
                     <p>Cargando...</p>
                 ) : userProfile ? (
                     <div>
-                        {loggedUser?.role === 'profesional' && (
+                        {userProfile?.role === 'profesional' && (
                             <>
                                 <div className="profile-picture-info-container">
                                     <div className="profile-picture">
@@ -70,7 +70,7 @@ const ProfileComponent = () => {
                                 </div>
                             </>
                         )}
-                        {loggedUser?.role === 'client' && (
+                        {userProfile?.role === 'client' && (
                             <div className="client-info">
                                 <div className="profile-header">
                                     <h2>Perfil de {userProfile.name}</h2>

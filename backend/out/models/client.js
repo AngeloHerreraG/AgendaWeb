@@ -10,7 +10,8 @@ const userSchema = new mongoose_1.default.Schema({
     passwordHash: { type: String, required: true },
     birthDate: { type: Date, required: true },
     schedules: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'Schedule', default: [] }],
-    admin: { type: Boolean, default: false }
+    admin: { type: Boolean, default: false },
+    role: { type: String, default: 'client', required: false }
 }, {
     timestamps: true,
 });

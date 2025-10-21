@@ -9,6 +9,7 @@ export interface IUser {
     birthDate: Date;
     schedules: mongoose.Types.ObjectId[];
     admin?: boolean;
+    role: string;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -17,7 +18,8 @@ const userSchema = new mongoose.Schema<IUser>({
     passwordHash: { type: String, required: true },
     birthDate: { type: Date, required: true },
     schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule', default: [] }],
-    admin: { type: Boolean, default: false }
+    admin: { type: Boolean, default: false },
+    role: { type: String, default: 'client', required: false}
 }, {
     timestamps: true,
 });

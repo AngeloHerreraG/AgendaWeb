@@ -26,6 +26,7 @@ const profesionalSchema = new mongoose.Schema<IProfesional>({
     speciality: { type: String, required: true },
     description: { type: String, required: true },
     interests: [{ type: String, required: false }],
+    role: { type: String, default: 'profesional', required: false},
     disponibility: {
         days: [{ type: String }],
         blocksPerHour: { type: Number },
