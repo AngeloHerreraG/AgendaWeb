@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import userServices from "../services/client";
-import type { User, Profesional } from "../types/user";
+import clientService from "../services/client";
+import profesionalService from "../services/profesional"
+import type { User, Client, Profesional } from "../types/user";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -20,9 +21,19 @@ const ProfileComponent = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             if (!userId) return;
-            const data = await userServices.getUserById(userId);
+            let data: Client | Profesional | null = null;
+            if (loggedUser?.role === 'client') {
+                data = await clientService.getClientById(userId);
+            }
+            else if (loggedUser?.role === 'profesional') {
+                data = await profesionalService.getProfesionalById(userId);
+            }
             setUserProfile(data);
             setLoading(false);
+
+            console.log(loggedUser);
+            //console.log(data);
+            //console.log(loggedUser);
         };
 
         fetchUserProfile();
@@ -41,7 +52,7 @@ const ProfileComponent = () => {
                     <p>Cargando...</p>
                 ) : userProfile ? (
                     <div>
-                        {userProfile.role === 'profesional' && (
+                        {loggedUser?.role === 'profesional' && (
                             <>
                                 <div className="profile-picture-info-container">
                                     <div className="profile-picture">
@@ -69,7 +80,7 @@ const ProfileComponent = () => {
                                 </div>
                             </>
                         )}
-                        {userProfile.role === 'client' && (
+                        {loggedUser?.role === 'client' && (
                             <div className="client-info">
                                 <div className="profile-header">
                                     <h2>Perfil de {userProfile.name}</h2>
