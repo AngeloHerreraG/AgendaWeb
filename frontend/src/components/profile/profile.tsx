@@ -1,40 +1,38 @@
 import { useParams } from "react-router-dom";
-import clientService from "../services/client";
-import profesionalService from "../services/profesional"
-import type { User, Profesional } from "../types/user";
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import clientService from "../../services/client";
+import profesionalService from "../../services/profesional"
+import type { User } from "../../types/user";
+import ClientProfile from "./clientProfile";
+import ProfesionalProfile from "./profesionalProfile";
 import { useEffect, useState } from "react";
-import Navbar from "./navbar";
-import "../styles/profile.css";
-import { useAuth } from "../auth/auth";
-
 
 const ProfileComponent = () => {
     const { id } = useParams();
     const userId = id;
-    const loggedUser: User | null = useAuth().user;
-    const [userProfile, setUserProfile] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             if (!userId) return;
             const data = await clientService.getClientById(userId) || await profesionalService.getProfesionalById(userId);
-            setUserProfile(data);
-            setLoading(false);
+            setUser(data);
         };
 
         fetchUserProfile();
     }, [userId]);
 
-    const handleEditProfile = () => {
-        // Se puede implementar la lógica para editar el perfil
-        console.log("Editar perfil");
+    switch (user?.role) {
+        case 'client':
+            return <ClientProfile user={user} />;
+        case 'profesional':
+            return <ProfesionalProfile user={user} />;
     }
-
+}
+/*
     return (
+        <div>
+            
+        </div>
         <div className="profile-container">
             <Navbar userId={loggedUser?.id} />
             <div className="profile-content">
@@ -94,5 +92,7 @@ const ProfileComponent = () => {
         </div>
     );
 };
+*/
 
 export default ProfileComponent;
+

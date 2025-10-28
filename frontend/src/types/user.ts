@@ -1,25 +1,30 @@
 import type { profesionalSchedule, Schedule } from "./horario";
-// Interfaz que define la estructura de un usuario
+
 export type UserRole = 'client' | 'profesional' | 'admin';
 
-export interface User {
+interface BaseUser {
     id: string;
     name: string;
     email: string;
     password: string;
     birthDate: string;
     schedule?: Schedule[];
-    role: UserRole;
 }
 
-export interface Client extends User {
+export interface Client extends BaseUser {
     role: 'client';
 }
 
-export interface Profesional extends User {
+export interface Profesional extends BaseUser {
     role: 'profesional';
     speciality: string;
     description: string;
     interests?: string[];
     disponibility?: profesionalSchedule;
 }
+
+export interface Admin extends BaseUser {
+    role: 'admin';
+}
+
+export type User = Client | Profesional | Admin;

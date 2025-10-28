@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const initialProfesionals_1 = __importDefault(require("../utils/initialProfesionals"));
 const profesionalSchema = new mongoose_1.default.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -37,8 +36,8 @@ profesionalSchema.set("toJSON", {
 });
 // ESTO SE DEBE EJECUTAR SOLO LA PRIMERA VEZ PARA AGREGAR PROFESIONALES A LA BASE DE DATOS AUTOMATICAMENTE.
 // LUEGO, COMENTAR DESDE LA LINEA 58 A LA 61 PARA NO AGREGAR DUPLICADOS.
-initialProfesionals_1.default.forEach(profesional => {
-    const newProfesional = new ProfesionalModel(profesional);
-    newProfesional.save();
-});
+// initialProfesionals.forEach(profesional => {
+//     const newProfesional = new ProfesionalModel(profesional);
+//     newProfesional.save();
+// });
 exports.default = ProfesionalModel;
