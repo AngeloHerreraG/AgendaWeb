@@ -119,6 +119,6 @@ const updateScheduleStatus = (req, res, next) => __awaiter(void 0, void 0, void 
 router.post('/', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['admin', 'profesional']), createSchedule);
 router.get('/', getSchedules);
 router.get('/my-schedules', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['client']), getClientSchedules);
-router.get('/profesionals/:id', getProfesionalSchedules);
+router.get('/profesional/:id', getProfesionalSchedules);
 router.put('/status', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['client']), updateScheduleStatus);
 exports.default = router;

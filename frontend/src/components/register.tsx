@@ -81,6 +81,7 @@ const Register = () => {
                         value={passwordRegister} 
                         onChange={(e) => setPasswordRegister(e.target.value)} 
                         minLength={8}
+                        maxLength={20}
                     />
                     <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", color: "white", backgroundColor: "#171ae1ff", cursor: "pointer" }}
                         type="submit">Registrarse</button>

@@ -19,8 +19,11 @@ const CalendarSelector = (props: Props) => {
 
     useEffect(() => {
         const fetchProfesionalSchedule = async () => {
-            const data: profesionalSchedule = await userServices.getUserSchedule(professionalId);
-            if (data && data.days) setDays(data.days); // días en español: LUNES, MARTES, etc.
+            const user = await userServices.getUserById(professionalId);
+            if (user.role === 'profesional') {
+                const data: profesionalSchedule = user.disponibility;
+                if (data && data.days) setDays(data.days); // días en español: LUNES, MARTES, etc.
+            }
         };
         fetchProfesionalSchedule();
     }, [professionalId]);

@@ -23,7 +23,7 @@ export interface IProfesional extends IUser {
     speciality: string;
     description: string;
     interests?: string[];
-    disponibility?: ProfesionalDisponibility;
+    disponibility: ProfesionalDisponibility;
 }
 
 const userSchema = new mongoose.Schema<IUser>({

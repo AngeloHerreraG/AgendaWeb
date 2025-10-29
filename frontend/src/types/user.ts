@@ -20,7 +20,7 @@ export interface Profesional extends BaseUser {
     speciality: string;
     description: string;
     interests?: string[];
-    disponibility?: profesionalSchedule;
+    disponibility: profesionalSchedule;
 }
 
 export interface Admin extends BaseUser {

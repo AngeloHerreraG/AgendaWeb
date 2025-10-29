@@ -126,7 +126,7 @@ const updateScheduleStatus = async (req: Request, res: Response, next: NextFunct
 router.post('/', authenticate, authorize(['admin', 'profesional']), createSchedule);
 router.get('/', getSchedules);
 router.get('/my-schedules', authenticate, authorize(['client']), getClientSchedules);
-router.get('/profesionals/:id', getProfesionalSchedules);
+router.get('/profesional/:id', getProfesionalSchedules);
 router.put('/status', authenticate, authorize(['client']), updateScheduleStatus);
 
 export default router;
