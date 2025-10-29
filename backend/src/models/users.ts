@@ -40,6 +40,18 @@ const userSchema = new mongoose.Schema<IUser>({
     discriminatorKey: 'role', timestamps: true,
 })
 
+userSchema.set("toJSON", {
+    transform: (
+        _,
+        returnedObject: { id?: string; _id?: mongoose.Types.ObjectId; __v?: number; passwordHash?: string }
+    ) => {
+        returnedObject.id = returnedObject._id?.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+        delete returnedObject.passwordHash; // Ensure passwordHash is not returned
+    },
+});
+
 const UserModel = mongoose.model<IUser>('User', userSchema);
 
 const ProfesionalModel = UserModel.discriminator('profesional', new mongoose.Schema<IProfesional>({
@@ -53,19 +65,5 @@ const ProfesionalModel = UserModel.discriminator('profesional', new mongoose.Sch
         endHour: { type: Number }
     },
 }));
-
-
-
-userSchema.set("toJSON", {
-  transform: (
-    _,
-    returnedObject: { id?: string; _id?: mongoose.Types.ObjectId; __v?: number; passwordHash?: string }
-  ) => {
-    returnedObject.id = returnedObject._id?.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-    delete returnedObject.passwordHash; // Ensure passwordHash is not returned
-  },
-});
 
 export { UserModel, ProfesionalModel }
