@@ -6,6 +6,7 @@ export interface selectedBlock {
     startHour: number;    // Hora de inicio en formato 24 horas (0-23)
     endHour: number;      // Hora de fin en formato 24 horas (0-23)
     blockHour: number;    // Bloque de la hora (0, 15, 30, 45), (0, 20, 40), (0, 30)
+    label?: string;       // Hora en string formateada (opcional)
 }
 
 // Interfaz que define la estructura de un bloque de horario

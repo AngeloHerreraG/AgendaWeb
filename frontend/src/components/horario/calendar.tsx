@@ -109,32 +109,6 @@ const CalendarSelector = (props: Props) => {
                 >
                     <NavigateNextIcon sx={{fontSize: "50px"}}/>
                 </button>
-
-                {/* <select
-                    style={selectStyle}
-                    value={selectedMonth.month()}
-                    onChange={(e) => setSelectedMonth(selectedMonth.month(Number(e.target.value)))}
-                >
-                    {Array.from({ length: 12 }, (_, i) => (
-                        <option key={i} value={i}>
-                            {dayjs().month(i).format('MMMM')}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    style={selectStyle}
-                    value={selectedMonth.year()}
-                    onChange={(e) => setSelectedMonth(selectedMonth.year(Number(e.target.value)))}
-                >
-                    {Array.from({ length: 5 }, (_, i) => {
-                        const year = dayjs().year() + i;
-                        return (
-                            <option key={i} value={year}>
-                                {year}
-                            </option>
-                        );
-                    })}
-                </select> */}
             </div>
 
             {/* Encabezado días */}

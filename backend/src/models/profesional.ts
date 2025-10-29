@@ -55,10 +55,10 @@ profesionalSchema.set("toJSON", {
 
 // ESTO SE DEBE EJECUTAR SOLO LA PRIMERA VEZ PARA AGREGAR PROFESIONALES A LA BASE DE DATOS AUTOMATICAMENTE.
 // LUEGO, COMENTAR DESDE LA LINEA 58 A LA 61 PARA NO AGREGAR DUPLICADOS.
-initialProfesionals.forEach(profesional => {
-    const newProfesional = new ProfesionalModel(profesional);
-    newProfesional.save();
-});
+// initialProfesionals.forEach(profesional => {
+//     const newProfesional = new ProfesionalModel(profesional);
+//     newProfesional.save();
+// });
 
 
 export default ProfesionalModel;

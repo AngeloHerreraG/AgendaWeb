@@ -9,19 +9,19 @@ import InfoProfesional from './horario/information'
 import CalendarSelector from './horario/calendar';
 import DateChips from './horario/date-chips';
 
-
 const HorarioComponent = () => {
     const navigate = useNavigate();
     const loggedUser: User | null = useAuth().user
     const professionalId = useParams().id;
 
-    const [selectedDay, setSelectedDay] = useState<string | null>(null)
-    // const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)  // Para mostrar el modal de información de la cita
+    const [selectedDay, setSelectedDay] = useState<string | null>(null)  // Para mostrar el modal de información de la cita
     
     // Si no esta loggeado, redirigir al login
     if (!loggedUser) {
         return <Navigate to='/login' replace />;
     }
+
+    console.log("UserId: ", loggedUser.id, " ProfessionalId: ", professionalId);
 
     // Funcion para volver al home
     const goHome = () => {
@@ -36,15 +36,14 @@ const HorarioComponent = () => {
         <div className='horario-container'>
             <Navbar userId={loggedUser.id} />
             <div className="horario-bg"></div>
-            <div>
-                <button onClick={goHome}>Volver Atras</button>
+            <div className='horario-button-container'>
+                <button className='common-btn' onClick={goHome}>Volver Atras</button>
             </div>
             <div className='horario-data'>
                 <div className="horario-info">
                     <h2> Informacion del Profesional </h2>
-
                     {professionalId && <InfoProfesional professionalId={professionalId} />}
-                    <button onClick={handleProfile}>Ver Perfil</button>
+                    <button className='common-btn' onClick={handleProfile}>Ver Perfil</button>
                 </div>
                 <div className="horario-calendar">
                     <h2> Días disponibles </h2>
