@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import profesionalServices from '../../services/profesional';
+import userServices from '../../services/user';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import type { profesionalSchedule } from '../../types/horario';
@@ -19,7 +19,7 @@ const CalendarSelector = (props: Props) => {
 
     useEffect(() => {
         const fetchProfesionalSchedule = async () => {
-            const data: profesionalSchedule = await profesionalServices.getProfesionalSchedule(professionalId);
+            const data: profesionalSchedule = await userServices.getUserSchedule(professionalId);
             if (data && data.days) setDays(data.days); // días en español: LUNES, MARTES, etc.
         };
         fetchProfesionalSchedule();

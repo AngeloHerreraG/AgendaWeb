@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import ScheduleModel from '../models/schedule';
-import ClientModel from '../models/client';
+import { ProfesionalModel, UserModel } from '../models/users';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
-import UserModel from '../models/client';
-import ProfesionalModel from '../models/profesional';
 
 const router = express.Router();
 
@@ -84,7 +82,7 @@ const updateScheduleStatus = async (req: Request, res: Response, next: NextFunct
         const { scheduleId, status } = req.body;
 
         const schedule = await ScheduleModel.findById(scheduleId);
-        const user = await ClientModel.findById(req.userId);
+        const user = await UserModel.findById(req.userId);
 
         if (!ALLOWED_STATUSES.includes(status)) {
             return res.status(400).json({ error: "Invalid status value" });

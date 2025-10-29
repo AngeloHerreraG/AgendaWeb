@@ -4,7 +4,6 @@ import axiosSecure from "../utils/axiosSecure";
 type Credentials = {
     email: string;
     password: string;
-    role: 'client' | 'profesional' | 'admin';
 };
 
 const login = async (credentials: Credentials) => {

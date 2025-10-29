@@ -14,10 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const schedule_1 = __importDefault(require("../models/schedule"));
-const client_1 = __importDefault(require("../models/client"));
+const users_1 = require("../models/users");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const mongoose_1 = __importDefault(require("mongoose"));
-const profesional_1 = __importDefault(require("../models/profesional"));
 const router = express_1.default.Router();
 const createSchedule = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -40,7 +39,7 @@ const createSchedule = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         });
         yield newSchedule.save();
         // Linkear el schedule al profesional
-        const profesional = yield profesional_1.default.findById(profesionalId);
+        const profesional = yield users_1.ProfesionalModel.findById(profesionalId);
         if (profesional) {
             profesional.schedules.push(newSchedule._id);
             yield profesional.save();
@@ -85,7 +84,7 @@ const updateScheduleStatus = (req, res, next) => __awaiter(void 0, void 0, void 
         const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled"];
         const { scheduleId, status } = req.body;
         const schedule = yield schedule_1.default.findById(scheduleId);
-        const user = yield client_1.default.findById(req.userId);
+        const user = yield users_1.UserModel.findById(req.userId);
         if (!ALLOWED_STATUSES.includes(status)) {
             return res.status(400).json({ error: "Invalid status value" });
         }

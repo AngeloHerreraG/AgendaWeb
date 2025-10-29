@@ -7,4 +7,14 @@ const getUserById = async (id: string) => {
     return response.data ?? null;
 };
 
-export default { getUserById };
+const getUserByEmail = async (email: string) => {
+    const response = await axios.post<{ message: string }>(`${baseUrl}/exists`, { email });
+    return response.data;
+}
+
+const getUserSchedule = async (id: string) => {
+    const response = await axios.get(`${baseUrl}/${id}/schedule`);
+    return response.data ?? null;
+};
+
+export default { getUserById, getUserByEmail, getUserSchedule };

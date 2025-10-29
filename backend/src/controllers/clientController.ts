@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import bcrypt from 'bcrypt';
-import ClientModel from '../models/client';
-import ProfesionalModel from '../models/profesional';
+import { UserModel } from '../models/users';
 
 const router = express.Router();
 
@@ -26,7 +25,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         }
 
         // If email already exists, return an error
-        const existingUser = await ClientModel.findOne({ email });
+        const existingUser = await UserModel.findOne({ email });
         if (existingUser) {
             res.status(400).json({ error: 'Email already in use' });
         }
@@ -44,11 +43,12 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         const saltRounds = 11;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const newUser = new ClientModel({
+        const newUser = new UserModel({
             name,
             email,
             passwordHash,
             birthDate: new Date(birthDate),
+            role: "client"
         });
 
         await newUser.save();
@@ -69,7 +69,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
 
 const getClients = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await ClientModel.find({}).populate('schedules', {
+        const users = await UserModel.find({ role: "client" }).populate('schedules', {
             profesionalId: 1,
             startDate: 1,
             finishDate: 1,

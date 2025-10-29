@@ -10,30 +10,10 @@ const createProfesional = async (newProfesional: Omit<Profesional, 'id' | 'role'
     return response.data;
 };
 
-const getProfesionalById = async (id: string) => {
-    const response = await axios.get<Profesional>(`${baseUrl}/${id}`);
-    return response.data ?? null;
-}
-
-const getProfesionalByEmail = async (email: string) => {
-    const response = await axios.post<Profesional>(`${baseUrl}/exists`, { email });
-    return response.data ?? null;
-}
-
-const getProfesionalSchedule = async (profesionalId: string) => {
-    const response = await axios.get<profesionalSchedule>(`${baseUrl}/${profesionalId}`);
-    return response.data ?? null;
-}
-
 const updateProfesionalSchedule = async (profesionalId: string, schedule: profesionalSchedule) => {
     const response = await axios.patch<profesionalSchedule>(`${baseUrl}/${profesionalId}`, { schedule });
     return response.data;
 };
-
-const getProfesionalByUsername = async (username: string) => {
-    const response = await axios.get<Profesional[]>(`${baseUrl}`, { params: { name: username } });
-    return response.data[0] ?? null;
-}
 
 const getAllProfesionals = async () => {
     const response = await axios.get<Profesional[]>(`${baseUrl}`, { params: { role: 'profesional' } });
@@ -45,6 +25,4 @@ const deleteProfesional = async (id: number) => {
     return response.data;
 };
 
-export default { createProfesional, getProfesionalById, getProfesionalSchedule, updateProfesionalSchedule, getProfesionalByUsername, 
-    getAllProfesionals, deleteProfesional, getProfesionalByEmail
-};
+export default { createProfesional, updateProfesionalSchedule, getAllProfesionals, deleteProfesional };

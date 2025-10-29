@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
-import ProfesionalModel from '../models/profesional';
+import { ProfesionalModel } from '../models/users';
 import bcrypt from 'bcrypt';
 import {authenticate, authorize } from '../middleware/authMiddleware';
-import { ProfesionalDisponibility } from '../models/profesional';
 
 const router = express.Router();
 

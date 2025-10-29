@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const client_1 = __importDefault(require("../models/client"));
+const users_1 = require("../models/users");
 const router = express_1.default.Router();
 const createClient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -31,7 +31,7 @@ const createClient = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             res.status(400).json({ error: 'Invalid email format' });
         }
         // If email already exists, return an error
-        const existingUser = yield client_1.default.findOne({ email });
+        const existingUser = yield users_1.UserModel.findOne({ email });
         if (existingUser) {
             res.status(400).json({ error: 'Email already in use' });
         }
@@ -45,11 +45,12 @@ const createClient = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         // Hash the password before saving
         const saltRounds = 11;
         const passwordHash = yield bcrypt_1.default.hash(password, saltRounds);
-        const newUser = new client_1.default({
+        const newUser = new users_1.UserModel({
             name,
             email,
             passwordHash,
             birthDate: new Date(birthDate),
+            role: "client"
         });
         yield newUser.save();
         res.status(201).json({
@@ -65,7 +66,7 @@ const createClient = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 });
 const getClients = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield client_1.default.find({}).populate('schedules', {
+        const users = yield users_1.UserModel.find({ role: "client" }).populate('schedules', {
             profesionalId: 1,
             startDate: 1,
             finishDate: 1,
@@ -78,23 +79,6 @@ const getClients = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
-const getClientById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const id = req.params.id;
-        const user = yield client_1.default.findById(id).populate('schedules', {
-            profesionalId: 1,
-            startDate: 1,
-            finishDate: 1,
-            status: 1,
-            notes: 1
-        });
-        res.json(user);
-    }
-    catch (error) {
-        next(error);
-    }
-});
 router.post('/', createClient);
 router.get('/', getClients);
-router.get('/:id', getClientById);
 exports.default = router;

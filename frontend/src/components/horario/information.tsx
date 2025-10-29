@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import profesionalServices from '../../services/profesional'
+import userServices from '../../services/user';
 import type { Profesional } from '../../types/user';
 import type { profesionalSchedule } from '../../types/horario';
 import PersonIcon from '@mui/icons-material/Person';
@@ -24,9 +24,15 @@ const InfoProfesional = (props: Props) => {
 
     useEffect(() => {
         const fetchInfo = async () => {
-            const data = await profesionalServices.getProfesionalById(professionalId);
-            setInfo(data);
-            setScheduleInfo(data?.disponibility || null);
+            const data = await userServices.getUserById(professionalId);
+            if (data.role == 'profesional') {
+                setInfo(data);
+                setScheduleInfo(data?.disponibility || null);
+            }
+            else {
+                setInfo(null);
+                setScheduleInfo(null);
+            }
         };
         fetchInfo();
     }, [professionalId]);

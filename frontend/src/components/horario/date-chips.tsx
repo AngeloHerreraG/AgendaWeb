@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
 import horarioServices from '../../services/horario'
-import profesionalServices from '../../services/profesional'
+import userServices from '../../services/user'
 import type { selectedBlock, Schedule, profesionalSchedule } from '../../types/horario'
 import '../../styles/horario.css'
 
@@ -52,7 +52,7 @@ const DateChips = (props: Props) => {
 
         // Obtener datos de atencion del profesional
         const fetchProfesionalSchedule = async () => {
-            const data: profesionalSchedule | null = await profesionalServices.getProfesionalSchedule(professionalId);
+            const data: profesionalSchedule | null = await userServices.getUserSchedule(professionalId);
             if (data) {
                 setDays(data.days);
                 setBlocksPerHour(data.blocksPerHour);

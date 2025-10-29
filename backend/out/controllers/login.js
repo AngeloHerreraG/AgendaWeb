@@ -15,23 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const express_1 = __importDefault(require("express"));
-const client_1 = __importDefault(require("../models/client"));
-const profesional_1 = __importDefault(require("../models/profesional"));
+const users_1 = require("../models/users");
 const config_1 = __importDefault(require("../utils/config"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, role } = req.body;
-    if (role !== "client" && role !== "profesional" && role !== "admin") {
-        return res.status(400).json({ error: "Invalid role specified" });
-    }
-    let user;
-    if (role === "client") {
-        user = yield client_1.default.findOne({ email });
-    }
-    else if (role === "profesional") {
-        user = yield profesional_1.default.findOne({ email });
-    }
+    const { email, password } = req.body;
+    const user = yield users_1.UserModel.findOne({ email });
     if (user) {
         const passwordCorrect = yield bcrypt_1.default.compare(password, user.passwordHash);
         if (!passwordCorrect) {
@@ -44,7 +34,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
                 email: user.email,
                 csrf: crypto.randomUUID(),
                 id: user._id,
-                role: role,
+                role: user.role,
             };
             const token = jsonwebtoken_1.default.sign(userForToken, config_1.default.JWT_SECRET, {
                 expiresIn: 60 * 60,
@@ -60,7 +50,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
                 email: user.email,
                 birthDate: user.birthDate,
                 schedule: user.schedules,
-                role: role
+                role: user.role
             });
         }
     }
@@ -72,17 +62,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const getLoggedInUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
-    const role = req.userRole;
-    let user;
-    if (!userId || !role) {
-        user = null;
-    }
-    else if (role === "client") {
-        user = yield client_1.default.findById(userId);
-    }
-    else if (role === "profesional") {
-        user = yield profesional_1.default.findById(userId);
-    }
+    const user = yield users_1.UserModel.findById(userId);
     res.status(200).send(user);
 });
 const logout = (req, res, next) => {

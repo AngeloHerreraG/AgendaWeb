@@ -1,5 +1,6 @@
 import { useState } from "react";
 import clientServices from "../services/client";
+import userServices from "../services/user";
 import type { Client } from "../types/user";
 import { useNavigate } from "react-router-dom";
 
@@ -14,10 +15,10 @@ const Register = () => {
     const handleUserRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const user = await clientServices.getClientByEmail(emailRegister);
+        const response = await userServices.getUserByEmail(emailRegister);
 
-        if (user) {
-            alert("El usuario ya existe");
+        if (response.message === "User already exists") {
+            alert("El email ya está registrado. Por favor, utiliza otro email.");
         }
 
         else {
@@ -29,10 +30,7 @@ const Register = () => {
                     birthDate: birthDateRegister,
                     role: 'client'
                 };
-
-                const response = await clientServices.createClient(newUser);
-                console.log("Usuario registrado:", response);
-
+                await clientServices.createClient(newUser);
                 navigate('/login');
             }
             catch (err) {
