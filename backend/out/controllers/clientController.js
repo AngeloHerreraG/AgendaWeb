@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const client_1 = __importDefault(require("../models/client"));
-const profesional_1 = __importDefault(require("../models/profesional"));
 const router = express_1.default.Router();
 const createClient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -79,22 +78,6 @@ const getClients = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
-const getClientByEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const email = req.body.email;
-        const user = yield client_1.default.findOne({ email }).populate('schedules', {
-            profesionalId: 1,
-            startDate: 1,
-            finishDate: 1,
-            status: 1,
-            notes: 1
-        });
-        res.json(user);
-    }
-    catch (error) {
-        next(error);
-    }
-});
 const getClientById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
@@ -111,28 +94,7 @@ const getClientById = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         next(error);
     }
 });
-const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const id = req.params.id;
-        const role = req.userRole;
-        let user;
-        if (role === 'profesional') {
-            user = yield profesional_1.default.findById(id);
-        }
-        else if (role === 'client') {
-            user = yield client_1.default.findById(id);
-        }
-        else {
-            return res.status(400).json({ error: 'Invalid user role' });
-        }
-        res.json(user);
-    }
-    catch (error) {
-        next(error);
-    }
-});
 router.post('/', createClient);
 router.get('/', getClients);
-router.post('/exists', getClientByEmail);
 router.get('/:id', getClientById);
 exports.default = router;

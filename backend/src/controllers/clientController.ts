@@ -84,67 +84,7 @@ const getClients = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const getClientByEmail = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const email = req.body.email;
-        const user = await ClientModel.findOne({ email }).populate('schedules', {
-            profesionalId: 1,
-            startDate: 1,
-            finishDate: 1,
-            status: 1,
-            notes: 1
-        });
-
-        res.json(user);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getClientById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = req.params.id;
-        const user = await ClientModel.findById(id).populate('schedules', {
-            profesionalId: 1,
-            startDate: 1,
-            finishDate: 1,
-            status: 1,
-            notes: 1
-        });
-
-        res.json(user);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getUserById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = req.params.id;
-        const role = req.userRole;
-
-        let user;
-        if (role === 'profesional') {
-            user = await ProfesionalModel.findById(id);
-        } 
-        else if (role === 'client') {
-            user = await ClientModel.findById(id);
-        } else {
-            return res.status(400).json({ error: 'Invalid user role' });
-        }
-
-        res.json(user);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
 router.post('/', createClient);
 router.get('/', getClients);
-router.post('/exists', getClientByEmail);
-router.get('/:id', getClientById);
 
 export default router;
