@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
-import horarioServices from '../../services/horario'
-import profesionalServices from '../../services/profesional'
+import scheduleServices from '../../services/schedule'
+import userServices from '../../services/user'
 import type { selectedBlock, Schedule, profesionalSchedule } from '../../types/horario'
 import Appointment from './appointment'
 import '../../styles/horario.css'
@@ -52,16 +52,16 @@ const DateChips = (props: Props) => {
 
         // Obtener datos del profesional
         const fetchProfesionalData = async () => {
-            const data: Profesional | null = await profesionalServices.getProfesionalById(professionalId);
-            if (data) {
-                setProfesionalData(data);
-                setProfesionalScheduleData(data?.disponibility || null);
+            const user = await userServices.getUserById(professionalId);
+            if (user.role === 'profesional') {
+                setProfesionalData(user);
+                setProfesionalScheduleData(user?.disponibility || null);
             }
         };
 
         // Función para obtener los horarios particulares del profesional
         const fetchHorario = async () => {
-            const data = await horarioServices.getHorario(professionalId);
+            const data = await scheduleServices.getProfesionalSchedule(professionalId);
             setHorario(data);
         };
         

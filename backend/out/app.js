@@ -11,6 +11,7 @@ const clientController_1 = __importDefault(require("./controllers/clientControll
 const login_1 = __importDefault(require("./controllers/login"));
 const profesionalController_1 = __importDefault(require("./controllers/profesionalController"));
 const scheduleController_1 = __importDefault(require("./controllers/scheduleController"));
+const userController_1 = __importDefault(require("./controllers/userController"));
 const app = (0, express_1.default)();
 mongoose_1.default.set("strictQuery", false);
 if (config_1.default.MONGODB_URI) {
@@ -26,4 +27,5 @@ app.use("/api/clients", clientController_1.default);
 app.use("/api/login", login_1.default);
 app.use("/api/profesionals", profesionalController_1.default);
 app.use("/api/schedules", scheduleController_1.default);
+app.use("/api/users", userController_1.default);
 exports.default = app;

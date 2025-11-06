@@ -7,9 +7,14 @@ const baseUrl = "/api/schedules";
 // y asi podemos usar try/catch en caso de error, el codigo es mas limpio
 // y manejamos la respuesta directamente
 
-const getHorario = async (profesionalId: string) => {
-    const request = await axios.get<Schedule[]>(`${baseUrl}`);
-    return request.data.filter(schedule => schedule.profesionalId === profesionalId);
+const getClientSchedule = async () => {
+    const request = await axios.get<Schedule[]>(`${baseUrl}/my-schedules`);
+    return request.data;
+}
+
+const getProfesionalSchedule = async (profesionalId: String) => {
+    const request = await axios.get<Schedule[]>(`${baseUrl}/profesional/${profesionalId}`);
+    return request.data;
 }
 
 // Crear un nuevo bloque de horario
@@ -24,4 +29,4 @@ const updateHorario = async(newSchedule: Schedule) => {
     return request.data;
 }
 
-export default { getHorario, createHorario, updateHorario };
+export default { getClientSchedule, getProfesionalSchedule, createHorario, updateHorario };

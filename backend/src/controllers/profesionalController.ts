@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
-import ProfesionalModel from '../models/profesional';
+import { ProfesionalModel } from '../models/users';
 import bcrypt from 'bcrypt';
 import {authenticate, authorize } from '../middleware/authMiddleware';
-import { ProfesionalDisponibility } from '../models/profesional';
 
 const router = express.Router();
 
@@ -98,30 +97,6 @@ const getProfesionals = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
-const getProfesionalById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const profesional = await ProfesionalModel.findById(req.params.id);
-        if (!profesional) {
-            return res.status(404).json({ error: 'Profesional not found' });
-        }
-
-        res.json(profesional);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getProfesionalByEmail = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const email = req.body.email;
-        const profesional = await ProfesionalModel.findOne({ email });
-        res.json(profesional);
-    } catch (error) {
-        next(error);
-    }
-};
-
 const changeProfesionalDisponibility = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profesionalId = req.params.id;
@@ -153,8 +128,6 @@ const changeProfesionalDisponibility = async (req: Request, res: Response, next:
 
 router.post('/', createProfesional);
 router.get('/', getProfesionals);
-router.get('/:id', getProfesionalById);
-router.post('/exists', getProfesionalByEmail);
 router.put('/:id/disponibility', authenticate, authorize(['profesional']), changeProfesionalDisponibility);
 
 export default router;

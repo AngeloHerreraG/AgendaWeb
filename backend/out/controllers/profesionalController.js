@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const profesional_1 = __importDefault(require("../models/profesional"));
+const users_1 = require("../models/users");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
@@ -32,7 +32,7 @@ const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             res.status(400).json({ error: 'Invalid email format' });
         }
         // If email already exists, return an error
-        const existingUser = yield profesional_1.default.findOne({ email });
+        const existingUser = yield users_1.ProfesionalModel.findOne({ email });
         if (existingUser) {
             res.status(400).json({ error: 'Email already in use' });
         }
@@ -59,7 +59,7 @@ const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         // Hash the password before saving
         const saltRounds = 11;
         const passwordHash = yield bcrypt_1.default.hash(password, saltRounds);
-        const newProfesional = new profesional_1.default({
+        const newProfesional = new users_1.ProfesionalModel({
             name,
             email,
             passwordHash,
@@ -83,30 +83,8 @@ const createProfesional = (req, res, next) => __awaiter(void 0, void 0, void 0, 
 });
 const getProfesionals = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const profesionals = yield profesional_1.default.find({});
+        const profesionals = yield users_1.ProfesionalModel.find({});
         res.json(profesionals);
-    }
-    catch (error) {
-        next(error);
-    }
-});
-const getProfesionalById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const profesional = yield profesional_1.default.findById(req.params.id);
-        if (!profesional) {
-            return res.status(404).json({ error: 'Profesional not found' });
-        }
-        res.json(profesional);
-    }
-    catch (error) {
-        next(error);
-    }
-});
-const getProfesionalByEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const email = req.body.email;
-        const profesional = yield profesional_1.default.findOne({ email });
-        res.json(profesional);
     }
     catch (error) {
         next(error);
@@ -129,7 +107,7 @@ const changeProfesionalDisponibility = (req, res, next) => __awaiter(void 0, voi
                 return res.status(400).json({ error: 'Disponibility hours must be numbers' });
             }
         }
-        yield profesional_1.default.findByIdAndUpdate(profesionalId, { disponibility }, { new: true });
+        yield users_1.ProfesionalModel.findByIdAndUpdate(profesionalId, { disponibility }, { new: true });
         res.status(200).json({ message: 'Disponibility updated successfully' });
     }
     catch (error) {
@@ -138,7 +116,5 @@ const changeProfesionalDisponibility = (req, res, next) => __awaiter(void 0, voi
 });
 router.post('/', createProfesional);
 router.get('/', getProfesionals);
-router.get('/:id', getProfesionalById);
-router.post('/exists', getProfesionalByEmail);
 router.put('/:id/disponibility', authMiddleware_1.authenticate, (0, authMiddleware_1.authorize)(['profesional']), changeProfesionalDisponibility);
 exports.default = router;

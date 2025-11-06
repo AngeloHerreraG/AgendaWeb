@@ -4,7 +4,7 @@ import Register from './components/register'
 import './App.css'
 import Home from './components/home'
 import Horario from './components/horario'
-import Profile from './components/profile'
+import Profile from './components/profile/profile'
 import { AuthProvider } from './auth/auth'
 
 function App() {

@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import bcrypt from 'bcrypt';
-import ClientModel from '../models/client';
-import ProfesionalModel from '../models/profesional';
+import { UserModel } from '../models/users';
 
 const router = express.Router();
 
@@ -12,7 +11,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         const { name, email, password, birthDate } = req.body;
 
         // Regex for name validation
-        const nameRegex = /^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ0-9.,;:!?()'"%\-–—/@#&+\s]{3,20}$/;
+        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{8,20}$/;
         if (!nameRegex.test(name)) {
             res.status(400).json({ error: 'Name not valid' });
         }
@@ -26,7 +25,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         }
 
         // If email already exists, return an error
-        const existingUser = await ClientModel.findOne({ email });
+        const existingUser = await UserModel.findOne({ email });
         if (existingUser) {
             res.status(400).json({ error: 'Email already in use' });
         }
@@ -44,11 +43,12 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         const saltRounds = 11;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const newUser = new ClientModel({
+        const newUser = new UserModel({
             name,
             email,
             passwordHash,
             birthDate: new Date(birthDate),
+            role: "client"
         });
 
         await newUser.save();
@@ -69,7 +69,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
 
 const getClients = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await ClientModel.find({}).populate('schedules', {
+        const users = await UserModel.find({ role: "client" }).populate('schedules', {
             profesionalId: 1,
             startDate: 1,
             finishDate: 1,
@@ -84,67 +84,7 @@ const getClients = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const getClientByEmail = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const email = req.body.email;
-        const user = await ClientModel.findOne({ email }).populate('schedules', {
-            profesionalId: 1,
-            startDate: 1,
-            finishDate: 1,
-            status: 1,
-            notes: 1
-        });
-
-        res.json(user);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getClientById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = req.params.id;
-        const user = await ClientModel.findById(id).populate('schedules', {
-            profesionalId: 1,
-            startDate: 1,
-            finishDate: 1,
-            status: 1,
-            notes: 1
-        });
-
-        res.json(user);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getUserById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = req.params.id;
-        const role = req.userRole;
-
-        let user;
-        if (role === 'profesional') {
-            user = await ProfesionalModel.findById(id);
-        } 
-        else if (role === 'client') {
-            user = await ClientModel.findById(id);
-        } else {
-            return res.status(400).json({ error: 'Invalid user role' });
-        }
-
-        res.json(user);
-
-    } catch (error) {
-        next(error);
-    }
-};
-
 router.post('/', createClient);
 router.get('/', getClients);
-router.post('/exists', getClientByEmail);
-router.get('/:id', getClientById);
 
 export default router;
