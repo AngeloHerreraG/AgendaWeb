@@ -5,9 +5,10 @@ import Chip from '@mui/material/Chip';
 import scheduleServices from '../../services/schedule'
 import userServices from '../../services/user'
 import type { selectedBlock, Schedule, profesionalSchedule } from '../../types/horario'
+import Appointment from './appointment'
 import '../../styles/horario.css'
+import type { Profesional } from '../../types/user';
 
-// Configuración del horario, mas adelante podriamos hacer que el profesional escoja estos datos
 const chipStyle = {
     fontFamily: '"Poppins", sans-serif',
     fontSize: '1.5rem',
@@ -35,13 +36,12 @@ interface Props {
 const DateChips = (props: Props) => {
     const { userId, professionalId, selectedDay } = props;
 
+    const [profesionalScheduleData, setProfesionalScheduleData] = useState<profesionalSchedule | null>(null);
+    const [profesionalData, setProfesionalData] = useState<Profesional | null>(null);
     const [horario, setHorario] = useState<Schedule[] | null>(null)
-    const [days, setDays] = useState<string[] | null>(null)
-    const [blocksPerHour, setBlocksPerHour] = useState<number | null>(null)
-    const [startHour, setStartHour] = useState<number | null>(null)
-    const [endHour, setEndHour] = useState<number | null>(null)
 
-    // const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) // Hito 3
+    const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) 
+    const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)
 
     dayjs.locale('es'); // Establece el idioma español para dayjs
 
@@ -50,17 +50,12 @@ const DateChips = (props: Props) => {
             return;
         }
 
-        // Obtener datos de atencion del profesional
-        const fetchProfesionalSchedule = async () => {
+        // Obtener datos del profesional
+        const fetchProfesionalData = async () => {
             const user = await userServices.getUserById(professionalId);
             if (user.role === 'profesional') {
-                const data: profesionalSchedule = user.disponibility;
-                if (data) {
-                    setDays(data.days);
-                    setBlocksPerHour(data.blocksPerHour);
-                    setStartHour(data.startHour);
-                    setEndHour(data.endHour);
-                }
+                setProfesionalData(user);
+                setProfesionalScheduleData(user?.disponibility || null);
             }
         };
 
@@ -71,7 +66,7 @@ const DateChips = (props: Props) => {
         };
         
         // LLamada inicial
-        fetchProfesionalSchedule();
+        fetchProfesionalData();
         fetchHorario();
     }, [professionalId]);
 
@@ -82,25 +77,22 @@ const DateChips = (props: Props) => {
 
     // Funcion para manejar el click en un bloque
     const handleChipClick = (bloque: selectedBlock) => {
-        // setSelectedScheduleBlock(bloque); // Hito 3
+        setSelectedScheduleBlock(bloque);
         console.log("Bloque seleccionado: ", bloque);
+        setShowDateInfoModal(true);
     }
-
-    // const closeBlock = () => {
-    //     setSelectedScheduleBlock(null); // Hito 3
-    // }
 
     // // Función para mostrar la hora en formato HH:MM, calcula la posición del bloque y la hora de inicio}
     const generarChips = () => {
-        if (!days || !blocksPerHour || !startHour || !endHour) 
+        if (!profesionalScheduleData) 
             return (<div>Cargando horario...</div>)
 
         const chips = [];
         const chipsData: selectedBlock[] = [];
-        const duracionBloque = 60 / blocksPerHour; // Duración de cada bloque en minutos
+        const duracionBloque = 60 / profesionalScheduleData.blocksPerHour; // Duración de cada bloque en minutos
 
-        for (let hora = startHour; hora < endHour; hora++) {
-            for (let bloque = 0; bloque < blocksPerHour; bloque++) {
+        for (let hora = profesionalScheduleData.startHour; hora < profesionalScheduleData.endHour; hora++) {
+            for (let bloque = 0; bloque < profesionalScheduleData.blocksPerHour; bloque++) {
                 const inicioMin = hora * 60 + bloque * duracionBloque;
                 const finMin = inicioMin + duracionBloque;
 
@@ -117,10 +109,11 @@ const DateChips = (props: Props) => {
                 chipsData.push({ 
                     userId: userId,
                     professionalId: professionalId,
-                    day: selectedDay || days[0],
+                    day: selectedDay || profesionalScheduleData.days[0],
                     startHour: inicioHora, 
                     endHour: finHora, 
-                    blockHour: bloque
+                    blockHour: bloque,
+                    label: label
                 });
             }
         }
@@ -146,6 +139,15 @@ const DateChips = (props: Props) => {
             <h2> Bloques disponibles </h2>
             <p>Día: {selectedDay ? dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY') : 'No seleccionado'}</p>
             {selectedDay && generarChips()}
+            {showDateInfoModal && selectedScheduleBlock && (
+                <Appointment 
+                    userId={userId}
+                    professionalData={profesionalData!}
+                    setOpen={setShowDateInfoModal}
+                    selectedScheduleBlock={selectedScheduleBlock}
+                    selectedDay={dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')}
+                />
+            )}
         </>
     )
 };

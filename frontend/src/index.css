@@ -13,3 +13,20 @@
     --color10: #cccccc;
     --color11: #ffffff;
 }
+
+.common-btn {
+    background-color: transparent;
+    border: 2px solid var(--color1);
+    color: var(--color1);
+    padding: 10px 20px;
+    border-radius: 1000px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.common-btn:hover {
+    background-color: var(--color2);
+    color: white;
+}
