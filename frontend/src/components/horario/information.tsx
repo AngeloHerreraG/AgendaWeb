@@ -1,7 +1,4 @@
-import { useEffect, useState } from 'react';
-import userServices from '../../services/user';
 import type { Profesional } from '../../types/user';
-import type { profesionalSchedule } from '../../types/horario';
 import PersonIcon from '@mui/icons-material/Person';
 
 const infoStyle = {
@@ -14,36 +11,23 @@ const infoStyle = {
 }
 
 interface Props {
-    professionalId: string;
+    professionalData: Profesional | null;
 }
 
 const InfoProfesional = (props: Props) => {
-    const { professionalId } = props;
-    const [info, setInfo] = useState<Profesional | null>(null);
-    const [scheduleInfo, setScheduleInfo] = useState<profesionalSchedule | null>(null);
+    const { professionalData } = props;
 
-    useEffect(() => {
-        const fetchInfo = async () => {
-            const data = await userServices.getUserById(professionalId);
-            if (data.role == 'profesional') {
-                setInfo(data);
-                setScheduleInfo(data?.disponibility || null);
-            }
-            else {
-                setInfo(null);
-                setScheduleInfo(null);
-            }
-        };
-        fetchInfo();
-    }, [professionalId]);
+    if (!professionalData) {
+        return <div>Cargando información del profesional...</div>;
+    }
 
     return (
         <div style={infoStyle}>
             <PersonIcon sx={{ fontSize: 200, color: 'black' }} />
-            <p>Nombre: {info?.name}</p>
-            <p>Atiende: {scheduleInfo?.days.map((item) => (item)).join(', ')}</p>
-            <p>Horario: {scheduleInfo?.startHour} hrs - {scheduleInfo?.endHour} hrs</p>
-            <p>Duracion de cita: {60 / (scheduleInfo?.blocksPerHour ?? 1)} minutos</p>
+            <p>Nombre: {professionalData.name}</p>
+            <p>Atiende: {professionalData.disponibility?.days.map((item) => (item)).join(', ')}</p>
+            <p>Horario: {professionalData.disponibility?.startHour} hrs - {professionalData.disponibility?.endHour} hrs</p>
+            <p>Duracion de cita: {60 / (professionalData.disponibility?.blocksPerHour ?? 1)} minutos</p>
         </div>
     );
 };

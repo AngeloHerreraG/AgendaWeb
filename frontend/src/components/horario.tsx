@@ -1,27 +1,50 @@
-import { useState } from 'react'
-import type { User } from '../types/user'
-import '../styles/horario.css'
+import { useEffect, useState } from 'react'
+import type { Profesional, User } from '../types/user'
 import { useNavigate, useParams, Navigate } from 'react-router'
 import { useAuth } from '../auth/auth'
+import userServices from '../services/user'
+import '../styles/horario.css'
 
 import Navbar from './navbar'
 import InfoProfesional from './horario/information'
 import CalendarSelector from './horario/calendar';
 import DateChips from './horario/date-chips';
 
+import ScheduleForm from './forms/schedule-form';
+
 const HorarioComponent = () => {
     const navigate = useNavigate();
     const loggedUser: User | null = useAuth().user
     const professionalId = useParams().id;
-
-    const [selectedDay, setSelectedDay] = useState<string | null>(null)  // Para mostrar el modal de información de la cita
+    const isProfessional = loggedUser?.id === professionalId;
     
+    const [loading, setLoading] = useState<boolean>(true);
+    const [reloadData, setReloadData] = useState<boolean>(false);
+    const [selectedDay, setSelectedDay] = useState<string | null>(null)  // Para mostrar el modal de información de la cita
+    const [professionalData, setProfessionalData] = useState<Profesional | null>(null);
+
+    useEffect(() => {
+        const fetchProfessionalData = async () => {
+            if (professionalId) {
+                setLoading(true);
+                const data = await userServices.getUserById(professionalId);
+                setProfessionalData(data as Profesional);   // Ojito a esto, no deberiamos usar el AS
+                setLoading(false);
+            }
+            if (reloadData) setReloadData(false);
+        };
+        
+        fetchProfessionalData();
+    }, [professionalId, reloadData]);
+
     // Si no esta loggeado, redirigir al login
     if (!loggedUser) {
         return <Navigate to='/login' replace />;
     }
 
-    console.log("UserId: ", loggedUser.id, " ProfessionalId: ", professionalId);
+    if (!professionalData || loading) {
+        return <div>Cargando datos del profesional...</div>;
+    }
 
     // Funcion para volver al home
     const goHome = () => {
@@ -42,23 +65,16 @@ const HorarioComponent = () => {
             <div className='horario-data'>
                 <div className="horario-info">
                     <h2> Informacion del Profesional </h2>
-                    {professionalId && <InfoProfesional professionalId={professionalId} />}
+                    <InfoProfesional professionalData={professionalData} />
                     <button className='common-btn' onClick={handleProfile}>Ver Perfil</button>
+                    <ScheduleForm professionalData={professionalData} isProfessional={isProfessional} setReloadData={setReloadData} />
                 </div>
                 <div className="horario-calendar">
                     <h2> Días disponibles </h2>
-                    {professionalId && <CalendarSelector
-                        professionalId={professionalId}
-                        selectedDay={selectedDay}
-                        setSelectedDay={setSelectedDay}
-                    />}
+                    <CalendarSelector professionalData={professionalData} selectedDay={selectedDay} setSelectedDay={setSelectedDay}/>
                 </div>
                 <div className="horario-dates">
-                    { professionalId && <DateChips
-                        userId={loggedUser.id}
-                        professionalId={professionalId}
-                        selectedDay={selectedDay}
-                    />}
+                    <DateChips userId={loggedUser.id} professionalData={professionalData} isProfessional={isProfessional} selectedDay={selectedDay}/>
                 </div>
             </div>
         </div>

@@ -1,32 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import userServices from '../../services/user';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import type { profesionalSchedule } from '../../types/horario';
+import type { Profesional } from '../../types/user';
 
 interface Props {
-    professionalId: string;
+    professionalData: Profesional;
     selectedDay: string | null;
     setSelectedDay: (value: string) => void;
 }
 
 const CalendarSelector = (props: Props) => {
-    const { professionalId, selectedDay, setSelectedDay } = props;
-    const [days, setDays] = useState<string[]>([]);
+    const { professionalData, selectedDay, setSelectedDay } = props;
+    const days = professionalData.disponibility.days;
     const [selectedMonth, setSelectedMonth] = useState(dayjs());
-
-    useEffect(() => {
-        const fetchProfesionalSchedule = async () => {
-            const user = await userServices.getUserById(professionalId);
-            if (user.role === 'profesional') {
-                const data: profesionalSchedule = user.disponibility;
-                if (data && data.days) setDays(data.days); // días en español: LUNES, MARTES, etc.
-            }
-        };
-        fetchProfesionalSchedule();
-    }, [professionalId]);
 
     dayjs.locale('es');
 
@@ -72,7 +60,7 @@ const CalendarSelector = (props: Props) => {
     };
 
     return (
-        <div style={{ margin: '0 auto', fontFamily: 'Poppins', gap: '10px' }}>
+        <div style={{ margin: '0 auto', fontFamily: 'Poppins', gap: '10px', width: '90%' }}>
 
             {/* Selector mes y año */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
@@ -122,7 +110,7 @@ const CalendarSelector = (props: Props) => {
             </div>
 
             {/* Celdas del calendario */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '5px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '5px', minHeight: '350px' }}>
                 {calendarCells.map((date, idx) => {
                     if (!date) return <div key={idx}></div>;
 
@@ -136,13 +124,14 @@ const CalendarSelector = (props: Props) => {
                             style={{
                                 padding: '10px',
                                 backgroundColor: isSelected ? '#5170ff' : 
-                                                isValid ? '#9deaff' : '#03045e',
+                                                isValid ? '#90e0ef' : '#03045e',
                                 color: isSelected ? 'white' : 
                                         isValid ? 'black' : '#ffffffff',
                                 fontWeight: isValid ? 'bold' : 'normal',
-                                textAlign: 'center',
+                                textAlign: 'center', alignContent: 'center',
                                 cursor: isValid ? 'pointer' : 'not-allowed',
                                 border: isToday ? '3px solid black' : '1px solid black',
+                                borderRadius: '5px',
                             }}
                             onClick={() => isValid && handleDayClick(date)}
                             title={isValid ? 'Día disponible' : 'Día no disponible'}

@@ -4,17 +4,15 @@ import { useEffect } from 'react';
 import type { Profesional } from '../../types/user';
 
 interface Props {
-    userId: string;
     professionalData: Profesional;
+    isProfessional: boolean;
     setOpen: (value: boolean) => void;
     selectedScheduleBlock: selectedBlock | null;
     selectedDay?: string | null;
 }
 
 const Appointment = (props: Props) => {
-    const { userId, professionalData, setOpen, selectedScheduleBlock, selectedDay } = props;
-
-    const isProfessional = userId === professionalData.id;
+    const { professionalData, isProfessional, setOpen, selectedScheduleBlock, selectedDay } = props;
 
     useEffect(() => {
         // Evitar el scroll del fondo al abrir el modal
@@ -66,7 +64,7 @@ const Appointment = (props: Props) => {
                     <button className='common-btn' onClick={handleClose}>Cerrar</button>
                     {isProfessional && <button className='common-btn appointment-reschedule-button' onClick={handleBlock}>Bloquear</button>}
                     {isProfessional && <button className='common-btn appointment-cancel-button' onClick={handleCancel}>Rechazar</button>}
-                    <button className='common-btn appointment-confirm-button' onClick={handleConfirm}>Confirmar Cita</button>
+                    <button className='common-btn appointment-confirm-button' onClick={handleConfirm}>{isProfessional ? 'Confirmar Cita' : 'Reservar Cita'}</button>
                 </div>
             </div>
         </>
