@@ -1,5 +1,5 @@
 import { Link, Navigate } from 'react-router-dom';
-import profesionalServices from '../services/profesional';
+import profesionalServices from '../services/professional';
 import type { User } from '../types/user';
 import '../styles/home.css';
 import { useEffect, useState } from 'react';

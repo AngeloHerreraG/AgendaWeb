@@ -1,21 +1,16 @@
 import type { Client, User } from "../../types/user";
 import Navbar from "../navbar";
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from "../../auth/auth";
 import "../../styles/profile.css";
+import UserForm from "../forms/user-form";
 
 interface ClientProfileProps {
     user: Client;
+    setReloadData: (value: boolean) => void;
 }
 
-const ClientProfile = ({ user }: ClientProfileProps) => {
+const ClientProfile = ({ user, setReloadData }: ClientProfileProps) => {
     const loggedUser: User | null = useAuth().user
-
-    const handleEditProfile = () => {
-        // Se puede implementar la lógica para editar el perfil
-        console.log("Editar perfil");
-    }
 
     return (
         <div className="profile-container">
@@ -26,9 +21,7 @@ const ClientProfile = ({ user }: ClientProfileProps) => {
                         <h2>Perfil de {user.name}</h2>
                         {loggedUser?.id === user.id && (
                             <div className="edit-profile-button">
-                                <IconButton onClick={handleEditProfile}>
-                                    <EditIcon />
-                                </IconButton>
+                                <UserForm userData={user} setReloadData={setReloadData} />
                             </div>
                         )}
                     </div>

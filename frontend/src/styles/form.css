@@ -1,0 +1,36 @@
+.form-container {
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.form-inputs-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+    gap: 20px;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+}
+
+.form-input input {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    padding: 8px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+}
+
+.form-button  {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    margin-top: 20px;
+}

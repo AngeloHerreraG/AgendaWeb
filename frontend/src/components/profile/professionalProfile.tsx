@@ -1,22 +1,17 @@
 import type { Profesional, User } from "../../types/user";
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuth } from "../../auth/auth";
 import "../../styles/profile.css";
 import Navbar from "../navbar";
+import ProfessionalForm from "../forms/professional-form";
 
-interface ProfesionalProfileProps {
-    user: Profesional;
+interface ProfessionalProfileProps {
+    professional: Profesional;
+    setReloadData: (value: boolean) => void;
 }
 
-const ProfesionalProfile = ({ user }: ProfesionalProfileProps) => {
+const ProfessionalProfile = ({ professional, setReloadData }: ProfessionalProfileProps) => {
     const loggedUser: User | null = useAuth().user;
-
-    const handleEditProfile = () => {
-        // Se puede implementar la lógica para editar el perfil
-        console.log("Editar perfil");
-    }
 
     return (
         <div className="profile-container">
@@ -29,23 +24,21 @@ const ProfesionalProfile = ({ user }: ProfesionalProfileProps) => {
                         </div>
                         <div className="profile-info">
                             <div className="profile-header">
-                                <h2>Perfil de {user.name}</h2>
-                                {loggedUser?.id === user.id && (
+                                <h2>Perfil de {professional.name}</h2>
+                                {loggedUser?.id === professional.id && (
                                     <div className="edit-profile-button">
-                                        <IconButton onClick={handleEditProfile}>
-                                            <EditIcon />
-                                        </IconButton>
+                                        <ProfessionalForm professionalData={professional} setReloadData={setReloadData}/>
                                     </div>
                                 )}
                             </div>
                                 <div className="profesional-info">
-                                    <p><strong>Especialidad:</strong> {user.speciality || 'No especificada'}</p>
-                                    <p><strong>Descripción:</strong> {user.description || 'No disponible'}</p>
+                                    <p><strong>Especialidad:</strong> {professional.speciality || 'No especificada'}</p>
+                                    <p><strong>Descripción:</strong> {professional.description || 'No disponible'}</p>
                                 </div>
                         </div>
                     </div>
                     <div className="profesional-details">
-                        <p><strong>Intereses:</strong> {user.interests?.join(', ') || 'Ninguno'}</p>
+                        <p><strong>Intereses:</strong> {professional.interests?.join(', ') || 'Ninguno'}</p>
                     </div>
                 </>
             </div>
@@ -53,4 +46,4 @@ const ProfesionalProfile = ({ user }: ProfesionalProfileProps) => {
     );
 };
 
-export default ProfesionalProfile;
+export default ProfessionalProfile;
