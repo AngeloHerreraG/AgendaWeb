@@ -6,6 +6,7 @@ import Home from './components/home'
 import Horario from './components/horario'
 import Profile from './components/profile/profile'
 import { AuthProvider } from './auth/auth'
+import AdminHome from './components/admin/home'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/home/:id" element={<Home />} />
                     <Route path="/profesionals/:id/schedule" element={<Horario />} />
                     <Route path="/profile/:id" element={<Profile />} />
+                    <Route path="/admin-home" element={<AdminHome />} />
                 </Routes>
             </Router>
         </AuthProvider>

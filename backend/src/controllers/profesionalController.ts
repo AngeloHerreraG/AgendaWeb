@@ -10,13 +10,27 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
     try {
         const {
             name, email, password, birthDate, speciality, description,
-            interests, days, blocksPerHour, startHour, endHour
+            interests, disponibility
         } = req.body;
+
+        const { days, blocksPerHour, startHour, endHour } = disponibility;
+
+        // Required fields
+        if (!name) return res.status(400).json({ error: 'Name is required' });
+        if (!email) return res.status(400).json({ error: 'Email is required' });
+        if (!password) return res.status(400).json({ error: 'Password is required' });
+        if (!birthDate) return res.status(400).json({ error: 'Birth date is required' });
+        if (!speciality) return res.status(400).json({ error: 'speciality is required' });
+        if (!description) return res.status(400).json({ error: 'description is required' });
+        if (!days) return res.status(400).json({ error: 'days is required' });
+        if (!blocksPerHour) return res.status(400).json({ error: 'blocksPerHour is required' });
+        if (!startHour) return res.status(400).json({ error: 'startHour is required' });
+        if (!endHour) return res.status(400).json({ error: 'endHour is required' });
 
         // Regex for name validation
         const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
         if (!nameRegex.test(name)) {
-            res.status(400).json({ error: 'Name not valid' });
+            return res.status(400).json({ error: 'Name not valid' });
         }
 
         // Regex for email validation
@@ -24,13 +38,13 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
 
         // If the email input is not valid, return an error
         if (!emailRegex.test(email)) {
-            res.status(400).json({ error: 'Invalid email format' });
+            return res.status(400).json({ error: 'Invalid email format' });
         }
 
         // If email already exists, return an error
         const existingUser = await ProfesionalModel.findOne({ email });
         if (existingUser) {
-            res.status(400).json({ error: 'Email already in use' });
+            return res.status(400).json({ error: 'Email already in use' });
         }
 
         // Verify that birthDate is a valid date
@@ -39,25 +53,27 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
 
         if (isNaN(Date.parse(birthDate)) ||
             actualYear - birthYear < 18 ) {
-            res.status(400).json({ error: 'Invalid birth date format or age restriction not satisfied' });
+            return res.status(400).json({ error: 'Invalid birth date format or age restriction not satisfied' });
         }
 
         const textRegex = /^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ0-9.,;:!?()'"%\-–—/@#&+\s]{3,1000}$/;
 
         if (!textRegex.test(speciality) || !textRegex.test(description)) {
-            res.status(400).json({ error: 'Speciality or description not valid' });
+            return res.status(400).json({ error: 'Speciality or description not valid' });
         }
 
-        if (!Array.isArray(interests) || interests.some(interest => !textRegex.test(interest))) {
-            res.status(400).json({ error: 'Interests must be an array of valid strings' });
+        if (interests) {
+            if (!Array.isArray(interests) || interests.some(interest => !textRegex.test(interest))) {
+                return res.status(400).json({ error: 'Interests must be an array of valid strings' });
+            }
         }
 
         if (!Array.isArray(days) || days.some((day: any) => typeof day !== 'string')) {
-            res.status(400).json({ error: 'Disponibility days must be an array of strings' });
+            return res.status(400).json({ error: 'Disponibility days must be an array of strings' });
         }
 
         if (typeof blocksPerHour !== 'number' || typeof startHour !== 'number' || typeof endHour !== 'number') {
-            res.status(400).json({ error: 'Disponibility hours must be numbers' });
+            return res.status(400).json({ error: 'Disponibility hours must be numbers' });
         }
         
         // Hash the password before saving
@@ -69,6 +85,7 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
             email,
             passwordHash,
             birthDate: new Date(birthDate),
+            role: "profesional",
             speciality,
             description,
             interests,

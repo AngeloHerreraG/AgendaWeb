@@ -1,3 +1,4 @@
+
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import bcrypt from 'bcrypt';
@@ -10,33 +11,45 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
     try {
         const { name, email, password, birthDate } = req.body;
 
+        // Required fields
+        if (!name) return res.status(400).json({ error: 'Name is required' });
+        if (!email) return res.status(400).json({ error: 'Email is required' });
+        if (!password) return res.status(400).json({ error: 'Password is required' });
+        if (!birthDate) return res.status(400).json({ error: 'Birth date is required' });
+
         // Regex for name validation
         const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{8,20}$/;
         if (!nameRegex.test(name)) {
-            res.status(400).json({ error: 'Name not valid' });
+            return res.status(400).json({ error: 'Name not valid' });
         }
 
         // Regex for email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        // If the email input is not valid, return an error
         if (!emailRegex.test(email)) {
-            res.status(400).json({ error: 'Invalid email format' });
+            return res.status(400).json({ error: 'Invalid email format' });
         }
 
         // If email already exists, return an error
         const existingUser = await UserModel.findOne({ email });
         if (existingUser) {
-            res.status(400).json({ error: 'Email already in use' });
+            return res.status(400).json({ error: 'Email already in use' });
         }
 
-        // Verify that birthDate is a valid date
-        const actualYear = new Date().getFullYear();
-        const birthYear = new Date(birthDate).getFullYear();
+        // Basic password strength check
+        if (typeof password !== 'string' || password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters' });
+        }
 
-        if (isNaN(Date.parse(birthDate)) ||
-            actualYear - birthYear < 12 ) {
-            res.status(400).json({ error: 'Invalid birth date format or age restriction not satisfied' });
+        // Verify that birthDate is a valid date and age >= 12
+        const parsed = Date.parse(birthDate);
+        if (isNaN(parsed)) {
+            return res.status(400).json({ error: 'Invalid birth date format' });
+        }
+        const actualYear = new Date().getFullYear();
+        const birthYear = new Date(parsed).getFullYear();
+
+        if (actualYear - birthYear < 12) {
+            return res.status(400).json({ error: 'Age restriction not satisfied (must be at least 12 years old)' });
         }
 
         // Hash the password before saving
@@ -47,7 +60,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
             name,
             email,
             passwordHash,
-            birthDate: new Date(birthDate),
+            birthDate: new Date(parsed),
             role: "client"
         });
 
