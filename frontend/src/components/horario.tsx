@@ -28,8 +28,10 @@ const HorarioComponent = () => {
             if (professionalId) {
                 setLoading(true);
                 const data = await userServices.getUserById(professionalId);
-                setProfessionalData(data as Profesional);   // Ojito a esto, no deberiamos usar el AS
-                setLoading(false);
+                if (data.role === 'profesional') {
+                    setProfessionalData(data);
+                    setLoading(false);
+                }
             }
             if (reloadData) setReloadData(false);
         };
