@@ -97,7 +97,24 @@ const getClients = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+const updateClientInfo = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const clientId = req.params.id;
+        const updatedInfo = req.body;
+    
+        const updatedClient = await UserModel.findByIdAndUpdate(
+            clientId,
+            updatedInfo,
+            { new: true }
+        );
+        res.status(200).json(updatedClient);
+    } catch (error) {
+        next(error);
+    }
+};
+
 router.post('/', createClient);
 router.get('/', getClients);
+router.patch('/info/:id', updateClientInfo);
 
 export default router;

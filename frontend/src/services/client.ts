@@ -30,6 +30,11 @@ const updateClientSchedule = async (clientId: string, schedule: profesionalSched
     return response.data;
 };
 
+const updateClientInfo = async (clientId: string, updatedInfo: Partial<Client>) => {
+    const response = await axios.patch<Client>(`${baseUrl}/info/${clientId}`, updatedInfo);
+    return response;
+}
+
 const getClientByUsername = async (username: string) => {
     const response = await axios.get<Client[]>(`${baseUrl}`, { params: { name: username } });
     return response.data[0] ?? null;
@@ -45,6 +50,6 @@ const deleteClient = async (id: number) => {
     return response.data;
 };
 
-export default { createClient, getClientById, getClientSchedule, updateClientSchedule, getClientByUsername, 
+export default { createClient, getClientById, getClientSchedule, updateClientSchedule, updateClientInfo, getClientByUsername, 
     getAllClients, deleteClient, getClientByEmail
  };

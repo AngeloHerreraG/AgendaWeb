@@ -5,6 +5,7 @@ import type { Profesional } from '../../types/user';
 import dayjs from 'dayjs';
 import '../../styles/appointment.css'
 import '../../styles/form.css'
+import professionalServices from '../../services/professional';
 
 
 interface Props {
@@ -30,13 +31,12 @@ const ProfessionalForm = (props: Props) => {
     const [interests, setInterests] = useState<string>(professionalData.interests ? professionalData.interests.join(', ') : '');
 
     const updateNewSchedule = async (updatedUserData: Omit<Profesional, 'id' | 'role' | 'password' | 'disponibility'>) => {
-        console.log("Updating schedule to: ", updatedUserData);
-        // const response = await userServices....
-        // if (response.success) {
-        //     setConfirmationMessage('Horario actualizado correctamente.');
-        // } else { 
-        //     setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
-        // }
+        const response = await professionalServices.updateProfessionalInfo(professionalData.id, updatedUserData);
+        if (response.status === 200) {
+            setConfirmationMessage('Horario actualizado correctamente.');
+        } else { 
+            setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
+        }
         setModalOpen(false);
         setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);

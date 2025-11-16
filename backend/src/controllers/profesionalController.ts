@@ -143,10 +143,29 @@ const changeProfesionalDisponibility = async (req: Request, res: Response, next:
     }
 };
 
-router.post('/', createProfesional);
+const updateProfessionalInfo = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const profesionalId = req.params.id;
+        const updatedInfo = req.body;
+
+        if (profesionalId !== req.userId) {
+            return res.status(403).json({ error: 'Not authorized to update this profesional' });
+        }
+
+        // Validate the updatedInfo data here if needed
+
+        const updatedProfesional = await ProfesionalModel.findByIdAndUpdate(profesionalId, updatedInfo, { new: true });
+        res.status(200).json(updatedProfesional);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+router.post('/', authenticate, authorize(['admin']), createProfesional);
 router.get('/', getProfesionals);
 router.put('/:id/disponibility', authenticate, authorize(['profesional']), changeProfesionalDisponibility);
-
+router.patch('/info/:id', authenticate, authorize(['profesional']), updateProfessionalInfo);
 // Insertamos un profesional para probar
 const addprofesional = async () => {
 

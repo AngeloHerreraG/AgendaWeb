@@ -3,7 +3,7 @@ import { useState } from "react";
 import "../../styles/adminHome.css";
 import userServices from "../../services/user"
 import clientServices from "../../services/client"
-import profesionalServices from "../../services/profesional"
+import profesionalServices from "../../services/professional"
 
 const ClientProfile = () => {
 
