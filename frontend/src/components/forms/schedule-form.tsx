@@ -50,6 +50,7 @@ const ScheduleForm = (props: Props) => {
         setModalOpen(false);
         setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);
+        setReloadData(true);
         setConfirmationModalOpen(true);
     };
 
@@ -63,7 +64,6 @@ const ScheduleForm = (props: Props) => {
 
     const closeConfirmationModal = () => {
         setConfirmationModalOpen(false);
-        setReloadData(true);
     }
 
     const handleDayToggle = (day: string) => {

@@ -13,7 +13,7 @@ const getSchedule = async (scheduleId: string) => {
     return request.data;
 }
 
-const getProfesionalSchedule = async (profesionalId: String) => {
+const getProfesionalSchedule = async (profesionalId: string) => {
     const request = await axios.get<Schedule[]>(`${baseUrl}/profesional/${profesionalId}`);
     return request.data;
 }
@@ -34,4 +34,10 @@ const updateScheduleBlock = async (scheduleBlock: selectedBlock, newStatus: 'pen
     return request;
 }
 
-export default { getSchedule, getProfesionalSchedule, createScheduleBlock, updateScheduleBlock };
+// Borrar un bloque de horario
+const deleteScheduleBlock = async (scheduleId: string) => {
+    const request = await axiosSecure.delete<Schedule>(`${baseUrl}/${scheduleId}`);
+    return request;
+}
+
+export default { getSchedule, getProfesionalSchedule, createScheduleBlock, updateScheduleBlock, deleteScheduleBlock };

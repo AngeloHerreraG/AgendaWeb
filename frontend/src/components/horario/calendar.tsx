@@ -46,14 +46,15 @@ const CalendarSelector = (props: Props) => {
     }
 
     const handleDayClick = (date: dayjs.Dayjs) => {
-        const daySpanish = date.format('dddd').toLowerCase();
-        const dayEnglish = weekDaysEnglishToSpanish[daySpanish]?.toLowerCase() || daySpanish;
-        if (days.map(d => d.toLowerCase()).includes(daySpanish) || days.map(d => d.toLowerCase()).includes(dayEnglish)) {
-            setSelectedDay(date.format('YYYY-MM-DD'));
-        }
+        // Teniamos codigo duplicado por que el handle se hace despues del isDayAvailable
+        // por lo que no hacia falta chequear de nuevo si el dia es valido
+        setSelectedDay(date.format('YYYY-MM-DD'));
     };
 
     const isDayAvailable = (date: dayjs.Dayjs): boolean => {
+        // Tambien chequeamos que el dia no este en el pasado
+        if (date.isBefore(dayjs(), 'day')) return false;
+
         const daySpanish = date.format('dddd').toLowerCase();
         const dayEnglish = weekDaysEnglishToSpanish[daySpanish]?.toLowerCase() || daySpanish;
         return days.map(d => d.toLowerCase()).includes(daySpanish) || days.map(d => d.toLowerCase()).includes(dayEnglish);

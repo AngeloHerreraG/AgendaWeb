@@ -1,27 +1,83 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
-import type { selectedBlock } from '../../types/horario'
-import Appointment from './appointment'
-import '../../styles/horario.css'
+import type { selectedBlock, Schedule, BlockStatus } from '../../types/horario'
 import type { Profesional } from '../../types/user';
+import Appointment from './appointment'
+import scheduleServices from '../../services/schedule';
+import '../../styles/horario.css'
 
 const chipStyle = {
     fontFamily: '"Poppins", sans-serif',
     fontSize: '1.5rem',
-    width: '100%',
+    width: '99%',
     height: '50px',
     padding: '0 10px',
     margin: '5px',
     cursor: 'pointer',
     border: "none",
     backgroundColor: "#d4e5ff",
-    transitions: "all 0.3s ease",
+    transition: "all 0.3s ease",
+    borderRadius: "8px",
     '&:hover': {
         backgroundColor: "#5170ff",
         color: "white",
-        transform: "scale(1.05)"
+    }
+}
+
+const pendingChipStyle = {
+    border: '2px solid orange',
+    backgroundColor: '#ffe591',
+    // Sobrescribe el hover del estilo base
+    '&:hover': {
+        backgroundColor: 'orange',
+        color: 'white'
+    }
+};
+
+const confirmedChipStyle = {
+    border: '2px solid lightseagreen',
+    backgroundColor: '#a9f5ff',
+    '&:hover': {
+        backgroundColor: 'lightseagreen',
+        color: 'white'
+    }
+};
+
+const cancelledChipStyle = {
+    border: '2px solid darkred',
+    backgroundColor: '#ffa7b4',
+    '&:hover': {
+        backgroundColor: 'darkred',
+        color: 'white'
+    }
+};
+
+const blockedChipStyle = {
+    border: '2px solid gray',
+    backgroundColor: '#b3b3b3',
+    '&:hover': {
+        backgroundColor: 'gray',
+        color: 'white'
+    }
+};
+
+const getChipStyle = (status?: BlockStatus) => {
+    if (!status) {
+        return chipStyle;
+    }
+    switch (status) {
+        case 'pending':
+            return { ...chipStyle, ...pendingChipStyle };
+        case 'confirmed':
+            return { ...chipStyle, ...confirmedChipStyle };
+        case 'cancelled':
+            return { ...chipStyle, ...cancelledChipStyle };
+        case 'blocked':
+            return { ...chipStyle, ...blockedChipStyle };
+        default:
+            return chipStyle;
     }
 }
 
@@ -36,13 +92,34 @@ const DateChips = (props: Props) => {
     const { userId, professionalData, isProfessional, selectedDay } = props;
     const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) 
     const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)
+    const [reloadChips, setReloadChips] = useState<boolean>(false);
+
+    const [professionalSchedule, setProfessionalSchedule] = useState<Schedule[]>([]);
+
+    useEffect(() => {
+        const fetchProfessionalSchedule = async () => {
+            try {
+                const scheduleData = await scheduleServices.getProfesionalSchedule(professionalData.id);
+                setProfessionalSchedule(scheduleData);
+                if (reloadChips) {
+                    setReloadChips(false);
+                }
+            } catch (error) {
+                console.error("Error fetching professional schedule:", error);
+            }
+        };
+
+        fetchProfessionalSchedule();
+    }, [professionalData.id, reloadChips]);
 
     dayjs.locale('es'); // Establece el idioma español para dayjs
 
     // Funcion para manejar el click en un bloque
-    const handleChipClick = (bloque: selectedBlock) => {
+    const handleChipClick = (bloque: selectedBlock, status?: BlockStatus) => {
+        if (status) {
+            bloque.state = status;
+        }
         setSelectedScheduleBlock(bloque);
-        console.log("Bloque seleccionado: ", bloque);
         setShowDateInfoModal(true);
     }
 
@@ -50,8 +127,10 @@ const DateChips = (props: Props) => {
     const generarChips = () => {
         const chips = [];
         const chipsData: selectedBlock[] = [];
+        const chipState: [number, BlockStatus][] = [];
         const duracionBloque = 60 / professionalData.disponibility.blocksPerHour; // Duración de cada bloque en minutos
 
+        // Ahora generamos los chips según la disponibilidad del profesional
         for (let hora = professionalData.disponibility.startHour; hora < professionalData.disponibility.endHour; hora++) {
             for (let bloque = 0; bloque < professionalData.disponibility.blocksPerHour; bloque++) {
                 const inicioMin = hora * 60 + bloque * duracionBloque;
@@ -80,6 +159,19 @@ const DateChips = (props: Props) => {
             }
         }
 
+        // Y aca chequeamos segun los horarios ya agendados si hay un chip que tenga un estado
+        // Revisamos los chipsData contra professionalSchedule y vemos si la id coincide
+        // Si la id coincide, añadimos a la lista chipState el estado del bloque junto al indice del chip
+        for (let i = 0; i < chipsData.length; i++) {
+            const chip = chipsData[i];
+            const scheduledBlock = professionalSchedule.find(sch => sch.id === chip.id);
+            if (scheduledBlock) {
+                chipState.push([i, scheduledBlock.status]);
+            }
+        }
+
+        // Y ahora al momento de renderizar los chips, chequeamos si el indice del chip esta en chipState
+        // Si esta, aplicamos el estilo segun el estado
         return (
             <div className='horario-chips'>
                 {chips.map((chip, index) => (
@@ -87,8 +179,8 @@ const DateChips = (props: Props) => {
                         <Chip 
                             label={chip}
                             key={index} 
-                            sx={chipStyle}
-                            onClick={() => handleChipClick(chipsData[index])}
+                            sx={getChipStyle(chipState.find(([i]) => i === index)?.[1])}
+                            onClick={() => handleChipClick(chipsData[index], chipState.find(([i]) => i === index)?.[1])}
                         />
                     </div>
                 ))}
@@ -106,6 +198,7 @@ const DateChips = (props: Props) => {
                     professionalData={professionalData}
                     isProfessional={isProfessional}
                     setOpen={setShowDateInfoModal}
+                    setReloadChips={setReloadChips}
                     selectedScheduleBlock={selectedScheduleBlock}
                     selectedDay={dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')}
                 />

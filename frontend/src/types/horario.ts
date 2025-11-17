@@ -1,3 +1,6 @@
+// Estados posibles de un bloque de horario
+export type BlockStatus = 'pending' | 'confirmed' | 'cancelled' | 'blocked';
+
 // Interfaz que define la estructura del contenido de un bloque antes de ser formateado
 export interface selectedBlock {
     id: string;
@@ -7,6 +10,7 @@ export interface selectedBlock {
     startHour: string;    // Hora de inicio en formato 24 horas (0-23)
     endHour: string;      // Hora de fin en formato 24 horas (0-23)
     blockHour: number;    // Bloque de la hora (0, 15, 30, 45), (0, 20, 40), (0, 30)
+    state?: BlockStatus;
 }
 
 // Interfaz que define la estructura de un bloque de horario
@@ -17,7 +21,7 @@ export interface Schedule {
     day: string;
     startHour: string;
     endHour: string;
-    status: 'pending' | 'confirmed' | 'cancelled' | 'blocked';
+    status: BlockStatus;
 }
 
 // Interfaz que define la estructura del horario de un profesional

@@ -18,7 +18,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
         if (!birthDate) return res.status(400).json({ error: 'Birth date is required' });
 
         // Regex for name validation
-        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{8,20}$/;
+        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,20}$/;
         if (!nameRegex.test(name)) {
             return res.status(400).json({ error: 'Name not valid' });
         }

@@ -92,9 +92,27 @@ const updateScheduleBlock = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
+const deleteScheduleBlock = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const scheduleId = req.params.id;
+        const schedule = await ScheduleModel.findByIdAndDelete(scheduleId);
+
+        if (schedule) {
+            res.status(200).json({ message: "Schedule deleted successfully" });
+        }
+        else {
+            res.status(404).json({ error: "Schedule not found" });
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+};
+
 router.get('/:id', getSchedule);
 router.get('/profesional/:id', getProfesionalSchedule);
 router.post('/', authenticate, createSchedule);
 router.patch('/:id', authenticate, updateScheduleBlock);
+router.delete('/:id', authenticate, deleteScheduleBlock);
 
 export default router;

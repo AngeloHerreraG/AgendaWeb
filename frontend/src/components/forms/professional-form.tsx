@@ -40,6 +40,7 @@ const ProfessionalForm = (props: Props) => {
         setModalOpen(false);
         setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);
+        setReloadData(true);
         setConfirmationModalOpen(true);
     };
 
@@ -59,7 +60,6 @@ const ProfessionalForm = (props: Props) => {
 
     const closeConfirmationModal = () => {
         setConfirmationModalOpen(false);
-        setReloadData(true);
     }
 
     const handleSave = async () => {

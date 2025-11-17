@@ -35,6 +35,7 @@ const UserForm = ( props: Props) => {
         setModalOpen(false);
         setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);
+        setReloadData(true);
         setConfirmationModalOpen(true);
     };
 
@@ -51,7 +52,6 @@ const UserForm = ( props: Props) => {
 
     const closeConfirmationModal = () => {
         setConfirmationModalOpen(false);
-        setReloadData(true);
     }
 
     const handleSave = async () => {
