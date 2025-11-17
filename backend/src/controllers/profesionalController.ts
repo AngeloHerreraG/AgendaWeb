@@ -114,7 +114,7 @@ const getProfesionals = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
-const changeProfesionalDisponibility = async (req: Request, res: Response, next: NextFunction) => {
+const updateProfesionalSchedule = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profesionalId = req.params.id;
         const { disponibility } = req.body;
@@ -164,33 +164,7 @@ const updateProfessionalInfo = async (req: Request, res: Response, next: NextFun
 
 router.post('/', authenticate, authorize(['admin']), createProfesional);
 router.get('/', getProfesionals);
-router.put('/:id/disponibility', authenticate, authorize(['profesional']), changeProfesionalDisponibility);
+router.patch('/schedule/:id', authenticate, authorize(['profesional']), updateProfesionalSchedule);
 router.patch('/info/:id', authenticate, authorize(['profesional']), updateProfessionalInfo);
-// Insertamos un profesional para probar
-const addprofesional = async () => {
-
-    const insertTestProfesional = new ProfesionalModel({
-        name: "Dr. Test Profesional",
-        email: "b@b.b",
-        passwordHash: await bcrypt.hash("12345678", 11),
-        birthDate: new Date("1980-01-01"),
-        speciality: "Medicina General",
-        description: "Profesional de prueba para testing.",
-        interests: ["Salud", "Bienestar"],
-        disponibility: {
-            days: ["Monday", "Wednesday", "Friday"],
-            blocksPerHour: 4,
-            startHour: 9,
-            endHour: 17
-        }
-    });
-    insertTestProfesional.save().then(() => {
-        console.log("Test profesional inserted");
-    }).catch((error) => {
-        console.error("Error inserting test profesional:", error);
-    });
-};
-
-// addprofesional();
 
 export default router;

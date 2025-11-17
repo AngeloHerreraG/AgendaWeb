@@ -11,9 +11,9 @@ const createProfesional = async (newProfesional: Omit<Profesional, 'id' | 'role'
     return response.data;
 };
 
-const updateProfesionalSchedule = async (profesionalId: string, schedule: profesionalSchedule) => {
-    const response = await axiosSecure.patch<profesionalSchedule>(`${baseUrl}/${profesionalId}`, { schedule });
-    return response.data;
+const updateProfesionalSchedule = async (profesionalId: string, disponibility: profesionalSchedule) => {
+    const response = await axiosSecure.patch<profesionalSchedule>(`${baseUrl}/schedule/${profesionalId}`, { disponibility });
+    return response;
 };
 
 const updateProfessionalInfo = async (profesionalId: string, updatedInfo: Partial<Profesional>) => {

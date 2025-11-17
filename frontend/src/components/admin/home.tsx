@@ -16,7 +16,7 @@ const ClientProfile = () => {
     const [descriptionRegister, setDescriptionRegister] = useState<string>("");
 
     const [daysRegister, setDaysRegister] = useState<string[]>([]);
-    const days = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+    const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
     const [blockPerHourRegister, setBlocksPerHourRegister] = useState<string>("");
     const [startHourRegister, setStartHourRegister] = useState<string>("");

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { profesionalSchedule } from '../../types/horario';
 import type { Profesional } from '../../types/user';
-// import userServices from '../../services/user';
+import professionalServices from '../../services/professional';
 import '../../styles/appointment.css'
 import "../../styles/schedule-form.css"
 
@@ -40,14 +40,13 @@ const ScheduleForm = (props: Props) => {
     const [endHour, setEndHour] = useState<number>(professionalData.disponibility?.endHour || 17);
     const [blocksPerHour, setBlocksPerHour] = useState<number>(professionalData.disponibility?.blocksPerHour || 2);
 
-    const updateNewSchedule = async (newSchedule: profesionalSchedule) => {
-        console.log("Updating schedule to: ", newSchedule);
-        // const response = await userServices....
-        // if (response.success) {
-        //     setConfirmationMessage('Horario actualizado correctamente.');
-        // } else { 
-        //     setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
-        // }
+    const updateNewSchedule = async (newDisponibility: profesionalSchedule) => {
+        const response = await professionalServices.updateProfesionalSchedule(professionalData.id, newDisponibility);
+        if (response.status === 200) {
+            setConfirmationMessage('Horario actualizado correctamente.');
+        } else { 
+            setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
+        }
         setModalOpen(false);
         setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);
