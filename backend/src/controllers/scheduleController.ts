@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import ScheduleModel from '../models/schedule';
-import { ProfesionalModel, UserModel } from '../models/users';
+import { ProfesionalModel, UserModel, ClientModel } from '../models/users';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
 
@@ -9,34 +9,34 @@ const router = express.Router();
 
 const createSchedule = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {startRaw, finishRaw, notes } = req.body;
-        const profesionalId = req.userId;
-
-        // Validar dates
-        const startDate = new Date(startRaw);
-        const finishDate = new Date(finishRaw);
-        if (isNaN(startDate.getTime()) || isNaN(finishDate.getTime())) {
-            return res.status(400).json({ error: "startDate y finishDate deben ser fechas válidas" });
-        }
-        if (startDate >= finishDate) {
-            return res.status(400).json({ error: "startDate debe ser anterior a finishDate" });
-        }
+        const { scheduleBlock, status } = req.body;
+        const { userId, professionalId, day, startHour, endHour } = scheduleBlock;
 
         const newSchedule = new ScheduleModel({
-            profesionalId: new mongoose.Types.ObjectId(profesionalId),
-            startDate,
-            finishDate,
-            notes
+            profesionalId: new mongoose.Types.ObjectId(professionalId),
+            userId: new mongoose.Types.ObjectId(userId),
+            day,
+            startHour,
+            endHour,
+            status
         });
 
         await newSchedule.save();
 
         // Linkear el schedule al profesional
-        const profesional = await ProfesionalModel.findById(profesionalId);
+        const profesional = await ProfesionalModel.findById(professionalId);
         if (profesional) {
             profesional.schedules.push(newSchedule._id);
             await profesional.save();
         }
+
+        // Linkear el schedule al cliente
+        const client = await ClientModel.findById(userId);
+        if (client) {
+            client.schedules.push(newSchedule._id);
+            await client.save();
+        }
+
 
         res.status(201).json(newSchedule);
 
@@ -76,57 +76,46 @@ const getProfesionalSchedules = async (req: Request, res: Response, next: NextFu
     }
 };
 
-const updateScheduleStatus = async (req: Request, res: Response, next: NextFunction) => {
+const updateScheduleBlock = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled"];
-        const { scheduleId, status } = req.body;
+        const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled", "blocked"];
+        const { scheduleBlock, status } = req.body;
+        const { userId, professionalId, day, startHour, endHour } = scheduleBlock;
 
-        const schedule = await ScheduleModel.findById(scheduleId);
-        const user = await UserModel.findById(req.userId);
+        // Encontrar el schedule a partir de sus campos
+        const schedule = await ScheduleModel.findOne({
+            profesionalId: new mongoose.Types.ObjectId(professionalId),
+            userId: new mongoose.Types.ObjectId(userId),
+            day: day,
+            startHour: startHour,
+            endHour: endHour
+        });
 
-        if (!ALLOWED_STATUSES.includes(status)) {
-            return res.status(400).json({ error: "Invalid status value" });
+        console.log("Schedule encontrado: ", schedule);
+        console.log("Profesional ID: ", professionalId);
+        console.log("User ID: ", userId);
+        console.log("Day: ", day);
+        console.log("Start Hour: ", startHour);
+        console.log("End Hour: ", endHour);
+
+        // Actualizar el estado del schedule si se encuentra
+        if (schedule) {
+            if (!ALLOWED_STATUSES.includes(status)) {
+                return res.status(400).json({ error: "Invalid status value" });
+            }
+            await ScheduleModel.findByIdAndUpdate(schedule._id, { status });
         }
-
-        if (!schedule) {
-            return res.status(404).json({ error: "Schedule not found" });
-        }
-
-        if (schedule.userId && schedule.userId.toString() !== req.userId) {
-            return res.status(403).json({ error: "Not authorized to update this schedule" });
-        }
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        // actualizar estado del schedule
-        await ScheduleModel.findByIdAndUpdate(scheduleId, { status });
-
-        // quitar schedule del usuario si se cancela
-        if (status === "cancelled") {
-            user.schedules = user.schedules.filter(schId => schId.toString() !== scheduleId);
-            await user.save();
-        }
-
-        else if (status === "pending" && !schedule.userId) {
-            user.schedules.push(schedule._id);
-            schedule.userId = user._id;
-            await user.save();
-            await schedule.save();
-        }
-
-        res.status(200).json({ message: "Schedule updated successfully" });
     }
     catch (error) {
         next(error);
     }
 };
 
-router.post('/', authenticate, authorize(['admin', 'profesional']), createSchedule);
+router.post('/', authenticate, createSchedule);
+router.patch('/', authenticate, authorize(['profesional']), updateScheduleBlock);
+
 router.get('/', getSchedules);
 router.get('/my-schedules', authenticate, authorize(['client']), getClientSchedules);
 router.get('/profesional/:id', getProfesionalSchedules);
-router.put('/status', authenticate, authorize(['client']), updateScheduleStatus);
 
 export default router;

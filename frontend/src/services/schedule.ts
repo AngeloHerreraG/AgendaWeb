@@ -1,5 +1,6 @@
 import axios from "axios";
-import type { Schedule } from '../types/horario';
+import axiosSecure from "../utils/axiosSecure";
+import type { Schedule, selectedBlock } from '../types/horario';
 
 const baseUrl = "/api/schedules";
 
@@ -18,15 +19,15 @@ const getProfesionalSchedule = async (profesionalId: String) => {
 }
 
 // Crear un nuevo bloque de horario
-const createHorario = async (newSchedule: Omit<Schedule, 'id'>) => {
-    const request = await axios.post<Schedule>(`${baseUrl}`, newSchedule);
-    return request.data;
+const createScheduleBlock = async (scheduleBlock: selectedBlock, status: 'pending') => {
+    const request = await axiosSecure.post<Schedule>(`${baseUrl}`, { scheduleBlock, status });
+    return request;
 }
 
-// Actualizar un bloque de horario existente
-const updateHorario = async(newSchedule: Schedule) => {
-    const request = await axios.patch<Schedule>(`${baseUrl}/${newSchedule.id}`, newSchedule);
-    return request.data;
+// Actualizar un bloque de horario
+const updateScheduleBlock = async (scheduleBlock: selectedBlock, newStatus: 'confirmed' | 'cancelled' | 'blocked') => {
+    const request = await axiosSecure.patch<Schedule>(`${baseUrl}`, { scheduleBlock, status: newStatus });
+    return request;
 }
 
-export default { getClientSchedule, getProfesionalSchedule, createHorario, updateHorario };
+export default { getClientSchedule, getProfesionalSchedule, createScheduleBlock, updateScheduleBlock };

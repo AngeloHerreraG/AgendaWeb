@@ -2,6 +2,7 @@ import type { selectedBlock } from '../../types/horario'
 import '../../styles/appointment.css'
 import { useEffect } from 'react';
 import type { Profesional } from '../../types/user';
+import scheduleService from '../../services/schedule';
 
 interface Props {
     professionalData: Profesional;
@@ -19,9 +20,24 @@ const Appointment = (props: Props) => {
         document.body.style.overflow = 'hidden';
     }, []);
 
-    const updateStatus = (newStatus: 'pending' | 'confirmed' | 'cancelled' | 'blocked') => {
+    const updateStatus = async (newStatus: 'pending' | 'confirmed' | 'cancelled' | 'blocked') => {
         // Lógica para actualizar el estado de la cita
         console.log("Actualizar estado a: ", newStatus);
+        if (!selectedScheduleBlock) {
+            return;
+        }
+        let response;
+        if (newStatus === "pending") {
+            response = await scheduleService.createScheduleBlock(selectedScheduleBlock, newStatus);
+        }
+        else {
+            response = await scheduleService.updateScheduleBlock(selectedScheduleBlock, newStatus);
+        }
+        if (response.status === 201) {
+            console.log('Cita reservada correctamente.');
+        } else {
+            console.log('Error al reservar la cita. Inténtalo de nuevo.');
+        }
     }
 
     const handleClose = () => {
@@ -31,8 +47,16 @@ const Appointment = (props: Props) => {
 
     const handleConfirm = () => {
         document.body.style.overflow = 'auto';
-        updateStatus('confirmed');
-        setOpen(false);
+        if (isProfessional) {
+            updateStatus('confirmed');
+            setOpen(false);
+            return;
+        }
+        else {
+            updateStatus('pending');
+            setOpen(false);
+            return;
+        }
     }
 
     const handleCancel = () => {
@@ -55,7 +79,7 @@ const Appointment = (props: Props) => {
                 {selectedScheduleBlock && (
                     <div>
                         <p> {selectedDay} </p>
-                        <p> {selectedScheduleBlock.label} </p>
+                        <p> {`${selectedScheduleBlock.startHour} - ${selectedScheduleBlock.endHour}`} </p>
                         <h3> {professionalData.name} </h3>
                         <p> {professionalData.email} </p>
                     </div>

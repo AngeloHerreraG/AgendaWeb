@@ -65,16 +65,16 @@ const DateChips = (props: Props) => {
                 const finHora = Math.floor(finMin / 60);
                 const finMinuto = Math.floor(finMin % 60);
 
-                const label = `${formato(inicioHora, inicioMinuto)} - ${formato(finHora, finMinuto)}`;
-                chips.push(label);
+                const startHour = `${formato(inicioHora, inicioMinuto)}`;
+                const endHour = `${formato(finHora, finMinuto)}`;
+                chips.push(`${startHour} - ${endHour}`);
                 chipsData.push({ 
                     userId: userId,
                     professionalId: professionalData.id,
                     day: selectedDay || professionalData.disponibility.days[0],
-                    startHour: inicioHora,
-                    endHour: finHora,
+                    startHour: startHour,
+                    endHour: endHour,
                     blockHour: bloque,
-                    label: label
                 });
             }
         }

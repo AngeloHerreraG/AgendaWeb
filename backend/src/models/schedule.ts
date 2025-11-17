@@ -3,21 +3,21 @@ import mongoose from "mongoose";
 export interface ISchedule {
     profesionalId: mongoose.Types.ObjectId;
     userId: mongoose.Types.ObjectId | null;
-    startDate: Date;
-    finishDate: Date;
-    status: 'pending' | 'confirmed' | 'cancelled' | null;
+    day: string;
+    startHour: string;
+    endHour: string;
+    status: 'pending' | 'confirmed' | 'cancelled' | 'blocked';
     createdAt: Date;
     updatedAt: Date;
-    notes?: string;
 }
 
 const scheduleSchema = new mongoose.Schema<ISchedule>({
     profesionalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Profesional', required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    startDate: { type: Date, required: true },
-    finishDate: { type: Date, required: true },
-    status: { type: String, enum: ['pending', 'confirmed', 'cancelled'], default: 'pending' },
-    notes: { type: String }
+    day: { type: String, required: true },
+    startHour: { type: String, required: true },
+    endHour: { type: String, required: true },
+    status: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'blocked'], default: 'pending', required: true },
 }, {
     timestamps: true,
 });

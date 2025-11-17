@@ -66,4 +66,6 @@ const ProfesionalModel = UserModel.discriminator('profesional', new mongoose.Sch
     },
 }));
 
-export { UserModel, ProfesionalModel }
+const ClientModel = UserModel.discriminator('client', new mongoose.Schema({}));
+
+export { UserModel, ProfesionalModel, ClientModel };
