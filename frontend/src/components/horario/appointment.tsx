@@ -27,16 +27,18 @@ const Appointment = (props: Props) => {
             return;
         }
         let response;
-        if (newStatus === "pending") {
+        // Revisar si el bloque ya fue creado o no
+        const created = await scheduleService.getSchedule(selectedScheduleBlock.id);
+        if (!created) {
             response = await scheduleService.createScheduleBlock(selectedScheduleBlock, newStatus);
         }
         else {
             response = await scheduleService.updateScheduleBlock(selectedScheduleBlock, newStatus);
         }
         if (response.status === 201) {
-            console.log('Cita reservada correctamente.');
+            console.log('Bloque creado correctamente.');
         } else {
-            console.log('Error al reservar la cita. Inténtalo de nuevo.');
+            console.log('Bloque actualizado correctamente.');
         }
     }
 

@@ -8,8 +8,8 @@ const baseUrl = "/api/schedules";
 // y asi podemos usar try/catch en caso de error, el codigo es mas limpio
 // y manejamos la respuesta directamente
 
-const getClientSchedule = async () => {
-    const request = await axios.get<Schedule[]>(`${baseUrl}/my-schedules`);
+const getSchedule = async (scheduleId: string) => {
+    const request = await axios.get<Schedule>(`${baseUrl}/${scheduleId}`);
     return request.data;
 }
 
@@ -19,15 +19,19 @@ const getProfesionalSchedule = async (profesionalId: String) => {
 }
 
 // Crear un nuevo bloque de horario
-const createScheduleBlock = async (scheduleBlock: selectedBlock, status: 'pending') => {
+const createScheduleBlock = async (scheduleBlock: selectedBlock, status: 'pending' | 'confirmed' | 'cancelled' | 'blocked') => {
     const request = await axiosSecure.post<Schedule>(`${baseUrl}`, { scheduleBlock, status });
     return request;
 }
 
 // Actualizar un bloque de horario
-const updateScheduleBlock = async (scheduleBlock: selectedBlock, newStatus: 'confirmed' | 'cancelled' | 'blocked') => {
-    const request = await axiosSecure.patch<Schedule>(`${baseUrl}`, { scheduleBlock, status: newStatus });
+const updateScheduleBlock = async (scheduleBlock: selectedBlock, newStatus: 'pending' | 'confirmed' | 'cancelled' | 'blocked') => {
+    const scheduleId = scheduleBlock.id;
+    if (!scheduleId) {
+        throw new Error("Schedule ID is required to update a schedule block.");
+    }
+    const request = await axiosSecure.patch<Schedule>(`${baseUrl}/${scheduleId}`, { scheduleBlock, status: newStatus });
     return request;
 }
 
-export default { getClientSchedule, getProfesionalSchedule, createScheduleBlock, updateScheduleBlock };
+export default { getSchedule, getProfesionalSchedule, createScheduleBlock, updateScheduleBlock };

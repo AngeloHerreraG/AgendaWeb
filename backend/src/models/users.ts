@@ -15,7 +15,7 @@ export interface IUser {
     createdAt: Date;
     updatedAt: Date;
     birthDate: Date;
-    schedules: mongoose.Types.ObjectId[];
+    schedules: string[]; // Cambiado a string[] para IDs compuestas
     role: String;
 }
 
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema<IUser>({
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     birthDate: { type: Date, required: true },
-    schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Schedule', default: [] }],
+    schedules: [{ type: String, ref: 'Schedule', default: [] }], // Cambiado a String para IDs compuestas
     role: { type: String,
             enum: ['client', 'profesional', 'admin'],
             required: true,

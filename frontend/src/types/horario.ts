@@ -1,5 +1,6 @@
 // Interfaz que define la estructura del contenido de un bloque antes de ser formateado
 export interface selectedBlock {
+    id: string;
     userId: string;
     professionalId: string;
     day: string;

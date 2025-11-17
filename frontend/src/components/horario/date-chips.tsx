@@ -69,6 +69,7 @@ const DateChips = (props: Props) => {
                 const endHour = `${formato(finHora, finMinuto)}`;
                 chips.push(`${startHour} - ${endHour}`);
                 chipsData.push({ 
+                    id: `${professionalData.id}-${selectedDay}-${startHour}-${endHour}`,
                     userId: userId,
                     professionalId: professionalData.id,
                     day: selectedDay || professionalData.disponibility.days[0],
