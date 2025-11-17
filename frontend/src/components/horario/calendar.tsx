@@ -3,10 +3,10 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import type { Profesional } from '../../types/user';
+import type { Professional } from '../../types/user';
 
 interface Props {
-    professionalData: Profesional;
+    professionalData: Professional;
     selectedDay: string | null;
     setSelectedDay: (value: string) => void;
 }

@@ -13,8 +13,8 @@ const getSchedule = async (scheduleId: string) => {
     return request.data;
 }
 
-const getProfesionalSchedule = async (profesionalId: string) => {
-    const request = await axios.get<Schedule[]>(`${baseUrl}/profesional/${profesionalId}`);
+const getProfessionalSchedule = async (professionalId: string) => {
+    const request = await axios.get<Schedule[]>(`${baseUrl}/professional/${professionalId}`);
     return request.data;
 }
 
@@ -40,4 +40,4 @@ const deleteScheduleBlock = async (scheduleId: string) => {
     return request;
 }
 
-export default { getSchedule, getProfesionalSchedule, createScheduleBlock, updateScheduleBlock, deleteScheduleBlock };
+export default { getSchedule, getProfessionalSchedule, createScheduleBlock, updateScheduleBlock, deleteScheduleBlock };

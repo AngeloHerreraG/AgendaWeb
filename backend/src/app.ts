@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import config from "./utils/config";
 import clientRouter from "./controllers/clientController";
 import loginRouter from "./controllers/login";
-import profesionalRouter from "./controllers/profesionalController";
+import professionalRouter from "./controllers/professionalController";
 import scheduleRouter from "./controllers/scheduleController";
 import userRouter from "./controllers/userController";
 
@@ -25,7 +25,7 @@ app.use(cookieParser());
 
 app.use("/api/clients", clientRouter);
 app.use("/api/login", loginRouter);
-app.use("/api/profesionals", profesionalRouter);
+app.use("/api/professionals", professionalRouter);
 app.use("/api/schedules", scheduleRouter);
 app.use("/api/users", userRouter);
 

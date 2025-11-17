@@ -1,9 +1,11 @@
 import type { User } from "../../types/user";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import ClientProfile from "./clientProfile";
-import ProfesionalProfile from "./professionalProfile";
+import ProfessionalProfile from "./professionalProfile";
 import { useEffect, useState } from "react";
 import userServices from "../../services/user";
+import { useAuth } from '../../auth/auth'
+
 
 const ProfileComponent = () => {
     const { id } = useParams();
@@ -22,11 +24,21 @@ const ProfileComponent = () => {
         fetchUserProfile();
     }, [userId, reloadData]);
 
+    const {user: loggedUser, loading: authLoading} = useAuth();
+    
+    if (authLoading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (!loggedUser) {
+        return <Navigate to="/login" replace />;
+    }
+
     switch (user?.role) {
         case 'client':
-            return <ClientProfile user={user} setReloadData={setReloadData} />;
-        case 'profesional':
-            return <ProfesionalProfile professional={user} setReloadData={setReloadData} />;
+            return <ClientProfile client={user} setReloadData={setReloadData} />;
+        case 'professional':
+            return <ProfessionalProfile professional={user} setReloadData={setReloadData} />;
     }
 }
 

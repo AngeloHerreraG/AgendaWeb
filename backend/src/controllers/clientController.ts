@@ -83,7 +83,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
 const getClients = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await UserModel.find({ role: "client" }).populate('schedules', {
-            profesionalId: 1,
+            professionalId: 1,
             startDate: 1,
             finishDate: 1,
             status: 1,

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-// Interfaz que define la estructura del horario de un profesional
-export interface ProfesionalDisponibility {
+// Interfaz que define la estructura del horario de un professional
+export interface professionalDisponibility {
     days: string[];
     blocksPerHour: number;
     startHour: number;
@@ -19,11 +19,11 @@ export interface IUser {
     role: String;
 }
 
-export interface IProfesional extends IUser {
+export interface Iprofessional extends IUser {
     speciality: string;
     description: string;
     interests?: string[];
-    disponibility: ProfesionalDisponibility;
+    disponibility: professionalDisponibility;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema<IUser>({
     birthDate: { type: Date, required: true },
     schedules: [{ type: String, ref: 'Schedule', default: [] }], // Cambiado a String para IDs compuestas
     role: { type: String,
-            enum: ['client', 'profesional', 'admin'],
+            enum: ['client', 'professional', 'admin'],
             required: true,
     }, 
 }, {
@@ -54,7 +54,7 @@ userSchema.set("toJSON", {
 
 const UserModel = mongoose.model<IUser>('User', userSchema);
 
-const ProfesionalModel = UserModel.discriminator('profesional', new mongoose.Schema<IProfesional>({
+const professionalModel = UserModel.discriminator('professional', new mongoose.Schema<Iprofessional>({
     speciality: { type: String, required: true },
     description: { type: String, required: true },
     interests: [{ type: String, required: false }],
@@ -68,4 +68,4 @@ const ProfesionalModel = UserModel.discriminator('profesional', new mongoose.Sch
 
 const ClientModel = UserModel.discriminator('client', new mongoose.Schema({}));
 
-export { UserModel, ProfesionalModel, ClientModel };
+export { UserModel, professionalModel, ClientModel };

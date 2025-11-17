@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
-import { ProfesionalModel } from '../models/users';
+import { professionalModel } from '../models/users';
 import bcrypt from 'bcrypt';
 import {authenticate, authorize } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-const createProfesional = async (req: Request, res: Response, next: NextFunction) => {
+const createprofessional = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {
             name, email, password, birthDate, speciality, description,
@@ -42,7 +42,7 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
         }
 
         // If email already exists, return an error
-        const existingUser = await ProfesionalModel.findOne({ email });
+        const existingUser = await professionalModel.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'Email already in use' });
         }
@@ -80,12 +80,12 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
         const saltRounds = 11;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
-        const newProfesional = new ProfesionalModel({
+        const newprofessional = new professionalModel({
             name,
             email,
             passwordHash,
             birthDate: new Date(birthDate),
-            role: "profesional",
+            role: "professional",
             speciality,
             description,
             interests,
@@ -97,30 +97,30 @@ const createProfesional = async (req: Request, res: Response, next: NextFunction
             }
         });
 
-        await newProfesional.save();
-        res.status(201).json(newProfesional);
+        await newprofessional.save();
+        res.status(201).json(newprofessional);
 
     } catch (error) {
         next(error);
     }
 };
 
-const getProfesionals = async (req: Request, res: Response, next: NextFunction) => {
+const getprofessionals = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profesionals = await ProfesionalModel.find({});
-        res.json(profesionals);
+        const professionals = await professionalModel.find({});
+        res.json(professionals);
     } catch (error) {
         next(error);
     }
 };
 
-const updateProfesionalSchedule = async (req: Request, res: Response, next: NextFunction) => {
+const updateprofessionalSchedule = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profesionalId = req.params.id;
+        const professionalId = req.params.id;
         const { disponibility } = req.body;
 
-        if (profesionalId !== req.userId) {
-            return res.status(403).json({ error: 'Not authorized to update this profesional' });
+        if (professionalId !== req.userId) {
+            return res.status(403).json({ error: 'Not authorized to update this professional' });
         }
 
         // Validate the new disponibility data
@@ -135,7 +135,7 @@ const updateProfesionalSchedule = async (req: Request, res: Response, next: Next
             }
         }
 
-        await ProfesionalModel.findByIdAndUpdate(profesionalId, { disponibility }, { new: true });
+        await professionalModel.findByIdAndUpdate(professionalId, { disponibility }, { new: true });
         res.status(200).json({ message: 'Disponibility updated successfully' });
 
     } catch (error) {
@@ -145,26 +145,26 @@ const updateProfesionalSchedule = async (req: Request, res: Response, next: Next
 
 const updateProfessionalInfo = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profesionalId = req.params.id;
+        const professionalId = req.params.id;
         const updatedInfo = req.body;
 
-        if (profesionalId !== req.userId) {
-            return res.status(403).json({ error: 'Not authorized to update this profesional' });
+        if (professionalId !== req.userId) {
+            return res.status(403).json({ error: 'Not authorized to update this professional' });
         }
 
         // Validate the updatedInfo data here if needed
 
-        const updatedProfesional = await ProfesionalModel.findByIdAndUpdate(profesionalId, updatedInfo, { new: true });
-        res.status(200).json(updatedProfesional);
+        const updatedprofessional = await professionalModel.findByIdAndUpdate(professionalId, updatedInfo, { new: true });
+        res.status(200).json(updatedprofessional);
 
     } catch (error) {
         next(error);
     }
 };
 
-router.post('/', authenticate, authorize(['admin']), createProfesional);
-router.get('/', getProfesionals);
-router.patch('/schedule/:id', authenticate, authorize(['profesional']), updateProfesionalSchedule);
-router.patch('/info/:id', authenticate, authorize(['profesional']), updateProfessionalInfo);
+router.post('/', authenticate, authorize(['admin']), createprofessional);
+router.get('/', getprofessionals);
+router.patch('/schedule/:id', authenticate, authorize(['professional']), updateprofessionalSchedule);
+router.patch('/info/:id', authenticate, authorize(['professional']), updateProfessionalInfo);
 
 export default router;

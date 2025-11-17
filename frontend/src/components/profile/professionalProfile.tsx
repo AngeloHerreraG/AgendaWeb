@@ -1,4 +1,5 @@
-import type { Profesional, User } from "../../types/user";
+import { Navigate } from 'react-router'
+import type { Professional } from "../../types/user";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuth } from "../../auth/auth";
 import "../../styles/profile.css";
@@ -6,12 +7,20 @@ import Navbar from "../navbar";
 import ProfessionalForm from "../forms/professional-form";
 
 interface ProfessionalProfileProps {
-    professional: Profesional;
+    professional: Professional;
     setReloadData: (value: boolean) => void;
 }
 
 const ProfessionalProfile = ({ professional, setReloadData }: ProfessionalProfileProps) => {
-    const loggedUser: User | null = useAuth().user;
+    const {user: loggedUser, loading: authLoading} = useAuth();
+
+    if (authLoading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (!loggedUser) {
+        return <Navigate to="/login" replace />;
+    }
 
     return (
         <div className="profile-container">
@@ -31,13 +40,13 @@ const ProfessionalProfile = ({ professional, setReloadData }: ProfessionalProfil
                                     </div>
                                 )}
                             </div>
-                                <div className="profesional-info">
+                                <div className="professional-info">
                                     <p><strong>Especialidad:</strong> {professional.speciality || 'No especificada'}</p>
                                     <p><strong>Descripción:</strong> {professional.description || 'No disponible'}</p>
                                 </div>
                         </div>
                     </div>
-                    <div className="profesional-details">
+                    <div className="professional-details">
                         <p><strong>Intereses:</strong> {professional.interests?.join(', ') || 'Ninguno'}</p>
                     </div>
                 </>

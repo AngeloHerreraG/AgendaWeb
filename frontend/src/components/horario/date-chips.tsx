@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
 import type { selectedBlock, Schedule, BlockStatus } from '../../types/horario'
-import type { Profesional } from '../../types/user';
+import type { Professional } from '../../types/user';
 import Appointment from './appointment'
 import scheduleServices from '../../services/schedule';
 import '../../styles/horario.css'
@@ -83,7 +83,7 @@ const getChipStyle = (status?: BlockStatus) => {
 
 interface Props {
     userId: string;
-    professionalData: Profesional;
+    professionalData: Professional;
     isProfessional: boolean;
     selectedDay: string | null;
 }
@@ -99,7 +99,7 @@ const DateChips = (props: Props) => {
     useEffect(() => {
         const fetchProfessionalSchedule = async () => {
             try {
-                const scheduleData = await scheduleServices.getProfesionalSchedule(professionalData.id);
+                const scheduleData = await scheduleServices.getProfessionalSchedule(professionalData.id);
                 setProfessionalSchedule(scheduleData);
                 if (reloadChips) {
                     setReloadChips(false);

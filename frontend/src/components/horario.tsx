@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import type { Profesional, User } from '../types/user'
+import type { Professional } from '../types/user'
 import { useNavigate, useParams, Navigate } from 'react-router'
 import { useAuth } from '../auth/auth'
 import userServices from '../services/user'
 import '../styles/horario.css'
 
 import Navbar from './navbar'
-import InfoProfesional from './horario/information'
+import InfoProfessional from './horario/information'
 import CalendarSelector from './horario/calendar';
 import DateChips from './horario/date-chips';
 
@@ -14,21 +14,21 @@ import ScheduleForm from './forms/schedule-form';
 
 const HorarioComponent = () => {
     const navigate = useNavigate();
-    const loggedUser: User | null = useAuth().user
+    const {user: loggedUser, loading: authLoading} = useAuth();
     const professionalId = useParams().id;
     const isProfessional = loggedUser?.id === professionalId;
     
     const [loading, setLoading] = useState<boolean>(true);
     const [reloadData, setReloadData] = useState<boolean>(false);
     const [selectedDay, setSelectedDay] = useState<string | null>(null)  // Para mostrar el modal de información de la cita
-    const [professionalData, setProfessionalData] = useState<Profesional | null>(null);
+    const [professionalData, setProfessionalData] = useState<Professional | null>(null);
 
     useEffect(() => {
         const fetchProfessionalData = async () => {
             if (professionalId) {
                 setLoading(true);
                 const data = await userServices.getUserById(professionalId);
-                if (data.role === 'profesional') {
+                if (data.role === 'professional') {
                     setProfessionalData(data);
                     setLoading(false);
                 }
@@ -38,6 +38,11 @@ const HorarioComponent = () => {
         
         fetchProfessionalData();
     }, [professionalId, reloadData]);
+
+    // Revisamos si el auth esta cargando aun
+    if (authLoading) {
+        return <div>Cargando...</div>;
+    }
 
     // Si no esta loggeado, redirigir al login
     if (!loggedUser) {
@@ -50,11 +55,11 @@ const HorarioComponent = () => {
 
     // Funcion para volver al home
     const goHome = () => {
-        return navigate(`/home/${loggedUser?.id}`, { replace: true });
+        return navigate(`/home/${loggedUser?.id}`);
     }
 
     const handleProfile = () => {
-        return navigate(`/profile/${professionalId}`, { replace: true });
+        return navigate(`/profile/${professionalId}`);
     }
 
     return (
@@ -67,7 +72,7 @@ const HorarioComponent = () => {
             <div className='horario-data'>
                 <div className="horario-info">
                     <h2> Informacion del Profesional </h2>
-                    <InfoProfesional professionalData={professionalData} />
+                    <InfoProfessional professionalData={professionalData} />
                     <button className='common-btn' onClick={handleProfile}>Ver Perfil</button>
                     <ScheduleForm professionalData={professionalData} isProfessional={isProfessional} setReloadData={setReloadData} />
                 </div>

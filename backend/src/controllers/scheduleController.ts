@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import ScheduleModel from '../models/schedule';
-import { ProfesionalModel, UserModel, ClientModel } from '../models/users';
+import { professionalModel, UserModel, ClientModel } from '../models/users';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
 
@@ -18,10 +18,10 @@ const getSchedule = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const getProfesionalSchedule = async (req: Request, res: Response, next: NextFunction) => {
+const getprofessionalSchedule = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profesionalId = req.params.id;
-        const schedules = await ScheduleModel.find({ profesionalId });
+        const professionalId = req.params.id;
+        const schedules = await ScheduleModel.find({ professionalId });
         res.status(200).json(schedules);
     } catch (error) {
         next(error);
@@ -35,7 +35,7 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
 
         const newSchedule = new ScheduleModel({
             _id: id,
-            profesionalId: new mongoose.Types.ObjectId(professionalId),
+            professionalId: new mongoose.Types.ObjectId(professionalId),
             userId: new mongoose.Types.ObjectId(userId),
             day,
             startHour,
@@ -45,11 +45,11 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
 
         await newSchedule.save();
 
-        // Linkear el schedule al profesional
-        const profesional = await ProfesionalModel.findById(professionalId);
-        if (profesional) {
-            profesional.schedules.push(newSchedule._id);
-            await profesional.save();
+        // Linkear el schedule al professional
+        const professional = await professionalModel.findById(professionalId);
+        if (professional) {
+            professional.schedules.push(newSchedule._id);
+            await professional.save();
         }
 
         // Linkear el schedule al cliente
@@ -110,7 +110,7 @@ const deleteScheduleBlock = async (req: Request, res: Response, next: NextFuncti
 };
 
 router.get('/:id', getSchedule);
-router.get('/profesional/:id', getProfesionalSchedule);
+router.get('/professional/:id', getprofessionalSchedule);
 router.post('/', authenticate, createSchedule);
 router.patch('/:id', authenticate, updateScheduleBlock);
 router.delete('/:id', authenticate, deleteScheduleBlock);

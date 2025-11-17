@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import type { Profesional } from '../../types/user';
+import type { Professional } from '../../types/user';
 import dayjs from 'dayjs';
 import '../../styles/appointment.css'
 import '../../styles/form.css'
@@ -9,7 +9,7 @@ import professionalServices from '../../services/professional';
 
 
 interface Props {
-    professionalData: Profesional;
+    professionalData: Professional;
     setReloadData: (value: boolean) => void;
 }
 
@@ -30,7 +30,7 @@ const ProfessionalForm = (props: Props) => {
     const [description, setDescription] = useState<string>(professionalData.description || '');
     const [interests, setInterests] = useState<string>(professionalData.interests ? professionalData.interests.join(', ') : '');
 
-    const updateNewSchedule = async (updatedUserData: Omit<Profesional, 'id' | 'role' | 'password' | 'disponibility'>) => {
+    const updateNewSchedule = async (updatedUserData: Omit<Professional, 'id' | 'role' | 'password' | 'disponibility'>) => {
         const response = await professionalServices.updateProfessionalInfo(professionalData.id, updatedUserData);
         if (response.status === 200) {
             setConfirmationMessage('Horario actualizado correctamente.');
@@ -64,7 +64,7 @@ const ProfessionalForm = (props: Props) => {
 
     const handleSave = async () => {
         setIsLoading(true);
-        const updatedUserData: Omit<Profesional, 'id' | 'role' | 'password' | 'disponibility'> = {
+        const updatedUserData: Omit<Professional, 'id' | 'role' | 'password' | 'disponibility'> = {
             name,
             email,
             birthDate,

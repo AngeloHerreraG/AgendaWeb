@@ -17,7 +17,7 @@ export interface selectedBlock {
 export interface Schedule {
     id: string;
     userId: string;
-    profesionalId: string;
+    professionalId: string;
     day: string;
     startHour: string;
     endHour: string;
@@ -25,7 +25,7 @@ export interface Schedule {
 }
 
 // Interfaz que define la estructura del horario de un profesional
-export interface profesionalSchedule {
+export interface professionalSchedule {
     days: string[];
     blocksPerHour: number;
     startHour: number;

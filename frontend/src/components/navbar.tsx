@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import "../styles/navbar.css";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
@@ -34,7 +33,7 @@ const menuItemStyle = {
 };
 
 const Navbar = (props: Props) => {
-    const { notifications, userId } = props;
+    const { userId } = props;
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
@@ -49,17 +48,12 @@ const Navbar = (props: Props) => {
     };
 
     const handleHome = () => {
-        return navigate(`/home/${userId}`, { replace: true });
-    };
-
-    const handleNotifications = () => {
-        console.log("Ver notificaciones");
-        // Aca vemos que hacemos para ver las notificaciones
+        return navigate(`/home/${userId}`);
     };
 
     const handleProfile = () => {
         handleClose();
-        return navigate(`/profile/${userId}`, { replace: true });
+        return navigate(`/profile/${userId}`);
     };
 
     const handleLogout = async () => {
@@ -75,7 +69,6 @@ const Navbar = (props: Props) => {
             <div className="navbar-navbar">
                 <h1 onClick={handleHome}>Abba Schedule</h1>
                 <div className="navbar-right-section">
-                    <div className="navbar-notifications"><NotificationsIcon sx={iconStyle} onClick={handleNotifications} /> {notifications ? notifications : 0}</div>
                     <div className="navbar-profile">
                         <IconButton id='profile-button' onClick={handleClick}>
                             <AccountCircleOutlinedIcon sx={iconStyle} />

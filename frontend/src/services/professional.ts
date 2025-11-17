@@ -1,34 +1,34 @@
 import axios from "axios";
 import axiosSecure from "../utils/axiosSecure";
 
-import type { Profesional } from '../types/user';
-import type { profesionalSchedule } from '../types/horario';
+import type { Professional } from '../types/user';
+import type { professionalSchedule } from '../types/horario';
 
-const baseUrl = "/api/profesionals";
+const baseUrl = "/api/professionals";
 
-const createProfesional = async (newProfesional: Omit<Profesional, 'id' | 'role'>) => {
-    const response = await axiosSecure.post<Profesional>(`${baseUrl}`, newProfesional);
+const createProfessional = async (newProfessional: Omit<Professional, 'id' | 'role'>) => {
+    const response = await axiosSecure.post<Professional>(`${baseUrl}`, newProfessional);
     return response.data;
 };
 
-const updateProfesionalSchedule = async (profesionalId: string, disponibility: profesionalSchedule) => {
-    const response = await axiosSecure.patch<profesionalSchedule>(`${baseUrl}/schedule/${profesionalId}`, { disponibility });
+const updateProfessionalSchedule = async (professionalId: string, disponibility: professionalSchedule) => {
+    const response = await axiosSecure.patch<professionalSchedule>(`${baseUrl}/schedule/${professionalId}`, { disponibility });
     return response;
 };
 
-const updateProfessionalInfo = async (profesionalId: string, updatedInfo: Partial<Profesional>) => {
-    const response = await axiosSecure.patch<Profesional>(`${baseUrl}/info/${profesionalId}`, updatedInfo);
+const updateProfessionalInfo = async (professionalId: string, updatedInfo: Partial<Professional>) => {
+    const response = await axiosSecure.patch<Professional>(`${baseUrl}/info/${professionalId}`, updatedInfo);
     return response;
 }
 
-const getAllProfesionals = async () => {
-    const response = await axios.get<Profesional[]>(`${baseUrl}`, { params: { role: 'profesional' } });
+const getAllProfessionals = async () => {
+    const response = await axios.get<Professional[]>(`${baseUrl}`, { params: { role: 'professional' } });
     return response.data;
 }
 
-const deleteProfesional = async (id: number) => {
+const deleteProfessional = async (id: number) => {
     const response = await axiosSecure.delete(`${baseUrl}/${id}`);
     return response.data;
 };
 
-export default { createProfesional, updateProfesionalSchedule, updateProfessionalInfo, getAllProfesionals, deleteProfesional };
+export default { createProfessional, updateProfessionalSchedule, updateProfessionalInfo, getAllProfessionals, deleteProfessional };

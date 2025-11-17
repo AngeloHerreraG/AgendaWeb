@@ -1,11 +1,11 @@
 import type { selectedBlock, BlockStatus } from '../../types/horario'
 import '../../styles/appointment.css'
 import { useState, useEffect } from 'react';
-import type { Profesional } from '../../types/user';
+import type { Professional } from '../../types/user';
 import scheduleService from '../../services/schedule';
 
 interface Props {
-    professionalData: Profesional;
+    professionalData: Professional;
     isProfessional: boolean;
     setOpen: (value: boolean) => void;
     setReloadChips: (value: boolean) => void;

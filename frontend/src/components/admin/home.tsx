@@ -1,12 +1,13 @@
-import type { Client, Profesional } from "../../types/user";
+import type { Client, Professional } from "../../types/user";
 import { useState } from "react";
+import { useAuth } from "../../auth/auth";
+import { Navigate } from 'react-router'
 import "../../styles/adminHome.css";
 import userServices from "../../services/user"
 import clientServices from "../../services/client"
-import profesionalServices from "../../services/professional"
+import professionalServices from "../../services/professional"
 
 const ClientProfile = () => {
-
     const [emailRegister, setEmailRegister] = useState<string>("");
     const [passwordRegister, setPasswordRegister] = useState<string>("");
     const [nameRegister, setNameRegister] = useState<string>("");
@@ -21,6 +22,16 @@ const ClientProfile = () => {
     const [blockPerHourRegister, setBlocksPerHourRegister] = useState<string>("");
     const [startHourRegister, setStartHourRegister] = useState<string>("");
     const [endHourRegister, setEndHourRegister] = useState<string>("");
+
+    const {user: loggedUser, loading: authLoading} = useAuth();
+    
+    if (authLoading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (!loggedUser) {
+        return <Navigate to="/login" replace />;
+    }
 
     const handleChange = (day: string) => {
         setDaysRegister((prev) =>
@@ -51,8 +62,8 @@ const ClientProfile = () => {
                     };
                     await clientServices.createClient(newUser);
                 }
-                else if (roleRegister === 'profesional') {
-                    const newProfesional: Omit<Profesional, 'id' | 'role'> = {
+                else if (roleRegister === 'professional') {
+                    const newProfessional: Omit<Professional, 'id' | 'role'> = {
                         name: nameRegister,
                         email: emailRegister,
                         password: passwordRegister,
@@ -66,7 +77,7 @@ const ClientProfile = () => {
                             endHour: Number(endHourRegister)
                         }
                     };
-                    await profesionalServices.createProfesional(newProfesional);
+                    await professionalServices.createProfessional(newProfessional);
                 }
 
                 alert("Usuario nuevo registrado")
@@ -105,7 +116,7 @@ const ClientProfile = () => {
                         >
                         <option value="" disabled>Selecciona un rol</option>
                         <option value="client">Cliente</option>
-                        <option value="profesional">Profesional</option>
+                        <option value="professional">Profesional</option>
                         </select>
 
                         <input className="register-input" type="text" placeholder="Nombre" value={nameRegister} onChange={(e) => setNameRegister(e.target.value)} minLength={3} required />
@@ -113,7 +124,7 @@ const ClientProfile = () => {
                         <input className="register-input" type="date" value={birthDateRegister} onChange={(e) => setBirthDateRegister(e.target.value)} required />
                         <input className="register-input" type="password" placeholder="Contraseña" value={passwordRegister} onChange={(e) => setPasswordRegister(e.target.value)} minLength={8} maxLength={20} />
 
-                        {roleRegister === "profesional" && (
+                        {roleRegister === "professional" && (
                         <>
                             <input className="register-input" type="text" placeholder="Especialidad" value={specialityRegister} onChange={(e) => setSpecialityRegister(e.target.value)} />
                             <textarea className="register-textarea" placeholder="Descripción" value={descriptionRegister} onChange={(e) => setDescriptionRegister(e.target.value)} rows={5} />
@@ -123,7 +134,7 @@ const ClientProfile = () => {
                     </div>
 
                     {/* DERECHA */}
-                    {roleRegister === "profesional" && (
+                    {roleRegister === "professional" && (
                         <div className="register-right">
                             <p>Seleccione los días disponibles</p>
                             <div className="register-days">

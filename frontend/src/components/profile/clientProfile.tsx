@@ -1,16 +1,25 @@
-import type { Client, User } from "../../types/user";
+import { Navigate } from 'react-router'
+import type { Client } from "../../types/user";
 import Navbar from "../navbar";
 import { useAuth } from "../../auth/auth";
 import "../../styles/profile.css";
 import UserForm from "../forms/user-form";
 
 interface ClientProfileProps {
-    user: Client;
+    client: Client;
     setReloadData: (value: boolean) => void;
 }
 
-const ClientProfile = ({ user, setReloadData }: ClientProfileProps) => {
-    const loggedUser: User | null = useAuth().user
+const ClientProfile = ({ client, setReloadData }: ClientProfileProps) => {
+    const {user: loggedUser, loading: authLoading} = useAuth();
+
+    if (authLoading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (!loggedUser) {
+        return <Navigate to="/login" replace />;
+    }
 
     return (
         <div className="profile-container">
@@ -18,15 +27,15 @@ const ClientProfile = ({ user, setReloadData }: ClientProfileProps) => {
             <div className="profile-content">
                 <div className="client-info">
                     <div className="profile-header">
-                        <h2>Perfil de {user.name}</h2>
-                        {loggedUser?.id === user.id && (
+                        <h2>Perfil de {client.name}</h2>
+                        {loggedUser?.id === client.id && (
                             <div className="edit-profile-button">
-                                <UserForm userData={user} setReloadData={setReloadData} />
+                                <UserForm userData={client} setReloadData={setReloadData} />
                             </div>
                         )}
                     </div>
-                    <p><strong>Email:</strong> {user.email || 'No disponible'}</p>
-                    <p><strong>Fecha de Nacimiento:</strong> {user.birthDate || 'No disponible'}</p>
+                    <p><strong>Email:</strong> {client.email || 'No disponible'}</p>
+                    <p><strong>Fecha de Nacimiento:</strong> {client.birthDate || 'No disponible'}</p>
                 </div>
             </div>
         </div>

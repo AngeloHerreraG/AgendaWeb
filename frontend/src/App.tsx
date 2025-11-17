@@ -18,7 +18,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/" element={<Login />} />
                     <Route path="/home/:id" element={<Home />} />
-                    <Route path="/profesionals/:id/schedule" element={<Horario />} />
+                    <Route path="/professional/:id" element={<Horario />} />
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path="/admin-home" element={<AdminHome />} />
                 </Routes>

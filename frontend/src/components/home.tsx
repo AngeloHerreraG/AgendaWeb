@@ -1,5 +1,5 @@
 import { Link, Navigate } from 'react-router-dom';
-import profesionalServices from '../services/professional';
+import professionalServices from '../services/professional';
 import type { User } from '../types/user';
 import '../styles/home.css';
 import { useEffect, useState } from 'react';
@@ -8,19 +8,19 @@ import { useAuth } from '../auth/auth';
 import Navbar from './navbar';
 
 const Home = () => {
-    const [profesionals, setProfesionals] = useState<User[]>([]);
-    const loggedUser = useAuth().user;
+    const [professionals, setProfessionals] = useState<User[]>([]);
+    const {user: loggedUser, loading: authLoading} = useAuth();
     const loading = useAuth().loading;
     
     useEffect(() => {
-        const fetchProfesionals = async () => {
-            const fetchedProfesionals = await profesionalServices.getAllProfesionals();
-            setProfesionals(fetchedProfesionals);
+        const fetchProfessionals = async () => {
+            const fetchedProfessionals = await professionalServices.getAllProfessionals();
+            setProfessionals(fetchedProfessionals);
         };
-        fetchProfesionals();
+        fetchProfessionals();
     }, []);
     
-    if (loading) {
+    if (loading || authLoading) {
         return <div>Cargando...</div>;
     }
 
@@ -33,13 +33,13 @@ const Home = () => {
             <Navbar userId={loggedUser.id} />
             <div className="home-header">
                 <h2>Bienvenido {loggedUser.name}</h2>
-                {loggedUser.role === "profesional" && <Link to={`/profesionals/${loggedUser.id}/schedule`} className='home-update-link'>Editar mi horario</Link>}
+                {loggedUser.role === "professional" && <Link to={`/professional/${loggedUser.id}`} className='home-update-link'>Editar mi horario</Link>}
             </div>
-            <ul className='home-profesional-list'>
-                {profesionals.map((profesional) => (
-                    <li key={profesional.id} className='home-profesional-item'>
-                        {profesional.name}{" "}
-                        <Link to={`/profesionals/${profesional.id}/schedule`} className='home-link'>
+            <ul className='home-professional-list'>
+                {professionals.map((professional) => (
+                    <li key={professional.id} className='home-professional-item'>
+                        {professional.name}{" "}
+                        <Link to={`/professional/${professional.id}`} className='home-link'>
                             Ver horario
                         </Link>
                     </li>

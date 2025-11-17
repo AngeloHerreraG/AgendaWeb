@@ -1,4 +1,4 @@
-import type { Profesional } from '../../types/user';
+import type { Professional } from '../../types/user';
 import PersonIcon from '@mui/icons-material/Person';
 
 const infoStyle = {
@@ -11,10 +11,10 @@ const infoStyle = {
 }
 
 interface Props {
-    professionalData: Profesional | null;
+    professionalData: Professional | null;
 }
 
-const InfoProfesional = (props: Props) => {
+const InfoProfessional = (props: Props) => {
     const { professionalData } = props;
 
     if (!professionalData) {
@@ -32,4 +32,4 @@ const InfoProfesional = (props: Props) => {
     );
 };
 
-export default InfoProfesional;
+export default InfoProfessional;

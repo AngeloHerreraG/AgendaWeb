@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { profesionalSchedule } from '../../types/horario';
-import type { Profesional } from '../../types/user';
+import type { professionalSchedule } from '../../types/horario';
+import type { Professional } from '../../types/user';
 import professionalServices from '../../services/professional';
 import '../../styles/appointment.css'
 import "../../styles/schedule-form.css"
 
 interface Props {
-    professionalData: Profesional;
+    professionalData: Professional;
     isProfessional: boolean;
     setReloadData: (value: boolean) => void;
 }
@@ -40,8 +40,8 @@ const ScheduleForm = (props: Props) => {
     const [endHour, setEndHour] = useState<number>(professionalData.disponibility?.endHour || 17);
     const [blocksPerHour, setBlocksPerHour] = useState<number>(professionalData.disponibility?.blocksPerHour || 2);
 
-    const updateNewSchedule = async (newDisponibility: profesionalSchedule) => {
-        const response = await professionalServices.updateProfesionalSchedule(professionalData.id, newDisponibility);
+    const updateNewSchedule = async (newDisponibility: professionalSchedule) => {
+        const response = await professionalServices.updateProfessionalSchedule(professionalData.id, newDisponibility);
         if (response.status === 200) {
             setConfirmationMessage('Horario actualizado correctamente.');
         } else { 
@@ -79,7 +79,7 @@ const ScheduleForm = (props: Props) => {
 
         const fullDays = selectedDays.map(day => DAY_MAP_TO_FULL[day]);
         // Construir el objeto de disponibilidad
-        const updatedSchedule: profesionalSchedule = {
+        const updatedSchedule: professionalSchedule = {
             days: fullDays,
             startHour,
             endHour,

@@ -1,6 +1,6 @@
-import type { profesionalSchedule, Schedule } from "./horario";
+import type { professionalSchedule, Schedule } from "./horario";
 
-export type UserRole = 'client' | 'profesional' | 'admin';
+export type UserRole = 'client' | 'professional' | 'admin';
 
 interface BaseUser {
     id: string;
@@ -15,16 +15,16 @@ export interface Client extends BaseUser {
     role: 'client';
 }
 
-export interface Profesional extends BaseUser {
-    role: 'profesional';
+export interface Professional extends BaseUser {
+    role: 'professional';
     speciality: string;
     description: string;
     interests?: string[];
-    disponibility: profesionalSchedule;
+    disponibility: professionalSchedule;
 }
 
 export interface Admin extends BaseUser {
     role: 'admin';
 }
 
-export type User = Client | Profesional | Admin;
+export type User = Client | Professional | Admin;

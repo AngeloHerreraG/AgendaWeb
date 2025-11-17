@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import type { Client } from '../types/user';
-import type { profesionalSchedule } from '../types/horario';
+import type { professionalSchedule } from '../types/horario';
 
 const baseUrl = "/api/clients";
 
@@ -25,7 +25,7 @@ const getClientSchedule = async (clientId: string) => {
     return response.data.schedule ?? null;
 }
 
-const updateClientSchedule = async (clientId: string, schedule: profesionalSchedule) => {
+const updateClientSchedule = async (clientId: string, schedule: professionalSchedule) => {
     const response = await axios.patch<Client>(`${baseUrl}/${clientId}`, { schedule });
     return response.data;
 };

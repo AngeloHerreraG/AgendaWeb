@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export interface ISchedule {
     _id: string; // ID compuesta personalizada
-    profesionalId: mongoose.Types.ObjectId;
+    professionalId: mongoose.Types.ObjectId;
     userId: mongoose.Types.ObjectId | null;
     day: string;
     startHour: string;
@@ -14,7 +14,7 @@ export interface ISchedule {
 
 const scheduleSchema = new mongoose.Schema<ISchedule>({
     _id: { type: String, required: true }, // ID compuesta como string
-    profesionalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Profesional', required: true },
+    professionalId: { type: mongoose.Schema.Types.ObjectId, ref: 'professional', required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     day: { type: String, required: true },
     startHour: { type: String, required: true },
@@ -26,7 +26,7 @@ const scheduleSchema = new mongoose.Schema<ISchedule>({
 });
 
 // Índice único compuesto para evitar duplicados
-scheduleSchema.index({ profesionalId: 1, day: 1, startHour: 1, endHour: 1 }, { unique: true });
+scheduleSchema.index({ professionalId: 1, day: 1, startHour: 1, endHour: 1 }, { unique: true });
 
 const ScheduleModel = mongoose.model<ISchedule>('Schedule', scheduleSchema);
 
