@@ -7,27 +7,37 @@ import userServices from "../../services/user";
 
 import { useAuthStore } from "../store/authStore";
 
-
 const ProfileComponent = () => {
-    const { id } = useParams();
-    const userId = id;
-    const [user, setUser] = useState<User | null>(null);
-    const [reloadData, setReloadData] = useState<boolean>(false);
+    const { id: userId } = useParams();
+    const {user: loggedUser, authStatus} = useAuthStore();
 
+    const [otherUser, setOtherUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const myProfile = loggedUser && userId === loggedUser.id;
+
+    // Este useEffect solo se llama si estamos viendo el perfil de alguien mas, si es el nuestro
+    // no hace falta por que ya tenemos los datos en el authStore
     useEffect(() => {
         const fetchUserProfile = async () => {
-            if (!userId) return;
-            const data = await userServices.getUserById(userId);
-            setUser(data);
-            if (reloadData) setReloadData(false);
+            if (myProfile || !userId) return;
+            setLoading(true);
+            try {
+                const fetchedUser = await userServices.getUserById(userId);
+                setOtherUser(fetchedUser);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+                setOtherUser(null);
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchUserProfile();
-    }, [userId, reloadData]);
+    }, [userId, myProfile]);
 
-    const {user: loggedUser, authStatus} = useAuthStore();
     
-    if (authStatus === "loading") {
+    if (authStatus === "loading" || loading) {
         return <div>Cargando...</div>;
     }
 
@@ -35,11 +45,16 @@ const ProfileComponent = () => {
         return <Navigate to="/login" replace />;
     }
 
-    switch (user?.role) {
+    // Finalmente decidimos que mostrar dependiendo si es nuestro perfil o el de otro usuario
+    const userToShow = myProfile ? loggedUser : otherUser;
+
+    switch (userToShow?.role) {
         case 'client':
-            return <ClientProfile client={user} setReloadData={setReloadData} />;
+            return <ClientProfile client={userToShow} />;
         case 'professional':
-            return <ProfessionalProfile professional={user} setReloadData={setReloadData} />;
+            return <ProfessionalProfile professional={userToShow} />;
+        default:
+            return <div>Rol de usuario desconocido.</div>;
     }
 }
 

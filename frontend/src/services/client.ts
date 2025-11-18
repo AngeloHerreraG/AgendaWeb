@@ -5,7 +5,7 @@ import type { professionalSchedule, Schedule } from '../types/horario';
 
 const baseUrl = "/api/clients";
 
-const createClient = async (newClient: Omit<Client, 'id' | 'role'>): Promise<Client> => {
+const createClient = async (newClient: Partial<Client>): Promise<Client> => {
     const response = await axios.post<Client>(`${baseUrl}`, newClient);
     return response.data;
 };

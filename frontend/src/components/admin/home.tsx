@@ -56,7 +56,7 @@ const ClientProfile = () => {
         else {
             try {
                 if (roleRegister === 'client') {
-                    const newUser: Omit<Client, 'id' | 'role'> = {
+                    const newUser: Partial<Client> = {
                         name: nameRegister,
                         email: emailRegister,
                         password: passwordRegister,
@@ -65,7 +65,7 @@ const ClientProfile = () => {
                     await clientServices.createClient(newUser);
                 }
                 else if (roleRegister === 'professional') {
-                    const newProfessional: Omit<Professional, 'id' | 'role'> = {
+                    const newProfessional: Partial<Professional> = {
                         name: nameRegister,
                         email: emailRegister,
                         password: passwordRegister,

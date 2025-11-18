@@ -26,8 +26,6 @@ interface AuthStore {
     updateUserData: (newUserData: Partial<Client>) => Promise<Client>;
     // Función para actualizar los datos del usuario si es que es profesional
     updateProfessionalData: (newProfessionalData: Partial<Professional>) => Promise<Professional>;
-    // // Función para actualizar la disponibilidad del usuario si es que es profesional
-    // updateUserAvailability: (newAvailability: professionalSchedule) => Promise<professionalSchedule>;
 }
 
 // Creamos el store de autenticación usando Zustand
@@ -89,14 +87,4 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         set({ user: updatedProfessional });
         return updatedProfessional;
     },
-
-    // updateUserAvailability: async (newAvailability: professionalSchedule) => {
-    //     const user = get().user;
-    //     if (!user || user.role !== 'professional') {
-    //         throw new Error("El usuario no es un profesional");
-    //     }
-    //     const updatedAvailability = await professionalServices.updateProfessionalSchedule(user.id, newAvailability);
-    //     set({ user: { ...user, disponibility: updatedAvailability } });
-    //     return updatedAvailability;
-    // }
 }));

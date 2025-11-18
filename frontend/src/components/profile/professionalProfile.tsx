@@ -1,4 +1,3 @@
-import { Navigate } from 'react-router'
 import type { Professional } from "../../types/user";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import "../../styles/profile.css";
@@ -9,20 +8,12 @@ import { useAuthStore } from '../store/authStore';
 
 interface ProfessionalProfileProps {
     professional: Professional;
-    setReloadData: (value: boolean) => void;
 }
 
-const ProfessionalProfile = ({ professional, setReloadData }: ProfessionalProfileProps) => {
-        const {user: loggedUser, authStatus} = useAuthStore();
+const ProfessionalProfile = ({ professional }: ProfessionalProfileProps) => {
+    const {user: loggedUser} = useAuthStore();
     
-
-    if (authStatus === "loading") {
-        return <div>Cargando...</div>;
-    }
-
-    if (!loggedUser) {
-        return <Navigate to="/login" replace />;
-    }
+    const isMyProfile = loggedUser && loggedUser.id === professional.id;
 
     return (
         <div className="profile-container">
@@ -36,9 +27,9 @@ const ProfessionalProfile = ({ professional, setReloadData }: ProfessionalProfil
                         <div className="profile-info">
                             <div className="profile-header">
                                 <h2>Perfil de {professional.name}</h2>
-                                {loggedUser?.id === professional.id && (
+                                {isMyProfile && (
                                     <div className="edit-profile-button">
-                                        <ProfessionalForm professionalData={professional} setReloadData={setReloadData}/>
+                                        <ProfessionalForm professionalData={professional} />
                                     </div>
                                 )}
                             </div>

@@ -6,7 +6,7 @@ import type { professionalSchedule } from '../types/horario';
 
 const baseUrl = "/api/professionals";
 
-const createProfessional = async (newProfessional: Omit<Professional, 'id' | 'role'>): Promise<Professional> => {
+const createProfessional = async (newProfessional: Partial<Professional>): Promise<Professional> => {
     const response = await axiosSecure.post<Professional>(`${baseUrl}`, newProfessional);
     return response.data;
 };
