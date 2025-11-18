@@ -3,6 +3,7 @@ import '../../styles/appointment.css'
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 
+import { useAuthStore } from '../store/authStore';
 import { useScheduleStore } from '../store/scheduleStore'
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 const Appointment = (props: Props) => {
     const { isProfessional, setOpen, selectedScheduleBlock } = props;
     const { professionalData, selectedDay, updateScheduleStatus, deleteScheduleBlock } = useScheduleStore();
+    const { user: loggedUser } = useAuthStore()
 
     const [modalOpen, setModalOpen] = useState<boolean>(true);
     const [confirmationModalOpen, setConfirmationModalOpen] = useState<boolean>(false);

@@ -30,12 +30,6 @@ const ProfessionalForm = ({professionalData}: Props) => {
     const [interests, setInterests] = useState<string>(professionalData.interests ? professionalData.interests.join(', ') : '');
 
     const updateNewSchedule = async (updatedUserData: Partial<Professional>) => {
-        // const response = await professionalServices.updateProfessionalInfo(professionalData.id, updatedUserData);
-        // if (response.status === 200) {
-        //     setConfirmationMessage('Horario actualizado correctamente.');
-        // } else { 
-        //     setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
-        // }
         try {
             await updateProfessionalData(updatedUserData);
             setConfirmationMessage('Información actualizada correctamente.');

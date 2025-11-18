@@ -28,12 +28,6 @@ const UserForm = ( {userData}: Props) => {
     const [birthDate, setBirthDate] = useState<string>(formattedBirthDate);
 
     const updateNewSchedule = async (updatedUserData: Partial<Client>) => {
-        // const response = await clientServices.updateClientInfo(userData.id, updatedUserData);
-        // if (response.status === 200) {
-        //     setConfirmationMessage('Horario actualizado correctamente.');
-        // } else { 
-        //     setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
-        // }
         try {
             await updateUserData(updatedUserData);
             setConfirmationMessage('Información actualizada correctamente.');

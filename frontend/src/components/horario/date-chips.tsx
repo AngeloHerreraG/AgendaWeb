@@ -93,25 +93,6 @@ const DateChips = (props: Props) => {
 
     const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) 
     const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)
-    // const [reloadChips, setReloadChips] = useState<boolean>(false);
-
-    // const [professionalSchedule, setProfessionalSchedule] = useState<Schedule[]>([]);
-
-    // useEffect(() => {
-    //     const fetchProfessionalSchedule = async () => {
-    //         try {
-    //             const scheduleData = await scheduleServices.getProfessionalSchedule(professionalData.id);
-    //             setProfessionalSchedule(scheduleData);
-    //             if (reloadChips) {
-    //                 setReloadChips(false);
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching professional schedule:", error);
-    //         }
-    //     };
-
-    //     fetchProfessionalSchedule();
-    // }, [professionalData.id, reloadChips]);
     if (!professionalData || !selectedDay) {
         return <div>Cargando bloques...</div>;
     }

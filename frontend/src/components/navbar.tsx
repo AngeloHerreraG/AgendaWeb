@@ -11,9 +11,7 @@ import { useAuthStore } from './store/authStore'
 
 
 interface Props {
-    // De momento quedan pendiente los props de la navbar
-    notifications?: number;
-    userId?: string;
+    userId: string;
 }
 
 const iconStyle = {
