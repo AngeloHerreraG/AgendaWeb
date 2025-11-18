@@ -1,11 +1,13 @@
 import type { Client, Professional } from "../../types/user";
 import { useState } from "react";
-import { useAuth } from "../../auth/auth";
 import { Navigate } from 'react-router'
 import "../../styles/adminHome.css";
 import userServices from "../../services/user"
 import clientServices from "../../services/client"
 import professionalServices from "../../services/professional"
+
+import { useAuthStore } from '../store/authStore'
+
 
 const ClientProfile = () => {
     const [emailRegister, setEmailRegister] = useState<string>("");
@@ -23,13 +25,13 @@ const ClientProfile = () => {
     const [startHourRegister, setStartHourRegister] = useState<string>("");
     const [endHourRegister, setEndHourRegister] = useState<string>("");
 
-    const {user: loggedUser, loading: authLoading} = useAuth();
+    const {user: loggedUser, authStatus} = useAuthStore();
     
-    if (authLoading) {
+    if (authStatus === "loading") {
         return <div>Cargando...</div>;
     }
 
-    if (!loggedUser) {
+    if (!loggedUser || authStatus === "unauthenticated") {
         return <Navigate to="/login" replace />;
     }
 

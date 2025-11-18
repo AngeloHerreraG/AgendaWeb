@@ -1,9 +1,11 @@
 import { Navigate } from 'react-router'
 import type { Client } from "../../types/user";
 import Navbar from "../navbar";
-import { useAuth } from "../../auth/auth";
 import "../../styles/profile.css";
 import UserForm from "../forms/user-form";
+
+import { useAuthStore } from "../store/authStore";
+
 
 interface ClientProfileProps {
     client: Client;
@@ -11,13 +13,14 @@ interface ClientProfileProps {
 }
 
 const ClientProfile = ({ client, setReloadData }: ClientProfileProps) => {
-    const {user: loggedUser, loading: authLoading} = useAuth();
+        const {user: loggedUser, authStatus} = useAuthStore();
 
-    if (authLoading) {
+
+    if (authStatus === "loading") {
         return <div>Cargando...</div>;
     }
 
-    if (!loggedUser) {
+    if (!loggedUser || authStatus === "unauthenticated") {
         return <Navigate to="/login" replace />;
     }
 

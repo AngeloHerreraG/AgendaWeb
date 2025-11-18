@@ -4,7 +4,8 @@ import ClientProfile from "./clientProfile";
 import ProfessionalProfile from "./professionalProfile";
 import { useEffect, useState } from "react";
 import userServices from "../../services/user";
-import { useAuth } from '../../auth/auth'
+
+import { useAuthStore } from "../store/authStore";
 
 
 const ProfileComponent = () => {
@@ -24,13 +25,13 @@ const ProfileComponent = () => {
         fetchUserProfile();
     }, [userId, reloadData]);
 
-    const {user: loggedUser, loading: authLoading} = useAuth();
+    const {user: loggedUser, authStatus} = useAuthStore();
     
-    if (authLoading) {
+    if (authStatus === "loading") {
         return <div>Cargando...</div>;
     }
 
-    if (!loggedUser) {
+    if (!loggedUser || authStatus === "unauthenticated") {
         return <Navigate to="/login" replace />;
     }
 

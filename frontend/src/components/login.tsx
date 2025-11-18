@@ -1,12 +1,12 @@
 import { useState } from "react";
-import loginService from "../services/login";
+// import loginService from "../services/login";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/auth";
-import type { User } from "../types/user";
+// import type { User } from "../types/user";
 
+import { useAuthStore } from './store/authStore'
 
 const Login = () => {
-    const { login } = useAuth();
+    const { login, user: loggedUser, authStatus } = useAuthStore();
 
     const navigate = useNavigate();
 
@@ -17,25 +17,14 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const user: User = await loginService.login({
-                email: emailLogin,
-                password: passwordLogin,
-            });
-
-            login(user);
-            setEmailLogin("");
-            setPasswordLogin("");
-            navigate(`/home/${user?.id}`, { replace: true });
-
+            await login({ email: emailLogin, password: passwordLogin });
         } catch (error) {
             console.error("Wrong credentials", error);
+            alert("Credenciales incorrectas. Inténtalo de nuevo.");
         }
     }
 
-    const loggedUser: User | null = useAuth().user;
-    const loading = useAuth().loading;
-
-    if (loading) {
+    if (authStatus === "loading") {
         return <div>Cargando...</div>;
     }
 

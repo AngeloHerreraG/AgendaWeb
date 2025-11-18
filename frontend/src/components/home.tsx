@@ -3,14 +3,13 @@ import professionalServices from '../services/professional';
 import type { User } from '../types/user';
 import '../styles/home.css';
 import { useEffect, useState } from 'react';
-import { useAuth } from '../auth/auth';
+import { useAuthStore } from './store/authStore'
 
 import Navbar from './navbar';
 
 const Home = () => {
     const [professionals, setProfessionals] = useState<User[]>([]);
-    const {user: loggedUser, loading: authLoading} = useAuth();
-    const loading = useAuth().loading;
+    const {user: loggedUser, authStatus} = useAuthStore();
     
     useEffect(() => {
         const fetchProfessionals = async () => {
@@ -20,11 +19,11 @@ const Home = () => {
         fetchProfessionals();
     }, []);
     
-    if (loading || authLoading) {
+    if (authStatus === "loading") {
         return <div>Cargando...</div>;
     }
 
-    if (!loggedUser) {
+    if (!loggedUser || authStatus === "unauthenticated") {
         return <Navigate to="/login" replace />;
     }
 

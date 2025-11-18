@@ -1,12 +1,13 @@
 import axios from "axios";
 import axiosSecure from "../utils/axiosSecure";
+import type { User } from "../types/user";
 
-type Credentials = {
+export type Credentials = {
     email: string;
     password: string;
 };
 
-const login = async (credentials: Credentials) => {
+const login = async (credentials: Credentials): Promise<User> => {
     const response = await axiosSecure.post("/api/login", credentials);
     const csrfToken = response.headers["x-csrf-token"];
 
@@ -17,11 +18,11 @@ const login = async (credentials: Credentials) => {
     return response.data;
 };
 
-const restoreLogin = async () => {
+const restoreLogin = async (): Promise<User | null> => {
     try {
         const response = await axiosSecure.get("/api/login/me");
         return response.data;
-    } catch (error) {
+    } catch {
         return null;
     }
 };
