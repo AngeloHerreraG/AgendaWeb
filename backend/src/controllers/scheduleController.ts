@@ -96,6 +96,17 @@ const deleteScheduleBlock = async (req: Request, res: Response, next: NextFuncti
     try {
         const scheduleId = req.params.id;
         const schedule = await ScheduleModel.findByIdAndDelete(scheduleId);
+        const userId = schedule?.userId;
+        const professionalId = schedule?.professionalId;
+
+        // Eliminar la referencia del schedule en el cliente
+        if (userId) {
+            await ClientModel.findByIdAndUpdate(userId, { $pull: { schedules: scheduleId } });
+        }
+        // Eliminar la referencia del schedule en el professional
+        if (professionalId) {
+            await professionalModel.findByIdAndUpdate(professionalId, { $pull: { schedules: scheduleId } });
+        }
 
         if (schedule) {
             res.status(200).json({ message: "Schedule deleted successfully" });
