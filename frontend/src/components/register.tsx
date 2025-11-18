@@ -23,7 +23,7 @@ const Register = () => {
 
         else {
             try {
-                const newUser: Omit<Client, 'id'> = {
+                const newUser: Partial<Client> = {
                     name: nameRegister,
                     email: emailRegister,
                     password: passwordRegister,
@@ -49,10 +49,10 @@ const Register = () => {
             backgroundColor: "#f5ececff", height: "100vh" }}>
             <img style={{ height: "180px" }}
                 src="/AbbaSchedule.png" alt="Abba" />
-            <div style={{ backgroundColor: "#ffffffff", padding: "20px", borderRadius: "4px", marginBottom: "150px" }}>
-                <h2 style={{ margin: "0px", textAlign: "center", marginBottom: "30px", fontSize: "26px", fontFamily: "Arial, sans-serif" }}>Crea tu cuenta</h2>
+            <div style={{ backgroundColor: "#ffffffff", padding: "20px", borderRadius: "4px", marginBottom: "150px", fontFamily: "'Poppins', sans-serif" }}>
+                <h2 style={{ margin: "0px", textAlign: "center", marginBottom: "30px", fontSize: "26px", fontFamily: "'Poppins', sans-serif" }}>Crea tu cuenta</h2>
                 <form onSubmit={handleUserRegister} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "250px" }}>
-                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px", fontFamily: "'Poppins', sans-serif" }}
                         type="text" 
                         placeholder="Nombre" 
                         value={nameRegister} 
@@ -60,7 +60,7 @@ const Register = () => {
                         minLength={3}
                         required
                     />
-                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px", fontFamily: "'Poppins', sans-serif" }}
                         type="text" 
                         placeholder="Email" 
                         value={emailRegister} 
@@ -68,14 +68,14 @@ const Register = () => {
                         minLength={3}
                         required
                     />
-                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px", fontFamily: "'Poppins', sans-serif" }}
                         type="date" 
                         placeholder="Fecha de nacimiento" 
                         value={birthDateRegister} 
                         onChange={(e) => setBirthDateRegister(e.target.value)} 
                         required
                     />
-                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px" }}
+                    <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px", fontFamily: "'Poppins', sans-serif" }}
                         type="password" 
                         placeholder="Contraseña" 
                         value={passwordRegister} 
@@ -83,9 +83,9 @@ const Register = () => {
                         minLength={8}
                         maxLength={20}
                     />
-                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", color: "white", backgroundColor: "#171ae1ff", cursor: "pointer" }}
+                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", color: "white", backgroundColor: "#171ae1ff", cursor: "pointer", fontFamily: "'Poppins', sans-serif" }}
                         type="submit">Registrarse</button>
-                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", marginTop: "10px", color: "white", backgroundColor: "#3866e6ff", cursor: "pointer" }}
+                    <button style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "40px", marginTop: "10px", color: "white", backgroundColor: "#3866e6ff", cursor: "pointer", fontFamily: "'Poppins', sans-serif" }}
                         type="button" onClick={() => navigate('/login')}>
                             ¿Ya tienes cuenta? Inicia sesión
                     </button>

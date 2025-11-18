@@ -1,25 +1,18 @@
-import { Navigate } from 'react-router'
 import type { Client } from "../../types/user";
 import Navbar from "../navbar";
-import { useAuth } from "../../auth/auth";
 import "../../styles/profile.css";
 import UserForm from "../forms/user-form";
 
+import { useAuthStore } from "../store/authStore";
+
 interface ClientProfileProps {
     client: Client;
-    setReloadData: (value: boolean) => void;
 }
 
-const ClientProfile = ({ client, setReloadData }: ClientProfileProps) => {
-    const {user: loggedUser, loading: authLoading} = useAuth();
+const ClientProfile = ({ client }: ClientProfileProps) => {
+    const {user: loggedUser} = useAuthStore();
 
-    if (authLoading) {
-        return <div>Cargando...</div>;
-    }
-
-    if (!loggedUser) {
-        return <Navigate to="/login" replace />;
-    }
+    const isMyProfile = loggedUser && loggedUser.id === client.id;
 
     return (
         <div className="profile-container">
@@ -28,9 +21,9 @@ const ClientProfile = ({ client, setReloadData }: ClientProfileProps) => {
                 <div className="client-info">
                     <div className="profile-header">
                         <h2>Perfil de {client.name}</h2>
-                        {loggedUser?.id === client.id && (
+                        {isMyProfile && (
                             <div className="edit-profile-button">
-                                <UserForm userData={client} setReloadData={setReloadData} />
+                                <UserForm userData={client}/>
                             </div>
                         )}
                     </div>

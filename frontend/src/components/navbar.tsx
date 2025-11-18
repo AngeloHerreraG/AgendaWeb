@@ -6,12 +6,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import loginServices from '../services/login'
-import { useAuth } from '../auth/auth'
+
+import { useAuthStore } from './store/authStore'
+
 
 interface Props {
-    // De momento quedan pendiente los props de la navbar
-    notifications?: number;
-    userId?: string;
+    userId: string;
 }
 
 const iconStyle = {
@@ -37,7 +37,7 @@ const Navbar = (props: Props) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout } = useAuthStore();
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

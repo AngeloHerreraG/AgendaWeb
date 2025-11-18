@@ -6,22 +6,22 @@ import type { professionalSchedule } from '../types/horario';
 
 const baseUrl = "/api/professionals";
 
-const createProfessional = async (newProfessional: Omit<Professional, 'id' | 'role'>) => {
+const createProfessional = async (newProfessional: Partial<Professional>): Promise<Professional> => {
     const response = await axiosSecure.post<Professional>(`${baseUrl}`, newProfessional);
     return response.data;
 };
 
-const updateProfessionalSchedule = async (professionalId: string, disponibility: professionalSchedule) => {
+const updateProfessionalSchedule = async (professionalId: string, disponibility: professionalSchedule): Promise<professionalSchedule> => {
     const response = await axiosSecure.patch<professionalSchedule>(`${baseUrl}/schedule/${professionalId}`, { disponibility });
-    return response;
+    return response.data;
 };
 
-const updateProfessionalInfo = async (professionalId: string, updatedInfo: Partial<Professional>) => {
+const updateProfessionalInfo = async (professionalId: string, updatedInfo: Partial<Professional>): Promise<Professional> => {
     const response = await axiosSecure.patch<Professional>(`${baseUrl}/info/${professionalId}`, updatedInfo);
-    return response;
+    return response.data;
 }
 
-const getAllProfessionals = async () => {
+const getAllProfessionals = async (): Promise<Professional[]> => {
     const response = await axios.get<Professional[]>(`${baseUrl}`, { params: { role: 'professional' } });
     return response.data;
 }
@@ -31,8 +31,8 @@ const getProfessionalsStartsWith = async (startsWith: string) => {
     return response.data;
 }
 
-const deleteProfessional = async (id: number) => {
-    const response = await axiosSecure.delete(`${baseUrl}/${id}`);
+const deleteProfessional = async (id: number): Promise<void> => {
+    const response = await axiosSecure.delete<void>(`${baseUrl}/${id}`);
     return response.data;
 };
 

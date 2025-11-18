@@ -3,17 +3,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import type { Professional } from '../../types/user';
 
-interface Props {
-    professionalData: Professional;
-    selectedDay: string | null;
-    setSelectedDay: (value: string) => void;
-}
+import { useScheduleStore } from '../store/scheduleStore'
 
-const CalendarSelector = (props: Props) => {
-    const { professionalData, selectedDay, setSelectedDay } = props;
-    const days = professionalData.disponibility.days;
+
+const CalendarSelector = () => {
+    const {professionalData, selectedDay, setSelectedDay} = useScheduleStore();
+    const days = professionalData?.disponibility.days || [];
     const [selectedMonth, setSelectedMonth] = useState(dayjs());
 
     dayjs.locale('es');

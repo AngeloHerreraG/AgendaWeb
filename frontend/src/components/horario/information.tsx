@@ -1,5 +1,7 @@
-import type { Professional } from '../../types/user';
 import PersonIcon from '@mui/icons-material/Person';
+
+import { useScheduleStore } from '../store/scheduleStore'
+
 
 const infoStyle = {
     display: 'flex',
@@ -10,12 +12,8 @@ const infoStyle = {
     padding: '8px',
 }
 
-interface Props {
-    professionalData: Professional | null;
-}
-
-const InfoProfessional = (props: Props) => {
-    const { professionalData } = props;
+const InfoProfessional = () => {
+    const {professionalData} = useScheduleStore();
 
     if (!professionalData) {
         return <div>Cargando información del profesional...</div>;

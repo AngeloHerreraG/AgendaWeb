@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
-import type { selectedBlock, Schedule, BlockStatus } from '../../types/horario'
-import type { Professional } from '../../types/user';
+import type { selectedBlock, BlockStatus } from '../../types/horario'
 import Appointment from './appointment'
-import scheduleServices from '../../services/schedule';
 import '../../styles/horario.css'
+
+import { useScheduleStore } from '../store/scheduleStore'
+
 
 const chipStyle = {
     fontFamily: '"Poppins", sans-serif',
@@ -83,34 +84,18 @@ const getChipStyle = (status?: BlockStatus) => {
 
 interface Props {
     userId: string;
-    professionalData: Professional;
     isProfessional: boolean;
-    selectedDay: string | null;
 }
 
 const DateChips = (props: Props) => {
-    const { userId, professionalData, isProfessional, selectedDay } = props;
+    const { userId, isProfessional } = props;
+    const { professionalData, scheduleData, selectedDay } = useScheduleStore();
+
     const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) 
     const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)
-    const [reloadChips, setReloadChips] = useState<boolean>(false);
-
-    const [professionalSchedule, setProfessionalSchedule] = useState<Schedule[]>([]);
-
-    useEffect(() => {
-        const fetchProfessionalSchedule = async () => {
-            try {
-                const scheduleData = await scheduleServices.getProfessionalSchedule(professionalData.id);
-                setProfessionalSchedule(scheduleData);
-                if (reloadChips) {
-                    setReloadChips(false);
-                }
-            } catch (error) {
-                console.error("Error fetching professional schedule:", error);
-            }
-        };
-
-        fetchProfessionalSchedule();
-    }, [professionalData.id, reloadChips]);
+    if (!professionalData || !selectedDay) {
+        return <div>Cargando bloques...</div>;
+    }
 
     dayjs.locale('es'); // Establece el idioma español para dayjs
 
@@ -164,7 +149,7 @@ const DateChips = (props: Props) => {
         // Si la id coincide, añadimos a la lista chipState el estado del bloque junto al indice del chip
         for (let i = 0; i < chipsData.length; i++) {
             const chip = chipsData[i];
-            const scheduledBlock = professionalSchedule.find(sch => sch.id === chip.id);
+            const scheduledBlock = scheduleData.find(sch => sch.id === chip.id);
             if (scheduledBlock) {
                 chipState.push([i, scheduledBlock.status]);
             }
@@ -195,12 +180,9 @@ const DateChips = (props: Props) => {
             {selectedDay && generarChips()}
             {showDateInfoModal && selectedScheduleBlock && (
                 <Appointment 
-                    professionalData={professionalData}
                     isProfessional={isProfessional}
                     setOpen={setShowDateInfoModal}
-                    setReloadChips={setReloadChips}
                     selectedScheduleBlock={selectedScheduleBlock}
-                    selectedDay={dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')}
                 />
             )}
         </>

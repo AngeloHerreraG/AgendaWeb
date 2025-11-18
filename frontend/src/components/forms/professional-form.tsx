@@ -5,16 +5,15 @@ import type { Professional } from '../../types/user';
 import dayjs from 'dayjs';
 import '../../styles/appointment.css'
 import '../../styles/form.css'
-import professionalServices from '../../services/professional';
 
+import { useAuthStore } from '../store/authStore';
 
 interface Props {
     professionalData: Professional;
-    setReloadData: (value: boolean) => void;
 }
 
-const ProfessionalForm = (props: Props) => {
-    const { professionalData, setReloadData } = props
+const ProfessionalForm = ({professionalData}: Props) => {
+    const { updateProfessionalData } = useAuthStore();
     
     const [isLoading, setIsLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState<boolean>(false); // Lógica para manejar el estado del modal
@@ -30,17 +29,16 @@ const ProfessionalForm = (props: Props) => {
     const [description, setDescription] = useState<string>(professionalData.description || '');
     const [interests, setInterests] = useState<string>(professionalData.interests ? professionalData.interests.join(', ') : '');
 
-    const updateNewSchedule = async (updatedUserData: Omit<Professional, 'id' | 'role' | 'password' | 'disponibility'>) => {
-        const response = await professionalServices.updateProfessionalInfo(professionalData.id, updatedUserData);
-        if (response.status === 200) {
-            setConfirmationMessage('Horario actualizado correctamente.');
-        } else { 
-            setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
+    const updateNewSchedule = async (updatedUserData: Partial<Professional>) => {
+        try {
+            await updateProfessionalData(updatedUserData);
+            setConfirmationMessage('Información actualizada correctamente.');
+        } catch (error) {
+            console.error("Error updating professional data:", error);
+            setConfirmationMessage('Error al actualizar la información. Inténtalo de nuevo.');
         }
         setModalOpen(false);
-        setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);
-        setReloadData(true);
         setConfirmationModalOpen(true);
     };
 
@@ -64,13 +62,14 @@ const ProfessionalForm = (props: Props) => {
 
     const handleSave = async () => {
         setIsLoading(true);
-        const updatedUserData: Omit<Professional, 'id' | 'role' | 'password' | 'disponibility'> = {
+        const updatedUserData: Partial<Professional> = {
             name,
             email,
             birthDate,
             speciality,
             description,
-            interests: interests.split(',').map(interest => interest.trim())
+            interests: interests.split(',').map(interest => interest.trim()),
+            role: 'professional'
         };
         updateNewSchedule(updatedUserData);
     };

@@ -3,16 +3,15 @@ import professionalServices from '../services/professional';
 import type { User } from '../types/user';
 import '../styles/home.css';
 import { useEffect, useState } from 'react';
-import { useAuth } from '../auth/auth';
+import { useAuthStore } from './store/authStore'
 
 import Navbar from './navbar';
 
 const Home = () => {
     const [professionals, setProfessionals] = useState<User[]>([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const { user: loggedUser, loading: authLoading } = useAuth();
-    const loading = useAuth().loading;
-
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const {user: loggedUser, authStatus} = useAuthStore();
+    
     useEffect(() => {
         // Si no hay texto, cargar todos inmediatamente
         if (searchTerm.trim() === "") {
@@ -33,12 +32,12 @@ const Home = () => {
         // Limpiar el timeout si el usuario escribe antes de los 300ms
         return () => clearTimeout(delay);
     }, [searchTerm]);
-
-    if (loading || authLoading) {
+    
+    if (authStatus === "loading") {
         return <div>Cargando...</div>;
     }
 
-    if (!loggedUser) {
+    if (!loggedUser || authStatus === "unauthenticated") {
         return <Navigate to="/login" replace />;
     }
 

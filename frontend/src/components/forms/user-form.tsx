@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import type { User } from '../../types/user';
+import type { Client } from '../../types/user';
 import dayjs from 'dayjs';
 import '../../styles/appointment.css'
 import '../../styles/form.css'
-import clientServices from '../../services/client';
+// import clientServices from '../../services/client';
+
+import { useAuthStore } from "../store/authStore";
+
 
 interface Props {
-    userData: User;
-    setReloadData: (value: boolean) => void;
+    userData: Client;
 }
 
-const UserForm = ( props: Props) => {
-    const { userData, setReloadData } = props
+const UserForm = ( {userData}: Props) => {
+    const { updateUserData } = useAuthStore();
 
     const [isLoading, setIsLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState<boolean>(false); // Lógica para manejar el estado del modal
@@ -25,17 +27,16 @@ const UserForm = ( props: Props) => {
     const formattedBirthDate = userData.birthDate ? dayjs(userData.birthDate.split("T")[0]).format('YYYY-MM-DD') : '';
     const [birthDate, setBirthDate] = useState<string>(formattedBirthDate);
 
-    const updateNewSchedule = async (updatedUserData: Omit<User, 'id' | 'role' | 'password'>) => {
-        const response = await clientServices.updateClientInfo(userData.id, updatedUserData);
-        if (response.status === 200) {
-            setConfirmationMessage('Horario actualizado correctamente.');
-        } else { 
-            setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
+    const updateNewSchedule = async (updatedUserData: Partial<Client>) => {
+        try {
+            await updateUserData(updatedUserData);
+            setConfirmationMessage('Información actualizada correctamente.');
+        } catch (error) {
+            console.error("Error updating user data:", error);
+            setConfirmationMessage('Error al actualizar la información. Inténtalo de nuevo.');
         }
         setModalOpen(false);
-        setConfirmationMessage('Horario actualizado correctamente.');
         setIsLoading(false);
-        setReloadData(true);
         setConfirmationModalOpen(true);
     };
 
@@ -56,10 +57,11 @@ const UserForm = ( props: Props) => {
 
     const handleSave = async () => {
         setIsLoading(true);
-        const updatedUserData: Omit<User, 'id' | 'role' | 'password'> = {
+        const updatedUserData: Partial<Client> = {
             name,
             email,
-            birthDate
+            birthDate,
+            role: 'client'
         };
         updateNewSchedule(updatedUserData);
     };

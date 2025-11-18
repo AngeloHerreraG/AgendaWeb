@@ -1,22 +1,21 @@
 import type { selectedBlock, BlockStatus } from '../../types/horario'
 import '../../styles/appointment.css'
 import { useState, useEffect } from 'react';
-import type { Professional } from '../../types/user';
-import scheduleService from '../../services/schedule';
-import { useAuth } from '../../auth/auth';
+import dayjs from 'dayjs';
+
+import { useAuthStore } from '../store/authStore';
+import { useScheduleStore } from '../store/scheduleStore'
 
 interface Props {
-    professionalData: Professional;
     isProfessional: boolean;
     setOpen: (value: boolean) => void;
-    setReloadChips: (value: boolean) => void;
     selectedScheduleBlock: selectedBlock | null;
-    selectedDay?: string | null;
 }
 
 const Appointment = (props: Props) => {
-    const {user: loggedUser} = useAuth();
-    const { professionalData, isProfessional, setOpen, setReloadChips, selectedScheduleBlock, selectedDay } = props;
+    const { isProfessional, setOpen, selectedScheduleBlock } = props;
+    const { professionalData, selectedDay, updateScheduleStatus, deleteScheduleBlock } = useScheduleStore();
+    const { user: loggedUser } = useAuthStore()
 
     const [modalOpen, setModalOpen] = useState<boolean>(true);
     const [confirmationModalOpen, setConfirmationModalOpen] = useState<boolean>(false);
@@ -27,6 +26,10 @@ const Appointment = (props: Props) => {
         document.body.style.overflow = 'hidden';
         setModalOpen(true);
     }, []);
+
+    if (!selectedScheduleBlock || !professionalData || !selectedDay) {
+        return null;
+    }
 
     const closeConfirmationModal = () => {
         document.body.style.overflow = 'auto';
@@ -40,27 +43,22 @@ const Appointment = (props: Props) => {
         if (!selectedScheduleBlock) {
             return;
         }
-        let response;
-        // Revisar si el bloque ya fue creado o no
-        const created = await scheduleService.getSchedule(selectedScheduleBlock.id);
-        if (!created) {
-            response = await scheduleService.createScheduleBlock(selectedScheduleBlock, newStatus);
+        try {
+            const response = await updateScheduleStatus(selectedScheduleBlock, newStatus);
+            if (response.status === 201) {
+                setConfirmationMessage(response.message);
+                setConfirmationModalOpen(true);
+            } 
+            else if (response.status === 200) {
+                setConfirmationMessage(response.message);
+                setConfirmationModalOpen(true);
+            }
+        } catch (error) {
+            console.error("Error updating schedule status:", error);
+            setConfirmationMessage('Error al actualizar el estado del bloque.');
+            setConfirmationModalOpen(true);
+            return;
         }
-        else {
-            response = await scheduleService.updateScheduleBlock(selectedScheduleBlock, newStatus);
-        }
-        if (response.status === 201) {
-            setConfirmationMessage('Bloque creado correctamente.');
-            setReloadChips(true);
-        } 
-        else if (response.status === 200) {
-            setConfirmationMessage('Bloque actualizado correctamente.');
-            setReloadChips(true);
-        }
-        else {
-            setConfirmationMessage('Error al crear/actualizar el bloque.');
-        }
-        setConfirmationModalOpen(true);
     }
 
     const handleClose = () => {
@@ -90,10 +88,9 @@ const Appointment = (props: Props) => {
             return;
         }
         try {
-            scheduleService.deleteScheduleBlock(selectedScheduleBlock.id);
+            deleteScheduleBlock(selectedScheduleBlock);
             setConfirmationMessage('Bloque eliminado correctamente.');
             setConfirmationModalOpen(true);
-            setReloadChips(true);
         }
         catch (error) {
             setConfirmationMessage('Error al eliminar el bloque.');
@@ -111,7 +108,7 @@ const Appointment = (props: Props) => {
                         <h2>Detalles de la cita</h2>
                         {selectedScheduleBlock && (
                             <div>
-                                <p> {selectedDay} </p>
+                                <p> {dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')} </p>
                                 <p> {`${selectedScheduleBlock.startHour} - ${selectedScheduleBlock.endHour}`} </p>
                                 <h3> {professionalData.name} </h3>
                                 <p> {professionalData.email} </p>

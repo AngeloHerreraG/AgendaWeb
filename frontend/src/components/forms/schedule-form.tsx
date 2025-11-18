@@ -1,14 +1,12 @@
-import { useState } from 'react';
-import type { professionalSchedule } from '../../types/horario';
-import type { Professional } from '../../types/user';
-import professionalServices from '../../services/professional';
+import { useState, useEffect, useCallback } from 'react';
+import type { professionalSchedule,  } from '../../types/horario';
 import '../../styles/appointment.css'
 import "../../styles/schedule-form.css"
 
+import { useScheduleStore } from '../store/scheduleStore'
+
 interface Props {
-    professionalData: Professional;
     isProfessional: boolean;
-    setReloadData: (value: boolean) => void;
 }
 
 // --- Constantes para el formulario ---
@@ -25,8 +23,8 @@ const DAY_MAP_TO_FULL: { [key: string]: string } = {
 const HOUR_OPTIONS = Array.from({ length: 13 }, (_, i) => i+8); // [8, 9, 10, ..., 20]
 const BLOCK_OPTIONS = [1, 2, 3, 4, 6]; // Correspondiente a bloques de 60, 30, 20, 15, 10 minutos
 
-const ScheduleForm = (props: Props) => {
-    const { professionalData, isProfessional, setReloadData } = props;
+const ScheduleForm = ({isProfessional}: Props) => {
+    const {professionalData, updateDisponibility} = useScheduleStore();
 
     const [isLoading, setIsLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState<boolean>(false); // Lógica para manejar el estado del modal
@@ -34,28 +32,43 @@ const ScheduleForm = (props: Props) => {
     const [confirmationMessage, setConfirmationMessage] = useState<string>('');
 
     // los estados para el forms
-    const daysShort = professionalData.disponibility?.days.map(day => DAY_MAP_TO_SHORT[day]) || [];
-    const [selectedDays, setSelectedDays] = useState<string[]>(daysShort);
-    const [startHour, setStartHour] = useState<number>(professionalData.disponibility?.startHour || 9);
-    const [endHour, setEndHour] = useState<number>(professionalData.disponibility?.endHour || 17);
-    const [blocksPerHour, setBlocksPerHour] = useState<number>(professionalData.disponibility?.blocksPerHour || 2);
+    // const daysShort = professionalData?.disponibility?.days.map(day => DAY_MAP_TO_SHORT[day]) || [];
+    const [selectedDays, setSelectedDays] = useState<string[]>([]);
+    const [startHour, setStartHour] = useState<number>(9);
+    const [endHour, setEndHour] = useState<number>(17);
+    const [blocksPerHour, setBlocksPerHour] = useState<number>(2);
+
+    // Al cargar los datos del store los seteamos en el formulario
+    const refreshFormData = useCallback(() => {
+        if (professionalData && professionalData.disponibility) {
+            const daysShort = professionalData.disponibility.days.map(day => DAY_MAP_TO_SHORT[day]);
+            setSelectedDays(daysShort);
+            setStartHour(professionalData.disponibility.startHour);
+            setEndHour(professionalData.disponibility.endHour);
+            setBlocksPerHour(professionalData.disponibility.blocksPerHour);
+        }
+    }, [professionalData]);
+
+    useEffect(() => {
+        refreshFormData();
+    }, [professionalData, refreshFormData]);
 
     const updateNewSchedule = async (newDisponibility: professionalSchedule) => {
-        const response = await professionalServices.updateProfessionalSchedule(professionalData.id, newDisponibility);
-        if (response.status === 200) {
+        try {
+            await updateDisponibility(newDisponibility);
             setConfirmationMessage('Horario actualizado correctamente.');
-        } else { 
+        } catch (error) {
+            console.error("Error updating availability:", error);
             setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
-        }
-        setModalOpen(false);
-        setConfirmationMessage('Horario actualizado correctamente.');
+        } 
         setIsLoading(false);
-        setReloadData(true);
+        setModalOpen(false);
         setConfirmationModalOpen(true);
     };
 
     const openModal = () => {
         setModalOpen(true);
+        refreshFormData();
     }
 
     const closeModal = () => {
@@ -86,7 +99,7 @@ const ScheduleForm = (props: Props) => {
             blocksPerHour
         };
 
-        updateNewSchedule(updatedSchedule);
+        await updateNewSchedule(updatedSchedule);
     };
 
     return (
