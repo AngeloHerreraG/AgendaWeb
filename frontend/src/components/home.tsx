@@ -10,11 +10,12 @@ import Navbar from './navbar';
 const Home = () => {
     const [professionals, setProfessionals] = useState<User[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
+    const [searchSpecialty, setSearchSpecialty] = useState<string>("");
     const {user: loggedUser, authStatus} = useAuthStore();
     
     useEffect(() => {
         // Si no hay texto, cargar todos inmediatamente
-        if (searchTerm.trim() === "") {
+        if (searchTerm.trim() === "" && searchSpecialty.trim() === "") {
             const fetchProfessionals = async () => {
                 const fetchedProfessionals = await professionalServices.getAllProfessionals();
                 setProfessionals(fetchedProfessionals);
@@ -25,13 +26,13 @@ const Home = () => {
 
         // Crear un timeout de 300ms solo si hay texto de búsqueda
         const delay = setTimeout(async () => {
-            const filteredProfessionals = await professionalServices.getProfessionalsStartsWith(searchTerm);
+            const filteredProfessionals = await professionalServices.getProfessionalsFilter(searchTerm, searchSpecialty);
             setProfessionals(filteredProfessionals);
         }, 300);
 
         // Limpiar el timeout si el usuario escribe antes de los 300ms
         return () => clearTimeout(delay);
-    }, [searchTerm]);
+    }, [searchTerm, searchSpecialty]);
     
     if (authStatus === "loading") {
         return <div>Cargando...</div>;
@@ -55,6 +56,12 @@ const Home = () => {
                     className="home-search-input"
                     placeholder="Buscar profesionales por nombre"
                     onChange={(e => setSearchTerm(e.target.value))}
+                />
+                <input
+                    type="text"
+                    className="home-search-input"
+                    placeholder="Buscar profesionales por especialidad"
+                    onChange={(e => setSearchSpecialty(e.target.value))}
                 />
             </div>
             <ul className='home-professional-list'>

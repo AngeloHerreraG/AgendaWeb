@@ -53,6 +53,7 @@
     font-family: 'Poppins', system-ui, sans-serif;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    margin-right: 3rem;
 }
 
 .home-search-input::placeholder {
