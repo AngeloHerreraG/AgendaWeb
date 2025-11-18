@@ -114,6 +114,18 @@ const getprofessionals = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
+const getprofessionalsStartswith = async (req: Request, res: Response, next: NextFunction) => {
+    const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const startsWith = escapeRegex(req.params.startsWith);
+
+    try {
+        const professionals = await professionalModel.find({ name: { $regex: `^${startsWith}`, $options: 'i' } });
+        res.json(professionals);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const updateprofessionalSchedule = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const professionalId = req.params.id;
@@ -164,6 +176,7 @@ const updateProfessionalInfo = async (req: Request, res: Response, next: NextFun
 
 router.post('/', authenticate, authorize(['admin']), createprofessional);
 router.get('/', getprofessionals);
+router.get('/startswith/:startsWith', getprofessionalsStartswith);
 router.patch('/schedule/:id', authenticate, authorize(['professional']), updateprofessionalSchedule);
 router.patch('/info/:id', authenticate, authorize(['professional']), updateProfessionalInfo);
 

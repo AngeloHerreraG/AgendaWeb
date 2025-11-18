@@ -26,9 +26,15 @@ const getAllProfessionals = async () => {
     return response.data;
 }
 
+const getProfessionalsStartsWith = async (startsWith: string) => {
+    const response = await axios.get<Professional[]>(`${baseUrl}/startswith/${startsWith}`);
+    return response.data;
+}
+
 const deleteProfessional = async (id: number) => {
     const response = await axiosSecure.delete(`${baseUrl}/${id}`);
     return response.data;
 };
 
-export default { createProfessional, updateProfessionalSchedule, updateProfessionalInfo, getAllProfessionals, deleteProfessional };
+export default { createProfessional, updateProfessionalSchedule, updateProfessionalInfo, 
+    getAllProfessionals, getProfessionalsStartsWith, deleteProfessional };

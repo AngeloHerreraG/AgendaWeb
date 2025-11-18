@@ -9,17 +9,31 @@ import Navbar from './navbar';
 
 const Home = () => {
     const [professionals, setProfessionals] = useState<User[]>([]);
-    const {user: loggedUser, loading: authLoading} = useAuth();
+    const [searchTerm, setSearchTerm] = useState("");
+    const { user: loggedUser, loading: authLoading } = useAuth();
     const loading = useAuth().loading;
-    
+
     useEffect(() => {
-        const fetchProfessionals = async () => {
-            const fetchedProfessionals = await professionalServices.getAllProfessionals();
-            setProfessionals(fetchedProfessionals);
-        };
-        fetchProfessionals();
-    }, []);
-    
+        // Si no hay texto, cargar todos inmediatamente
+        if (searchTerm.trim() === "") {
+            const fetchProfessionals = async () => {
+                const fetchedProfessionals = await professionalServices.getAllProfessionals();
+                setProfessionals(fetchedProfessionals);
+            };
+            fetchProfessionals();
+            return;
+        }
+
+        // Crear un timeout de 300ms solo si hay texto de búsqueda
+        const delay = setTimeout(async () => {
+            const filteredProfessionals = await professionalServices.getProfessionalsStartsWith(searchTerm);
+            setProfessionals(filteredProfessionals);
+        }, 300);
+
+        // Limpiar el timeout si el usuario escribe antes de los 300ms
+        return () => clearTimeout(delay);
+    }, [searchTerm]);
+
     if (loading || authLoading) {
         return <div>Cargando...</div>;
     }
@@ -34,6 +48,15 @@ const Home = () => {
             <div className="home-header">
                 <h2>Bienvenido {loggedUser.name}</h2>
                 {loggedUser.role === "professional" && <Link to={`/professional/${loggedUser.id}`} className='home-update-link'>Editar mi horario</Link>}
+            </div>
+            <div className="home-search-section">
+                <h3>Lista de Profesionales</h3>
+                <input
+                    type="text"
+                    className="home-search-input"
+                    placeholder="Buscar profesionales por nombre"
+                    onChange={(e => setSearchTerm(e.target.value))}
+                />
             </div>
             <ul className='home-professional-list'>
                 {professionals.map((professional) => (
