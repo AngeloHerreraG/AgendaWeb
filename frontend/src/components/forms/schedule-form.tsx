@@ -59,7 +59,7 @@ const ScheduleForm = ({isProfessional}: Props) => {
             setConfirmationMessage('Horario actualizado correctamente.');
         } catch (error) {
             console.error("Error updating availability:", error);
-            setConfirmationMessage('Error al actualizar el horario. Inténtalo de nuevo.');
+            setConfirmationMessage(String(error));
         } 
         setIsLoading(false);
         setModalOpen(false);
@@ -181,7 +181,7 @@ const ScheduleForm = ({isProfessional}: Props) => {
                 <>
                     <div className='appointment-bg'></div>
                     <div className='appointment-modal'>
-                        <h2>Resultado</h2>
+                        <h2>{confirmationMessage.includes("Error") ? "Error" : "Resultado"}</h2>
                         <p>{confirmationMessage}</p>
                         <div className='schedule-form-button-end-group'>
                             <button className='common-btn' onClick={closeConfirmationModal}>Cerrar</button>

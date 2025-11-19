@@ -8,12 +8,11 @@ import { useAuthStore } from '../store/authStore';
 
 interface ProfessionalProfileProps {
     professional: Professional;
+    isMe: boolean;
 }
 
-const ProfessionalProfile = ({ professional }: ProfessionalProfileProps) => {
-    const {user: loggedUser} = useAuthStore();
-    
-    const isMyProfile = loggedUser && loggedUser.id === professional.id;
+const ProfessionalProfile = ({ professional, isMe }: ProfessionalProfileProps & { isMe: boolean }) => {
+    const { user: loggedUser } = useAuthStore();
 
     return (
         <div className="profile-container">
@@ -27,7 +26,7 @@ const ProfessionalProfile = ({ professional }: ProfessionalProfileProps) => {
                         <div className="profile-info">
                             <div className="profile-header">
                                 <h2>Perfil de {professional.name}</h2>
-                                {isMyProfile && (
+                                {isMe && (
                                     <div className="edit-profile-button">
                                         <ProfessionalForm professionalData={professional} />
                                     </div>

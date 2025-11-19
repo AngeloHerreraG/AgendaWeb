@@ -29,13 +29,17 @@
 }
 
 .home-search-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1rem;
     padding: 2rem;
     padding-bottom: 1rem;
 }
 
-.home-search-section h3 {
-    margin-top: 0;
-    margin-bottom: 1.2rem;
+.home-container h3 {
+    padding: 2rem;
+    padding-bottom: 1rem;
+    margin: 0;
     color: #333;
     font-size: 1.5rem;
     font-weight: 600;

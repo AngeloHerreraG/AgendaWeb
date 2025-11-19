@@ -79,6 +79,18 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
             throw new Error("El usuario no es un profesional");
         }
         try {
+            // Chequeamos que la hora de inicio sea menor a la de fin
+            if (newDisponibility.startHour >= newDisponibility.endHour || newDisponibility.endHour < newDisponibility.startHour || newDisponibility.startHour < 0 || newDisponibility.endHour > 24) {
+                throw new Error("Horario inválido: La hora de inicio debe ser menor que la hora de fin y estar entre 0 y 24.");
+            }
+            // Chequeamos que haya al menos un dia seleccionado
+            if (newDisponibility.days.length === 0) {
+                throw new Error("Debe seleccionar al menos un día");
+            }
+            // Chequeamos que los bloques por hora sean válidos
+            if (![1, 2, 3, 4, 6].includes(newDisponibility.blocksPerHour)) {
+                throw new Error("Bloques por hora inválidos");
+            }
             await professionalService.updateProfessionalSchedule(professionalData.id, newDisponibility);
             set({ professionalData: { ...professionalData, disponibility: newDisponibility } });
             return newDisponibility;

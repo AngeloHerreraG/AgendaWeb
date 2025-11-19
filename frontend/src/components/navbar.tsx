@@ -11,7 +11,7 @@ import { useAuthStore } from './store/authStore'
 
 
 interface Props {
-    userId: string;
+    userId?: string;
 }
 
 const iconStyle = {

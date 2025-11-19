@@ -7,12 +7,11 @@ import { useAuthStore } from "../store/authStore";
 
 interface ClientProfileProps {
     client: Client;
+    isMe: boolean;
 }
 
-const ClientProfile = ({ client }: ClientProfileProps) => {
+const ClientProfile = ({ client, isMe }: ClientProfileProps) => {
     const {user: loggedUser} = useAuthStore();
-
-    const isMyProfile = loggedUser && loggedUser.id === client.id;
 
     return (
         <div className="profile-container">
@@ -21,7 +20,7 @@ const ClientProfile = ({ client }: ClientProfileProps) => {
                 <div className="client-info">
                     <div className="profile-header">
                         <h2>Perfil de {client.name}</h2>
-                        {isMyProfile && (
+                        {isMe && (
                             <div className="edit-profile-button">
                                 <UserForm userData={client}/>
                             </div>

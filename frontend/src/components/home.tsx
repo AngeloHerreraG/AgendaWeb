@@ -1,6 +1,6 @@
 import { Link, Navigate } from 'react-router-dom';
 import professionalServices from '../services/professional';
-import type { User } from '../types/user';
+import type { Professional } from '../types/user';
 import '../styles/home.css';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from './store/authStore'
@@ -8,7 +8,7 @@ import { useAuthStore } from './store/authStore'
 import Navbar from './navbar';
 
 const Home = () => {
-    const [professionals, setProfessionals] = useState<User[]>([]);
+    const [professionals, setProfessionals] = useState<Professional[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [searchSpecialty, setSearchSpecialty] = useState<string>("");
     const {user: loggedUser, authStatus} = useAuthStore();
@@ -49,8 +49,8 @@ const Home = () => {
                 <h2>Bienvenido {loggedUser.name}</h2>
                 {loggedUser.role === "professional" && <Link to={`/professional/${loggedUser.id}`} className='home-update-link'>Editar mi horario</Link>}
             </div>
+            <h3>Lista de Profesionales</h3>
             <div className="home-search-section">
-                <h3>Lista de Profesionales</h3>
                 <input
                     type="text"
                     className="home-search-input"
@@ -67,7 +67,7 @@ const Home = () => {
             <ul className='home-professional-list'>
                 {professionals.map((professional) => (
                     <li key={professional.id} className='home-professional-item'>
-                        {professional.name}{" "}
+                        <span><strong>Profesional:</strong> {professional.name} {" "} | {" "} <strong>Especialidad:</strong> {professional.speciality}</span>
                         <Link to={`/professional/${professional.id}`} className='home-link'>
                             Ver horario
                         </Link>

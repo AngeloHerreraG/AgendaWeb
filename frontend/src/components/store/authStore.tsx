@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
-import loginService from "../../services/login";
+import loginServices from "../../services/login";
+import userServices from "../../services/user";
 import clientServices from "../../services/client";
 import professionalServices from "../../services/professional";
 
@@ -36,7 +37,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
     checkAuth: async () => {
         try {
-            const user: User | null = await loginService.restoreLogin();
+            const user: User | null = await loginServices.restoreLogin();
             if (!user) {
                 set({ user: null,  authStatus: "unauthenticated" });
                 return "unauthenticated";
@@ -53,7 +54,11 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
     login: async (credentials: Credentials) => {
         try {
-            const user: User = await loginService.login(credentials);
+            // Primero realizamos el login para obtener los datos básicos del usuario
+            // y tambien el token de sesión y las cookies
+            const loginUserData: User = await loginServices.login(credentials);
+            // Luego usamos el id del usuario para obtener sus datos completos
+            const user = await userServices.getUserById(loginUserData.id);
             set({ user, authStatus: "authenticated" });
         } catch (error) {
             console.log("Login failed", error);
@@ -63,7 +68,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     },
 
     logout: async () => {
-        await loginService.logout().finally(() => {
+        await loginServices.logout().finally(() => {
             set({ user: null, authStatus: "unauthenticated" });
         });
     },
