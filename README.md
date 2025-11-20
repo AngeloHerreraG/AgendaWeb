@@ -76,3 +76,19 @@ Sigue estos pasos para levantar el proyecto en tu máquina local.
         
         ```npm run dev``` o ```npm run build```
         - El frontend estará disponible en http://localhost:9001
+
+## Testing
+
+Sigue los siguientes pasos para realizar las pruebas e2e.
+
+1. Ejecutar servidor en modo test
+
+    ```cd backend``` ```npm run start:test```
+
+2. Ejecutar aplicación de React
+
+    ```cd frontend``` ```npm run dev```
+
+3. Ejecutar tests
+
+    ```cd e2etests``` ```npm run test```
