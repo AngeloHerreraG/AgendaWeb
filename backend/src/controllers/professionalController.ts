@@ -3,6 +3,7 @@ import express from "express"
 import { professionalModel } from '../models/users';
 import bcrypt from 'bcrypt';
 import {authenticate, authorize } from '../middleware/authMiddleware';
+import { validateName, validateEmail, validateBirthDate, validateSpecialityDescriptionAndInterests } from '../utils/validation';
 
 const router = express.Router();
 
@@ -27,43 +28,30 @@ const createprofessional = async (req: Request, res: Response, next: NextFunctio
         if (!startHour) return res.status(400).json({ error: 'startHour is required' });
         if (!endHour) return res.status(400).json({ error: 'endHour is required' });
 
-        // Regex for name validation
-        const nameRegex = /^(?!.*\s{2,})[A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜáéíóúüÑñ]+){0,5}$/;
-        if (!nameRegex.test(name)) {
+        // Validate name
+        if (!validateName(name)) {
             return res.status(400).json({ error: 'Name not valid' });
         }
-
-        // Regex for email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        // If the email input is not valid, return an error
-        if (!emailRegex.test(email)) {
+        // Validate email
+        if (!validateEmail(email)) {
             return res.status(400).json({ error: 'Invalid email format' });
         }
-
         // If email already exists, return an error
         const existingUser = await professionalModel.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'Email already in use' });
         }
-
-        // Verify that birthDate is a valid date
-        const actualYear = new Date().getFullYear();
-        const birthYear = new Date(birthDate).getFullYear();
-
-        if (isNaN(Date.parse(birthDate)) ||
-            actualYear - birthYear < 18 ) {
+        // Validate birth date
+        if (!validateBirthDate(birthDate)) {
             return res.status(400).json({ error: 'Invalid birth date format or age restriction not satisfied' });
         }
-
-        const textRegex = /^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ0-9.,;:!?()'"%\-–—/@#&+\s]{3,1000}$/;
-
-        if (!textRegex.test(speciality) || !textRegex.test(description)) {
+        // Validate speciality, description and interests
+            if (!validateSpecialityDescriptionAndInterests(speciality) || !validateSpecialityDescriptionAndInterests(description)) {
             return res.status(400).json({ error: 'Speciality or description not valid' });
         }
 
         if (interests) {
-            if (!Array.isArray(interests) || interests.some(interest => !textRegex.test(interest))) {
+            if (!Array.isArray(interests) || interests.some(interest => !validateSpecialityDescriptionAndInterests(interest))) {
                 return res.status(400).json({ error: 'Interests must be an array of valid strings' });
             }
         }
@@ -168,7 +156,25 @@ const updateProfessionalInfo = async (req: Request, res: Response, next: NextFun
             return res.status(403).json({ error: 'Not authorized to update this professional' });
         }
 
-        // Validate the updatedInfo data here if needed
+        // Validate fields
+        if (updatedInfo.name && !validateName(updatedInfo.name)) {
+            return res.status(400).json({ error: 'Name not valid' });
+        }
+        if (updatedInfo.email && !validateEmail(updatedInfo.email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+        if (updatedInfo.birthDate && !validateBirthDate(updatedInfo.birthDate)) {
+            return res.status(400).json({ error: 'Invalid birth date format or age restriction not satisfied' });
+        }
+        if (updatedInfo.speciality && !validateSpecialityDescriptionAndInterests(updatedInfo.speciality)) {
+            return res.status(400).json({ error: 'Speciality not valid' });
+        }
+        if (updatedInfo.description && !validateSpecialityDescriptionAndInterests(updatedInfo.description)) {
+            return res.status(400).json({ error: 'Description not valid' });
+        }
+        if (updatedInfo.interests && !validateSpecialityDescriptionAndInterests(updatedInfo.interests)) {
+            return res.status(400).json({ error: 'Interests must be an array of valid strings' });
+        }
 
         const updatedprofessional = await professionalModel.findByIdAndUpdate(professionalId, updatedInfo, { new: true });
         res.status(200).json(updatedprofessional);

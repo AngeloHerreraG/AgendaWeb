@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import express from "express"
 import bcrypt from 'bcrypt';
 import { UserModel } from '../models/users';
+import { validateName, validateEmail, validateBirthDate } from '../utils/validation';
 
 const router = express.Router();
 
@@ -101,6 +102,17 @@ const updateClientInfo = async (req: Request, res: Response, next: NextFunction)
     try {
         const clientId = req.params.id;
         const updatedInfo = req.body;
+
+        // Validate fields
+        if (updatedInfo.name && !validateName(updatedInfo.name)) {
+            return res.status(400).json({ error: 'Name not valid' });
+        }
+        if (updatedInfo.email && !validateEmail(updatedInfo.email)) {
+            return res.status(400).json({ error: 'Email not valid' });
+        }
+        if (updatedInfo.birthDate && !validateBirthDate(updatedInfo.birthDate)) {
+            return res.status(400).json({ error: 'Birth date not valid' });
+        }
     
         const updatedClient = await UserModel.findByIdAndUpdate(
             clientId,
