@@ -1,16 +1,20 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const PORT = process.env.PORT;
-const HOST = process.env.HOST || "localhost";
-
-const MONGODB_URI =
-  process.env.NODE_ENV === "test"
+const MONGODB_URI = process.env.NODE_ENV === "test"
     ? process.env.TEST_MONGODB_URI
     : process.env.MONGODB_URI;
 
-const JWT_SECRET = process.env.JWT_SECRET || "my_secret"
-const MONGODB_DBNAME = process.env.NODE_ENV === "test" ? process.env.TEST_MONGODB_DBNAME : process.env.MONGODB_DBNAME || "notesdb"
-const NODE_ENV = process.env.NODE_ENV || "test"
+const MONGODB_DBNAME = process.env.NODE_ENV === "test"
+    ? process.env.TEST_MONGODB_DBNAME || "AgendaWeb_test"
+    : process.env.MONGODB_DBNAME || "AgendaWeb";
 
-export default { PORT, MONGODB_URI, HOST, JWT_SECRET, MONGODB_DBNAME, NODE_ENV };
+const config = {
+    MONGODB_URI,
+    MONGODB_DBNAME,
+    JWT_SECRET: process.env.JWT_SECRET || "default-secret",
+    PORT: process.env.PORT || 3001,
+    HOST: process.env.HOST || "localhost"
+};
+
+export default config;

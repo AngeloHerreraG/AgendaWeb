@@ -1,8 +1,5 @@
 import { useState } from "react";
-// import loginService from "../services/login";
 import { Navigate, useNavigate } from "react-router-dom";
-// import type { User } from "../types/user";
-
 import { useAuthStore } from './store/authStore'
 
 const Login = () => {
@@ -12,15 +9,17 @@ const Login = () => {
 
     const [emailLogin, setEmailLogin] = useState<string>("");
     const [passwordLogin, setPasswordLogin] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     const handleUserLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrorMessage("");
 
         try {
             await login({ email: emailLogin, password: passwordLogin });
         } catch (error) {
             console.error("Wrong credentials", error);
-            alert("Credenciales incorrectas. Inténtalo de nuevo.");
+            setErrorMessage("Correo o contraseña inválidos");
         }
     }
 
@@ -51,7 +50,18 @@ const Login = () => {
             {/* Columna derecha: formulario */}
             <div style={{ backgroundColor: "#ffffffff", padding: "20px", borderRadius: "4px", marginBottom: "150px", fontFamily: "'Poppins', sans-serif" }}>
                 <form onSubmit={handleUserLogin} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "250px" }}>
-                    {/* Crear campos de seleccion  entre cliente o profesional */}
+                    {errorMessage && (
+                        <div style={{ 
+                            color: "#d32f2f", 
+                            backgroundColor: "#ffebee", 
+                            padding: "10px", 
+                            borderRadius: "4px", 
+                            fontSize: "14px",
+                            textAlign: "center"
+                        }}>
+                            {errorMessage}
+                        </div>
+                    )}
                     <input style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc", height: "20px", fontFamily: "'Poppins', sans-serif" }}
                         type="text"
                         placeholder="Email"

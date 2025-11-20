@@ -8,6 +8,7 @@ import loginRouter from "./controllers/login";
 import professionalRouter from "./controllers/professionalController";
 import scheduleRouter from "./controllers/scheduleController";
 import userRouter from "./controllers/userController";
+import testingRouter from "./controllers/testingController";
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.use("/api/login", loginRouter);
 app.use("/api/professionals", professionalRouter);
 app.use("/api/schedules", scheduleRouter);
 app.use("/api/users", userRouter);
+app.use("/api/testing", testingRouter);
 
 export default app;
