@@ -1,94 +1,89 @@
-# AgendaWeb – Agenda Dinámica para Profesionales
+# AgendaWeb – Plataforma de Gestión de Citas
 
-AgendaWeb es una aplicación web Full-Stack construida con el stack MERN (MongoDB, Express, React, Node.js) y TypeScript, diseñada para que profesionales independientes y sus clientes gestionen citas de manera simple y segura.
+## 1. Tema General del Proyecto
+AgendaWeb es una aplicación web **Full-Stack** diseñada para facilitar la conexión entre profesionales independientes y sus clientes. La plataforma permite resolver dos problemas principales:
+1.  **Para Profesionales:** Ofrece una herramienta para definir disponibilidad horaria, configurar bloques de atención y gestionar su perfil público.
+2.  **Para Clientes:** Proporciona una interfaz intuitiva para buscar profesionales, visualizar sus horarios disponibles y reservar citas.
 
-La plataforma permite a los profesionales definir su disponibilidad, y a los clientes agendar horas de forma intuitiva. Además, incorpora un asistente de IA (Gemini API) para ayudar a los profesionales a completar la descripción de sus perfiles.
+El sistema está construido sobre el stack **MERN** (MongoDB, Express, React, Node.js) utilizando **TypeScript** en ambos extremos para asegurar la robustez del código.
 
-## Tecnologías Utilizadas
-### Frontend:
-- React 18 con Vite
-- TypeScript
-- CSS tradicional para estilos
-- Axios para peticiones HTTP
-### Backend:
-- Node.js con Express
-- TypeScript
-- MongoDB como base de datos
-- Mongoose
-- JSON Web Tokens (JWT) para autenticación
-- Cookies y Headers para protección CSRF
+## 2. Estructura del Estado Global
+Para la gestión del estado global se utilizó la librería **Zustand**. Se eligió por su simplicidad, bajo *boilerplate* y capacidad para manejar acciones asíncronas fuera de los componentes de React.
 
-## Estructura del ProyectoAgendaWeb/
-```
-├── frontend/           # Aplicación en React + TypeScript
-│   └── src/
-│       ├── components/
-│       ├── services/
-│       └── ...
-├── backend/            # Servidor en Node.js + Express + TypeScript
-│   └── src/
-│       ├── controllers/
-│       ├── models/
-│       ├── middleware/
-│       └── ...
-└── README.md           # Este archivo
-```
+La arquitectura se divide en dos **Stores** principales para separar responsabilidades:
 
-## Pre-requisitos
+### A. `useAuthStore` (Store de Identidad)
+Maneja todo lo relacionado con "Quién es el usuario".
+* **Estado:** Almacena el objeto `user` (con datos completos poblados desde la DB), `authStatus` ('loading', 'authenticated', 'unauthenticated').
+* **Responsabilidad:** Gestiona el Login, Logout, verificación de sesión al inicio (`checkAuth`) y la actualización de datos del perfil del usuario logueado.
+* **Lógica Clave:** Implementa un patrón de verificación donde el login autentica credenciales y simultáneamente obtiene el perfil completo del usuario (incluyendo roles y datos específicos) para asegurar consistencia.
 
-- Node.js (v18+ recomendado)
-- npm o yarn
-- MongoDB en puerto 27017 (una instancia local o en la nube como MongoDB Atlas)
+### B. `useScheduleStore` (Store de Característica / Vista)
+Actúa como un controlador para la vista compleja de horarios (`/professional/:id`).
+* **Estado:** Almacena `professionalData` (perfil que se está visitando), `scheduleData` (lista de citas), `selectedDay` y `scheduleStatus`.
+* **Responsabilidad:** Centraliza la lógica de obtener datos del profesional y sus horarios en una sola llamada, filtrar citas por día seleccionado, y gestionar operaciones CRUD (crear, editar, eliminar bloques) actualizando la interfaz de forma reactiva.
 
-## Instalación y Ejecución Local
+## 3. Mapa de Rutas y Flujo de Autenticación
 
-Sigue estos pasos para levantar el proyecto en tu máquina local.
-1. Clonar el Repositorio
- [https://github.com/AngeloHerreraG/AgendaWeb](https://github.com/AngeloHerreraG/AgendaWeb)
+### Mapa de Rutas (React Router)
+| Ruta | Descripción | Protección |
+| :--- | :--- | :--- |
+| `/login` | Inicio de sesión | Pública |
+| `/register` | Registro de nuevos usuarios | Pública |
+| `/home/:id` | Dashboard principal con lista de profesionales | **Privada** |
+| `/professional/:id` | Vista de calendario y gestión de citas | **Privada** |
+| `/profile/:id` | Perfil de usuario (propio o de terceros) | **Privada** |
+| `/admin-home` | Panel de administración | **Privada (Rol Admin)** |
 
-2. Configuración del Backend
-    1. Navega a la carpeta del backend
+### Flujo de Autenticación
+La autenticación es segura y persistente, utilizando **JWT (JSON Web Tokens)** y **Cookies HTTPOnly**.
 
-        ```cd backend```
-    2. Instala las dependencias
-    
-        ```npm install```
-    3. Asegurarse de tener las variables de entorno en 
+1.  **Login:** El usuario envía credenciales. El backend valida y devuelve un token JWT en una cookie `httpOnly` (invisible para JS) y un `csrfToken` en los headers.
+2.  **Persistencia:** Al recargar la página (F5), `App.tsx` ejecuta `useAuthStore.getState().checkAuth()`. Esto llama al endpoint `/api/login/me`. Si la cookie es válida, el backend devuelve el usuario y la sesión se restaura automáticamente.
+3.  **Protección:** Los componentes protegidos verifican el estado `authStatus` del store. Si es `unauthenticated`, redirigen a `/login`.
 
-        ```backend/```
-        - Si bien no se deberia subir las variables al repositorio, esto es netamente pedagogico y no afecta que este en el repositorio
-    4. Ejecuta el servidor en modo de desarrollo
-    
-        ```npm run dev```
-        - El servidor se ejecutará en http://localhost:9002 (o el puerto que definas).
+## 4. Descripción de los Tests E2E
+Para las pruebas de extremo a extremo (End-to-End) se utilizó la herramienta **Playwright**. Se eligió por su velocidad, fiabilidad y capacidad para manejar múltiples navegadores.
 
-    PRECAUCIÓN: En el archivo models/profesional.ts, el código desde la linea 58 a la 61 es para añadir profesionales a la base de datos automáticamente una vez de ejecuta el servidor. Por lo tanto, desde la segunda ejecución, se deben comentar esas lineas para que no se intente agregar datos duplicados a la base de datos.
+**Flujos cubiertos:**
+1.  **Autenticación (`login.spec.ts`):**
+    * Login exitoso con credenciales válidas.
+    * Manejo de errores con credenciales inválidas.
+    * Protección de rutas (redirección forzada si no hay sesión).
+2.  **Gestión de Citas (`scheduleBlock.spec.ts`):**
+    * **Flujo Cliente:** Navegar a un profesional, seleccionar un día, hacer clic en un bloque vacío y crear una reserva ("pendiente").
+    * **Flujo Profesional:** Entrar a su propio horario, ver la cita pendiente, cambiar estado a "cancelado" o "bloqueado", y eliminar el bloque definitivamente.
 
-3. Configuración del Frontend
-    1. Abre una nueva terminal y navega a la carpeta del frontend
-        
-        ```cd frontend```
-    2. Instala las dependencias
+## 5. Librería de Estilos y Diseño
+El proyecto utiliza **CSS Tradicional** estructurado por componentes (ej. `horario.css`, `navbar.css`) junto con variables CSS globales para mantener la consistencia del tema.
 
-        ```npm install```
+* **Paleta de Colores:** Se definieron variables (`--color1` a `--color11`) en `index.css` basadas en tonos azules para transmitir confianza y profesionalismo.
+* **Tipografía:** Se utiliza la fuente **'Poppins'** para toda la aplicación, asegurando una lectura moderna y limpia.
+* **Librería de Componentes:** Se integró **Material UI (@mui/icons-material)** exclusivamente para la iconografía, manteniendo el peso del bundle bajo al no depender de librerías de componentes pesadas para la estructura.
+* **Diseño Responsivo:** Se utilizaron Grid y Flexbox para adaptar vistas complejas (como el calendario y los chips de horarios) a diferentes tamaños de pantalla.
 
-    3. Ejecuta la aplicación de React
-        
-        ```npm run dev``` o ```npm run build```
-        - El frontend estará disponible en http://localhost:9001
+## 6. Despliegue
+La aplicación se encuentra desplegada y operativa en la siguiente dirección:
 
-## Testing
+**URL:** [http://fullstack.dcc.uchile.cl:7110](http://fullstack.dcc.uchile.cl:7110)
 
-Sigue los siguientes pasos para realizar las pruebas e2e.
+---
 
-1. Ejecutar servidor en modo test
+## Ejecución Local (Desarrollo)
 
-    ```cd backend``` ```npm run start:test```
-
-2. Ejecutar aplicación de React
-
-    ```cd frontend``` ```npm run dev```
-
-3. Ejecutar tests
-
-    ```cd e2etests``` ```npm run test```
+1.  **Clonar repositorio:**
+    ```bash
+    git clone [https://github.com/AngeloHerreraG/AgendaWeb](https://github.com/AngeloHerreraG/AgendaWeb)
+    ```
+2.  **Backend:**
+    ```bash
+    cd backend
+    npm install
+    npm run dev
+    ```
+3.  **Frontend:**
+    ```bash
+    cd frontend
+    npm install
+    npm run dev
+    ```
