@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+export type BlockStatus = 'pendiente' | 'confirmado' | 'cancelado' | 'bloqueado';
+
 export interface ISchedule {
     _id: string; // ID compuesta personalizada
     professionalId: mongoose.Types.ObjectId;
@@ -7,7 +9,7 @@ export interface ISchedule {
     day: string;
     startHour: string;
     endHour: string;
-    status: 'pending' | 'confirmed' | 'cancelled' | 'blocked';
+    status: BlockStatus;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -19,7 +21,7 @@ const scheduleSchema = new mongoose.Schema<ISchedule>({
     day: { type: String, required: true },
     startHour: { type: String, required: true },
     endHour: { type: String, required: true },
-    status: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'blocked'], default: 'pending', required: true },
+    status: { type: String, enum: ['pendiente', 'confirmado', 'cancelado', 'bloqueado'], default: 'pendiente', required: true },
 }, {
     timestamps: true,
     _id: false // Deshabilita la generación automática de _id

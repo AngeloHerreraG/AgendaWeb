@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import express from "express"
+import express, { Request, Response, NextFunction } from 'express';
 import { professionalModel } from '../models/users';
 import bcrypt from 'bcrypt';
 import {authenticate, authorize } from '../middleware/authMiddleware';

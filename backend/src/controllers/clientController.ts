@@ -1,6 +1,5 @@
 
-import { Request, Response, NextFunction } from 'express';
-import express from "express"
+import express, { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import { UserModel } from '../models/users';
 import { validateName, validateEmail, validateBirthDate } from '../utils/validation';
@@ -43,7 +42,7 @@ const createClient = async (req: Request, res: Response, next: NextFunction) => 
 
         // Verify that birthDate is a valid date and age >= 12
         const parsed = Date.parse(birthDate);
-        if (isNaN(parsed)) {
+        if (Number.isNaN(parsed)) {
             return res.status(400).json({ error: 'Invalid birth date format' });
         }
         const actualYear = new Date().getFullYear();

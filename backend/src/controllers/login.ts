@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { Request, Response, NextFunction } from 'express';
-import express from "express";
+import express, { Request, Response, NextFunction } from 'express';
 import { UserModel} from "../models/users";
 import config from "../utils/config";
 import { authenticate } from "../middleware/authMiddleware";
@@ -17,11 +16,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     if (user) {
         const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
 
-        if (!passwordCorrect) {
-            res.status(401).json({
-                error: "invalid username or password",
-            });
-        } else {
+        if (passwordCorrect) {
             const userForToken = {
                 email: user.email,
                 csrf: crypto.randomUUID(),
@@ -44,6 +39,10 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
                 birthDate: user.birthDate,
                 schedule: user.schedules,
                 role: user.role
+            });
+        } else {
+            res.status(401).json({
+                error: "invalid username or password",
             });
         }
     } else {

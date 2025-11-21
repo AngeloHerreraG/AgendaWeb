@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import express from "express"
+import express, { Request, Response, NextFunction } from 'express';
 import ScheduleModel from '../models/schedule';
-import { professionalModel, UserModel, ClientModel } from '../models/users';
-import { authenticate, authorize } from '../middleware/authMiddleware';
+import type { BlockStatus } from '../models/schedule';
+import { professionalModel, ClientModel } from '../models/users';
+import { authenticate } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
 
 const router = express.Router();
@@ -35,8 +35,8 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
 
         const newSchedule = new ScheduleModel({
             _id: id,
-            professionalId: new mongoose.Types.ObjectId(professionalId),
-            userId: new mongoose.Types.ObjectId(userId),
+            professionalId: new mongoose.Types.ObjectId(String(professionalId)),
+            userId: new mongoose.Types.ObjectId(String(userId)),
             day,
             startHour,
             endHour,
@@ -59,7 +59,6 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
             await client.save();
         }
 
-
         res.status(201).json(newSchedule);
 
     } catch (error) {
@@ -69,9 +68,9 @@ const createSchedule = async (req: Request, res: Response, next: NextFunction) =
 
 const updateScheduleBlock = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled", "blocked"];
+        const ALLOWED_STATUSES: BlockStatus[] = ["pendiente", "confirmado", "cancelado", "bloqueado"];
         const { scheduleBlock, status } = req.body;
-        const { id, userId, professionalId, day, startHour, endHour } = scheduleBlock;
+        const { id } = scheduleBlock;
 
         const schedule = await ScheduleModel.findById(id);
 
@@ -80,8 +79,8 @@ const updateScheduleBlock = async (req: Request, res: Response, next: NextFuncti
             if (!ALLOWED_STATUSES.includes(status)) {
                 return res.status(400).json({ error: "Invalid status value" });
             }
-            await ScheduleModel.findByIdAndUpdate(schedule._id, { status });
-            res.status(200).json({ message: "Schedule updated successfully" });
+            const newSchedule = await ScheduleModel.findByIdAndUpdate(schedule._id, { status }, { new: true });
+            res.status(200).json(newSchedule);
         }
         else {
             res.status(404).json({ error: "Schedule not found" });
