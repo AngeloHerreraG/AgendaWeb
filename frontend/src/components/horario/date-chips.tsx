@@ -69,13 +69,13 @@ const getChipStyle = (status?: BlockStatus) => {
         return chipStyle;
     }
     switch (status) {
-        case 'pending':
+        case 'pendiente':
             return { ...chipStyle, ...pendingChipStyle };
-        case 'confirmed':
+        case 'confirmado':
             return { ...chipStyle, ...confirmedChipStyle };
-        case 'cancelled':
+        case 'cancelado':
             return { ...chipStyle, ...cancelledChipStyle };
-        case 'blocked':
+        case 'bloqueado':
             return { ...chipStyle, ...blockedChipStyle };
         default:
             return chipStyle;
@@ -162,10 +162,9 @@ const DateChips = (props: Props) => {
         return (
             <div className='horario-chips'>
                 {chips.map((chip, index) => (
-                    <div key={index}>
+                    <div key={chipsData[index].id}>
                         <Chip 
                             label={chip}
-                            key={index} 
                             sx={getChipStyle(chipState.find(([i]) => i === index)?.[1])}
                             onClick={() => handleChipClick(chipsData[index], chipState.find(([i]) => i === index)?.[1])}
                         />

@@ -68,19 +68,19 @@ const Appointment = (props: Props) => {
 
     const handleConfirm = () => {
         if (isProfessional) {
-            updateStatus('confirmed');
+            updateStatus('confirmado');
         }
         else {
-            updateStatus('pending');
+            updateStatus('pendiente');
         }
     }
 
     const handleCancel = () => {
-        updateStatus('cancelled');
+        updateStatus('cancelado');
     }
 
     const handleBlock = () => {
-        updateStatus('blocked');
+        updateStatus('bloqueado');
     }
     
     const handleDelete = () => {
@@ -119,14 +119,14 @@ const Appointment = (props: Props) => {
                         <div className='appointment-buttons'>
                             <button className='common-btn' onClick={handleClose}>Cerrar</button>
                             {isProfessional && !selectedScheduleBlock?.state && <button className='common-btn appointment-reschedule-button' onClick={handleBlock}>Bloquear</button>}
-                            {isProfessional && (selectedScheduleBlock?.state === 'pending') && <button className='common-btn appointment-cancel-button' onClick={handleCancel}>Rechazar</button>}
-                            {isProfessional && (selectedScheduleBlock?.state === 'pending') && <button className='common-btn appointment-confirm-button' onClick={handleConfirm}>Confirmar Cita</button>}
+                            {isProfessional && (selectedScheduleBlock?.state === 'pendiente') && <button className='common-btn appointment-cancel-button' onClick={handleCancel}>Rechazar</button>}
+                            {isProfessional && (selectedScheduleBlock?.state === 'pendiente') && <button className='common-btn appointment-confirm-button' onClick={handleConfirm}>Confirmar Cita</button>}
                             {!isProfessional && (!selectedScheduleBlock?.state) && <button className='common-btn appointment-confirm-button' onClick={handleConfirm}>Solicitar Cita</button>}
                         </div>
                         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                             {(
-                                (isProfessional && (selectedScheduleBlock?.state === 'blocked' || selectedScheduleBlock?.state === 'cancelled')) ||
-                                (!isProfessional && selectedScheduleBlock?.userId === loggedUser?.id && selectedScheduleBlock?.state === 'pending')
+                                (isProfessional && (selectedScheduleBlock?.state === 'bloqueado' || selectedScheduleBlock?.state === 'cancelado')) ||
+                                (!isProfessional && selectedScheduleBlock?.userId === loggedUser?.id && selectedScheduleBlock?.state === 'pendiente')
                             ) && <button className='common-btn appointment-cancel-button' onClick={handleDelete}>Eliminar</button>}
                         </div>
 

@@ -1,5 +1,5 @@
 // Estados posibles de un bloque de horario
-export type BlockStatus = 'pending' | 'confirmed' | 'cancelled' | 'blocked';
+export type BlockStatus = 'pendiente' | 'confirmado' | 'cancelado' | 'bloqueado';
 
 // Interfaz que define la estructura del contenido de un bloque antes de ser formateado
 export interface selectedBlock {
