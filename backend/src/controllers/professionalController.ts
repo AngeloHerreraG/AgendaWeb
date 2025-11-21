@@ -94,7 +94,8 @@ const createprofessional = async (req: Request, res: Response, next: NextFunctio
 
 const getprofessionals = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const professionals = await professionalModel.find({});
+        const professionals = await professionalModel.find({}).sort({ name: 1 });
+        
         res.json(professionals);
     } catch (error) {
         next(error);
@@ -110,7 +111,8 @@ const getprofessionalsFilter = async (req: Request, res: Response, next: NextFun
         const professionals = await professionalModel.find({ 
             name: { $regex: `^${startsWith}`, $options: 'i' },
             speciality: { $regex: `^${specialty}`, $options: 'i' } 
-        });
+        }).sort({ name: 1 });
+
         res.json(professionals);
     } catch (error) {
         next(error);

@@ -53,7 +53,23 @@ const initialUsers = [
         "passwordHash": "$2b$11$rcQL0VWlNJhHbRAhnD7HledYC31fHrXhMI8mGFD5.BCWvGyiW/Rfu",
         "birthDate": new Date("2001-10-03T00:00:00.000Z"),
         "schedules": [],
-        "role": "client"
+        "role": "professional",
+        "speciality": "Backend",
+        "description": "Desarrollador backend con experiencia en Node.js y bases de datos.",
+        "interests": [
+            "Node.js",
+            "Bases de datos"
+        ],
+        "disponibility": {
+            "days": [
+                "Viernes",
+                "Sábado",
+                "Domingo"
+            ],
+            "startHour": 20,
+            "endHour": 23,
+            "blocksPerHour": 2
+        }
     }
 ];
 
