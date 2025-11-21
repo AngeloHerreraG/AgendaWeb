@@ -84,6 +84,7 @@ const Appointment = (props: Props) => {
     }
     
     const handleDelete = () => {
+        setModalOpen(false);
         if (!selectedScheduleBlock) {
             return;
         }
