@@ -93,13 +93,15 @@ const DateChips = (props: Props) => {
 
     const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) 
     const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)
-    if (!professionalData || !selectedDay) {
+    
+    if (!professionalData) {
         return <div>Cargando bloques...</div>;
     }
 
-    dayjs.locale('es'); // Establece el idioma español para dayjs
+    // Configuramos el locale de dayjs a español
+    dayjs.locale('es');
 
-    // Funcion para manejar el click en un bloque
+    // Función para manejar el click en un bloque
     const handleChipClick = (bloque: selectedBlock, status?: BlockStatus) => {
         if (status) {
             bloque.state = status;
@@ -108,7 +110,7 @@ const DateChips = (props: Props) => {
         setShowDateInfoModal(true);
     }
 
-    // // Función para mostrar la hora en formato HH:MM, calcula la posición del bloque y la hora de inicio}
+    // Función para mostrar la hora en formato HH:MM
     const generarChips = () => {
         const chips = [];
         const chipsData: selectedBlock[] = [];
@@ -176,8 +178,14 @@ const DateChips = (props: Props) => {
     return (
         <>
             <h2> Bloques disponibles </h2>
-            <p>Día: {selectedDay ? dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY') : 'No seleccionado'}</p>
-            {selectedDay && generarChips()}
+            {!selectedDay ? (
+                <p>Seleccione un día para ver los bloques disponibles.</p>
+            ) : (
+                <>
+                    <p>Día: {dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')}</p>
+                    {generarChips()}
+                </>
+            )}
             {showDateInfoModal && selectedScheduleBlock && (
                 <Appointment 
                     isProfessional={isProfessional}
