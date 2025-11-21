@@ -7,6 +7,18 @@ import userServices from "../../services/user";
 
 import { useAuthStore } from "../store/authStore";
 
+// Mini componente para decidir que perfil mostrar
+const DisplayProfile = ({userToShow, isMe}: {userToShow: User | null, isMe: boolean}) => {
+    switch (userToShow?.role) {
+        case 'client':
+            return <ClientProfile client={userToShow} isMe={isMe} />;
+        case 'professional':
+            return <ProfessionalProfile professional={userToShow} isMe={isMe} />;
+        default:
+            return <div>Rol de usuario desconocido.</div>;
+    }
+}
+
 const ProfileComponent = () => {
     const { id: userId } = useParams();
     const {user: loggedUser, authStatus} = useAuthStore();
@@ -56,20 +68,9 @@ const ProfileComponent = () => {
     // propio puede hacerlo
     const userToShow = isMe ? loggedUser : otherUser;
 
-    const DisplayProfile = () => {
-        switch (userToShow?.role) {
-            case 'client':
-                return <ClientProfile client={userToShow} isMe={isMe} />;
-            case 'professional':
-                return <ProfessionalProfile professional={userToShow} isMe={isMe} />;
-            default:
-                return <div>Rol de usuario desconocido.</div>;
-        }
-    }
-
     return (
         <div>
-            <DisplayProfile />
+            <DisplayProfile userToShow={userToShow} isMe={isMe} />
             <div style={{boxSizing: 'border-box', display: "flex", justifyContent: "end", margin: '20px'}}>
                 <button className='common-btn' onClick={goHome}>Volver al inicio</button>
             </div>

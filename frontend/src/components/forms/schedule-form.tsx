@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { professionalSchedule,  } from '../../types/horario';
+import type { ProfessionalSchedule,  } from '../../types/horario';
 import '../../styles/appointment.css'
 import "../../styles/schedule-form.css"
 
@@ -40,7 +40,7 @@ const ScheduleForm = ({isProfessional}: Props) => {
 
     // Al cargar los datos del store los seteamos en el formulario
     const refreshFormData = useCallback(() => {
-        if (professionalData && professionalData.disponibility) {
+        if (professionalData?.disponibility) {
             const daysShort = professionalData.disponibility.days.map(day => DAY_MAP_TO_SHORT[day]);
             setSelectedDays(daysShort);
             setStartHour(professionalData.disponibility.startHour);
@@ -53,7 +53,7 @@ const ScheduleForm = ({isProfessional}: Props) => {
         refreshFormData();
     }, [professionalData, refreshFormData]);
 
-    const updateNewSchedule = async (newDisponibility: professionalSchedule) => {
+    const updateNewSchedule = async (newDisponibility: ProfessionalSchedule) => {
         try {
             await updateDisponibility(newDisponibility);
             setConfirmationMessage('Horario actualizado correctamente.');
@@ -92,7 +92,7 @@ const ScheduleForm = ({isProfessional}: Props) => {
 
         const fullDays = selectedDays.map(day => DAY_MAP_TO_FULL[day]);
         // Construir el objeto de disponibilidad
-        const updatedSchedule: professionalSchedule = {
+        const updatedSchedule: ProfessionalSchedule = {
             days: fullDays,
             startHour,
             endHour,

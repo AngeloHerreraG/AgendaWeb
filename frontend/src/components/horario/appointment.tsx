@@ -1,4 +1,4 @@
-import type { selectedBlock, BlockStatus } from '../../types/horario'
+import type { SelectedBlock, BlockStatus } from '../../types/horario'
 import '../../styles/appointment.css'
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
@@ -9,7 +9,7 @@ import { useScheduleStore } from '../store/scheduleStore'
 interface Props {
     isProfessional: boolean;
     setOpen: (value: boolean) => void;
-    selectedScheduleBlock: selectedBlock | null;
+    selectedScheduleBlock: SelectedBlock | null;
 }
 
 const Appointment = (props: Props) => {
@@ -45,14 +45,10 @@ const Appointment = (props: Props) => {
         }
         try {
             const response = await updateScheduleStatus(selectedScheduleBlock, newStatus);
-            if (response.status === 201) {
+            if (response.status === 201 || response.status === 200) {
                 setConfirmationMessage(response.message);
                 setConfirmationModalOpen(true);
             } 
-            else if (response.status === 200) {
-                setConfirmationMessage(response.message);
-                setConfirmationModalOpen(true);
-            }
         } catch (error) {
             console.error("Error updating schedule status:", error);
             setConfirmationMessage('Error al actualizar el estado del bloque.');

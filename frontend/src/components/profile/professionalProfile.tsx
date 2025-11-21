@@ -18,30 +18,28 @@ const ProfessionalProfile = ({ professional, isMe }: ProfessionalProfileProps & 
         <div className="profile-container">
             <Navbar userId={loggedUser?.id} />
             <div className="profile-content">
-                <>
-                    <div className="profile-picture-info-container">
-                        <div className="profile-picture">
-                            <AccountCircleIcon style={{ fontSize: 200 }} />
-                        </div>
-                        <div className="profile-info">
-                            <div className="profile-header">
-                                <h2>Perfil de {professional.name}</h2>
-                                {isMe && (
-                                    <div className="edit-profile-button">
-                                        <ProfessionalForm professionalData={professional} />
-                                    </div>
-                                )}
-                            </div>
-                                <div className="professional-info">
-                                    <p><strong>Especialidad:</strong> {professional.speciality || 'No especificada'}</p>
-                                    <p><strong>Descripción:</strong> {professional.description || 'No disponible'}</p>
+                <div className="profile-picture-info-container">
+                    <div className="profile-picture">
+                        <AccountCircleIcon style={{ fontSize: 200 }} />
+                    </div>
+                    <div className="profile-info">
+                        <div className="profile-header">
+                            <h2>Perfil de {professional.name}</h2>
+                            {isMe && (
+                                <div className="edit-profile-button">
+                                    <ProfessionalForm professionalData={professional} />
                                 </div>
+                            )}
                         </div>
+                            <div className="professional-info">
+                                <p><strong>Especialidad:</strong> {professional.speciality || 'No especificada'}</p>
+                                <p><strong>Descripción:</strong> {professional.description || 'No disponible'}</p>
+                            </div>
                     </div>
-                    <div className="professional-details">
-                        <p><strong>Intereses:</strong> {professional.interests?.join(', ') || 'Ninguno'}</p>
-                    </div>
-                </>
+                </div>
+                <div className="professional-details">
+                    <p><strong>Intereses:</strong> {professional.interests?.join(', ') || 'Ninguno'}</p>
+                </div>
             </div>
         </div>
     );

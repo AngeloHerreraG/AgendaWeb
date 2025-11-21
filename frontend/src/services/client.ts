@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import type { Client } from '../types/user';
-import type { professionalSchedule, Schedule } from '../types/horario';
+import type { ProfessionalSchedule, Schedule } from '../types/horario';
 
 const baseUrl = "/api/clients";
 
@@ -25,7 +25,7 @@ const getClientSchedule = async (clientId: string): Promise<Schedule[] | null> =
     return response.data.schedule ?? null;
 }
 
-const updateClientSchedule = async (clientId: string, schedule: professionalSchedule): Promise<Client> => {
+const updateClientSchedule = async (clientId: string, schedule: ProfessionalSchedule): Promise<Client> => {
     const response = await axios.patch<Client>(`${baseUrl}/${clientId}`, { schedule });
     return response.data;
 };

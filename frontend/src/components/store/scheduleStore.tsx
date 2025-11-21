@@ -2,7 +2,7 @@ import { create } from "zustand";
 import scheduleService from "../../services/schedule";
 import userService from "../../services/user";
 import professionalService from "../../services/professional";
-import type { selectedBlock, BlockStatus, Schedule, professionalSchedule } from "../../types/horario"; 
+import type { SelectedBlock, BlockStatus, Schedule, ProfessionalSchedule } from "../../types/horario"; 
 import type { Professional } from "../../types/user";
 
 /**
@@ -32,11 +32,11 @@ interface ScheduleStore {
     // Acción para obtener los datos del profesional y su schedule
     fetchHorarioData: (professionalId: string) => Promise<void>;
     // Accion para actualizar los datos del horario del profesional
-    updateDisponibility: (newDisponibility: professionalSchedule) => Promise<professionalSchedule>;
+    updateDisponibility: (newDisponibility: ProfessionalSchedule) => Promise<ProfessionalSchedule>;
     // Acción para actualizar el estado de un bloque de horario, esto incluye el crear y modificar
-    updateScheduleStatus: (scheduleBlock: selectedBlock, newStatus: BlockStatus) => Promise<{status: number, message: string}>;
+    updateScheduleStatus: (scheduleBlock: SelectedBlock, newStatus: BlockStatus) => Promise<{status: number, message: string}>;
     // Acción para eliminar un bloque de horario
-    deleteScheduleBlock: (scheduleBlock: selectedBlock) => Promise<void>; 
+    deleteScheduleBlock: (scheduleBlock: SelectedBlock) => Promise<void>; 
     // Acción para limpiar los horarios del store al cambiar entre profesionales
     clearHorarioData: () => void;
 }
@@ -55,7 +55,7 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
         set({ scheduleStatus: "loading" });
         try {
             const professionalData = await userService.getUserById(professionalId);
-            if (professionalData && professionalData.role === 'professional') {
+            if (professionalData?.role === 'professional') {
                 set({ professionalData: professionalData });
             } else {
                 set({ professionalData: null });
@@ -73,9 +73,9 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
         }
     },
 
-    updateDisponibility: async (newDisponibility: professionalSchedule) => {
+    updateDisponibility: async (newDisponibility: ProfessionalSchedule) => {
         const professionalData = get().professionalData;
-        if (!professionalData || professionalData.role !== 'professional') {
+        if (professionalData?.role !== 'professional') {
             throw new Error("El usuario no es un profesional");
         }
         try {
@@ -101,7 +101,7 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     },
 
     // Aca veremos si ya existe el bloque, si existe lo actualizamos, si no, lo creamos
-    updateScheduleStatus: async (scheduleBlock: selectedBlock, newStatus: BlockStatus) => {
+    updateScheduleStatus: async (scheduleBlock: SelectedBlock, newStatus: BlockStatus) => {
         try {
             // Verificamos si el bloque ya existe en el store
             const existingBlock = await scheduleService.getSchedule(scheduleBlock.id);
@@ -132,7 +132,7 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
         }
     },
 
-    deleteScheduleBlock: async (scheduleBlock: selectedBlock) => {
+    deleteScheduleBlock: async (scheduleBlock: SelectedBlock) => {
         try {
             // Eliminamos el bloque de horario usando el servicio
             await scheduleService.deleteScheduleBlock(scheduleBlock.id);

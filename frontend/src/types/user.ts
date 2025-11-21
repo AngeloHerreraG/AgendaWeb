@@ -1,4 +1,4 @@
-import type { professionalSchedule, Schedule } from "./horario";
+import type { ProfessionalSchedule, Schedule } from "./horario";
 
 export type UserRole = 'client' | 'professional' | 'admin';
 
@@ -20,7 +20,7 @@ export interface Professional extends BaseUser {
     speciality: string;
     description: string;
     interests?: string[];
-    disponibility: professionalSchedule;
+    disponibility: ProfessionalSchedule;
 }
 
 export interface Admin extends BaseUser {

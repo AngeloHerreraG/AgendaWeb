@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosSecure from "../utils/axiosSecure";
-import type { Schedule, selectedBlock, BlockStatus } from '../types/horario';
+import type { Schedule, SelectedBlock, BlockStatus } from '../types/horario';
 
 const baseUrl = "/api/schedules";
 
@@ -19,13 +19,13 @@ const getProfessionalSchedule = async (professionalId: string): Promise<Schedule
 }
 
 // Crear un nuevo bloque de horario
-const createScheduleBlock = async (scheduleBlock: selectedBlock, status: BlockStatus): Promise<Schedule> => {
+const createScheduleBlock = async (scheduleBlock: SelectedBlock, status: BlockStatus): Promise<Schedule> => {
     const response = await axiosSecure.post<Schedule>(`${baseUrl}`, { scheduleBlock, status });
     return response.data;
 }
 
 // Actualizar un bloque de horario
-const updateScheduleBlock = async (scheduleBlock: selectedBlock, newStatus: BlockStatus): Promise<Schedule> => {
+const updateScheduleBlock = async (scheduleBlock: SelectedBlock, newStatus: BlockStatus): Promise<Schedule> => {
     const scheduleId = scheduleBlock.id;
     if (!scheduleId) {
         throw new Error("Schedule ID is required to update a schedule block.");

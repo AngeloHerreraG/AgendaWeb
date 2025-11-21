@@ -21,7 +21,7 @@ const ClientProfile = () => {
     const [daysRegister, setDaysRegister] = useState<string[]>([]);
     const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
-    const [blockPerHourRegister, setBlocksPerHourRegister] = useState<string>("");
+    const [blockPerHourRegister, setBlockPerHourRegister] = useState<string>("");
     const [startHourRegister, setStartHourRegister] = useState<string>("");
     const [endHourRegister, setEndHourRegister] = useState<string>("");
 
@@ -92,7 +92,7 @@ const ClientProfile = () => {
                 setSpecialityRegister("");
                 setDescriptionRegister("");
                 setDaysRegister([]);
-                setBlocksPerHourRegister("");
+                setBlockPerHourRegister("");
                 setStartHourRegister("");
                 setEndHourRegister("");
             }
@@ -152,7 +152,7 @@ const ClientProfile = () => {
                                 </label>
                                 ))}
                             </div>
-                            <input className="register-input" type="number" placeholder="Bloques por hora" value={blockPerHourRegister} onChange={(e) => setBlocksPerHourRegister(e.target.value)} />
+                            <input className="register-input" type="number" placeholder="Bloques por hora" value={blockPerHourRegister} onChange={(e) => setBlockPerHourRegister(e.target.value)} />
                             <input className="register-input" type="number" placeholder="Hora de comienzo" value={startHourRegister} onChange={(e) => setStartHourRegister(e.target.value)} />
                             <input className="register-input" type="number" placeholder="Hora de término" value={endHourRegister} onChange={(e) => setEndHourRegister(e.target.value)} />
                         </div>
