@@ -2,7 +2,7 @@
 export type BlockStatus = 'pendiente' | 'confirmado' | 'cancelado' | 'bloqueado';
 
 // Interfaz que define la estructura del contenido de un bloque antes de ser formateado
-export interface selectedBlock {
+export interface SelectedBlock {
     id: string;
     userId: string;
     professionalId: string;
@@ -25,7 +25,7 @@ export interface Schedule {
 }
 
 // Interfaz que define la estructura del horario de un profesional
-export interface professionalSchedule {
+export interface ProfessionalSchedule {
     days: string[];
     blocksPerHour: number;
     startHour: number;

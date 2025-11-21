@@ -2,7 +2,7 @@ import { useState } from 'react'
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import Chip from '@mui/material/Chip';
-import type { selectedBlock, BlockStatus } from '../../types/horario'
+import type { SelectedBlock, BlockStatus } from '../../types/horario'
 import Appointment from './appointment'
 import '../../styles/horario.css'
 
@@ -91,7 +91,7 @@ const DateChips = (props: Props) => {
     const { userId, isProfessional } = props;
     const { professionalData, scheduleData, selectedDay } = useScheduleStore();
 
-    const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<selectedBlock | null>(null) 
+    const [selectedScheduleBlock, setSelectedScheduleBlock] = useState<SelectedBlock | null>(null) 
     const [showDateInfoModal, setShowDateInfoModal] = useState<boolean>(false)
     
     if (!professionalData) {
@@ -102,7 +102,7 @@ const DateChips = (props: Props) => {
     dayjs.locale('es');
 
     // Función para manejar el click en un bloque
-    const handleChipClick = (bloque: selectedBlock, status?: BlockStatus) => {
+    const handleChipClick = (bloque: SelectedBlock, status?: BlockStatus) => {
         if (status) {
             bloque.state = status;
         }
@@ -113,7 +113,7 @@ const DateChips = (props: Props) => {
     // Función para mostrar la hora en formato HH:MM
     const generarChips = () => {
         const chips = [];
-        const chipsData: selectedBlock[] = [];
+        const chipsData: SelectedBlock[] = [];
         const chipState: [number, BlockStatus][] = [];
         const duracionBloque = 60 / professionalData.disponibility.blocksPerHour; // Duración de cada bloque en minutos
 
@@ -177,13 +177,13 @@ const DateChips = (props: Props) => {
     return (
         <>
             <h2> Bloques disponibles </h2>
-            {!selectedDay ? (
-                <p>Seleccione un día para ver los bloques disponibles.</p>
-            ) : (
+            {selectedDay ? (
                 <>
                     <p>Día: {dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')}</p>
                     {generarChips()}
                 </>
+            ) : (
+                <p>Seleccione un día para ver los bloques disponibles.</p>
             )}
             {showDateInfoModal && selectedScheduleBlock && (
                 <Appointment 

@@ -2,7 +2,7 @@ import axios from "axios";
 import axiosSecure from "../utils/axiosSecure";
 
 import type { Professional } from '../types/user';
-import type { professionalSchedule } from '../types/horario';
+import type { ProfessionalSchedule } from '../types/horario';
 
 const baseUrl = "/api/professionals";
 
@@ -11,8 +11,8 @@ const createProfessional = async (newProfessional: Partial<Professional>): Promi
     return response.data;
 };
 
-const updateProfessionalSchedule = async (professionalId: string, disponibility: professionalSchedule): Promise<professionalSchedule> => {
-    const response = await axiosSecure.patch<professionalSchedule>(`${baseUrl}/schedule/${professionalId}`, { disponibility });
+const updateProfessionalSchedule = async (professionalId: string, disponibility: ProfessionalSchedule): Promise<ProfessionalSchedule> => {
+    const response = await axiosSecure.patch<ProfessionalSchedule>(`${baseUrl}/schedule/${professionalId}`, { disponibility });
     return response.data;
 };
 

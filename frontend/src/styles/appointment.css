@@ -41,12 +41,11 @@
 }
 
 .appointment-confirm-button {
-    border-color: lightseagreen;
-    /* color: lightseagreen; */
+    border-color: rgb(19, 103, 99);
 }
 
 .appointment-confirm-button:hover {
-    background-color: lightseagreen;
+    background-color: rgb(19, 103, 99);
     color: white;
 }
 

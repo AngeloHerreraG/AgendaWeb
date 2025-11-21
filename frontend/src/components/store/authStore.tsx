@@ -85,7 +85,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
     updateProfessionalData: async (newProfessionalData: Partial<Professional>) => {
         const user = get().user;
-        if (!user || user.role !== 'professional') {
+        if (user?.role !== 'professional') {
             throw new Error("El usuario no es un profesional");
         }
         const updatedProfessional = await professionalServices.updateProfessionalInfo(user.id, newProfessionalData);

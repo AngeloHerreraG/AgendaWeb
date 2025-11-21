@@ -5,7 +5,6 @@ import type { Client } from '../../types/user';
 import dayjs from 'dayjs';
 import '../../styles/appointment.css'
 import '../../styles/form.css'
-// import clientServices from '../../services/client';
 
 import { useAuthStore } from "../store/authStore";
 
