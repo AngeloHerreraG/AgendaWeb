@@ -52,7 +52,7 @@ userSchema.set("toJSON", {
     },
 });
 
-const UserModel = mongoose.model<IUser>('User', userSchema);
+const UserModel = mongoose.model<IUser>('user_abbaSchedule', userSchema);
 
 const professionalModel = UserModel.discriminator('professional', new mongoose.Schema<Iprofessional>({
     speciality: { type: String, required: true },

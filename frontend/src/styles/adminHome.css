@@ -58,6 +58,7 @@
   border: 1px solid #ccc;
   font-size: 14px;
   outline: none;
+  font-family: 'Poppins', sans-serif;
 }
 
 .register-textarea {

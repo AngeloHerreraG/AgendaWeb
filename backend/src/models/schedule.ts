@@ -30,7 +30,7 @@ const scheduleSchema = new mongoose.Schema<ISchedule>({
 // Índice único compuesto para evitar duplicados
 scheduleSchema.index({ professionalId: 1, day: 1, startHour: 1, endHour: 1 }, { unique: true });
 
-const ScheduleModel = mongoose.model<ISchedule>('Schedule', scheduleSchema);
+const ScheduleModel = mongoose.model<ISchedule>('schedule_abbaSchedule', scheduleSchema);
 
 scheduleSchema.set("toJSON", {
   transform: (

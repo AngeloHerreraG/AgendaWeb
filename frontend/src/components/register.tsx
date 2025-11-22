@@ -31,6 +31,7 @@ const Register = () => {
                     role: 'client'
                 };
                 await clientServices.createClient(newUser);
+                alert("Registro exitoso. Ahora puedes iniciar sesión.");
                 navigate('/login');
             }
             catch (err) {
