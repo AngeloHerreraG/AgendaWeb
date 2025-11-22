@@ -7,6 +7,8 @@ import professionalServices from "../../services/professional"
 
 import { useAuthStore } from '../store/authStore'
 
+const HOUR_OPTIONS = Array.from({ length: 13 }, (_, i) => i+8);
+const BLOCK_OPTIONS = [1, 2, 3, 4, 6];
 
 const ClientProfile = () => {
     const [emailRegister, setEmailRegister] = useState<string>("");
@@ -19,9 +21,9 @@ const ClientProfile = () => {
     const [daysRegister, setDaysRegister] = useState<string[]>([]);
     const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
-    const [blockPerHourRegister, setBlockPerHourRegister] = useState<string>("");
-    const [startHourRegister, setStartHourRegister] = useState<string>("");
-    const [endHourRegister, setEndHourRegister] = useState<string>("");
+    const [blocksPerHourRegister, setBlocksPerHourRegister] = useState<number>(2);
+    const [startHourRegister, setStartHourRegister] = useState<number>(9);
+    const [endHourRegister, setEndHourRegister] = useState<number>(17);
 
     const {user: loggedUser, authStatus} = useAuthStore();
     
@@ -62,7 +64,7 @@ const ClientProfile = () => {
                         description: descriptionRegister,
                         disponibility: {
                             days: daysRegister,
-                            blocksPerHour: Number(blockPerHourRegister),
+                            blocksPerHour: Number(blocksPerHourRegister),
                             startHour: Number(startHourRegister),
                             endHour: Number(endHourRegister)
                         }
@@ -79,9 +81,9 @@ const ClientProfile = () => {
                 setSpecialityRegister("");
                 setDescriptionRegister("");
                 setDaysRegister([]);
-                setBlockPerHourRegister("");
-                setStartHourRegister("");
-                setEndHourRegister("");
+                setBlocksPerHourRegister(2);
+                setStartHourRegister(9);
+                setEndHourRegister(17);
             }
             catch (err) {
                 console.error(err);
@@ -124,9 +126,42 @@ const ClientProfile = () => {
                             </label>
                             ))}
                         </div>
-                        <input className="register-input" type="number" placeholder="Bloques por hora" value={blockPerHourRegister} onChange={(e) => setBlockPerHourRegister(e.target.value)} />
-                        <input className="register-input" type="number" placeholder="Hora de comienzo" value={startHourRegister} onChange={(e) => setStartHourRegister(e.target.value)} />
-                        <input className="register-input" type="number" placeholder="Hora de término" value={endHourRegister} onChange={(e) => setEndHourRegister(e.target.value)} />
+                        <div className='schedule-form-input-group'>
+                                    <label htmlFor='start-time'>Hora Inicio</label>
+                                    <select
+                                        id='start-time'
+                                        value={startHourRegister}
+                                        onChange={(e) => setStartHourRegister(Number(e.target.value))}
+                                    >
+                                        {HOUR_OPTIONS.map(hour => (
+                                            <option key={hour} value={hour}>{`${hour.toString().padStart(2, '0')}:00`}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className='schedule-form-input-group'>
+                                    <label htmlFor='end-time'>Hora Fin</label>
+                                    <select
+                                        id='end-time'
+                                        value={endHourRegister}
+                                        onChange={(e) => setEndHourRegister(Number(e.target.value))}
+                                    >
+                                        {HOUR_OPTIONS.map(hour => (
+                                            <option key={hour} value={hour}>{`${hour.toString().padStart(2, '0')}:00`}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className='schedule-form-input-group'>
+                                    <label htmlFor='blocks'>Bloques/Hora</label>
+                                    <select
+                                        id='blocks'
+                                        value={blocksPerHourRegister}
+                                        onChange={(e) => setBlocksPerHourRegister(Number(e.target.value))}
+                                    >
+                                        {BLOCK_OPTIONS.map(block => (
+                                            <option key={block} value={block}>{block}</option>
+                                        ))}
+                                    </select>
+                                </div>
                     </div>
                 </form>
             </div>

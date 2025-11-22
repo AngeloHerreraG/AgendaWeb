@@ -6,7 +6,7 @@
   justify-content: center;
   background-color: #f5ecec;
   height: 100vh;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 /* Imagen del logo */
@@ -58,7 +58,7 @@
   border: 1px solid #ccc;
   font-size: 14px;
   outline: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .register-textarea {

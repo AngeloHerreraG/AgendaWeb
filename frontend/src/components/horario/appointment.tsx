@@ -2,7 +2,8 @@ import type { SelectedBlock, BlockStatus } from '../../types/horario'
 import '../../styles/appointment.css'
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-
+import clientServices from '../../services/client';
+import scheduleServices from '../../services/schedule';
 import { useAuthStore } from '../store/authStore';
 import { useScheduleStore } from '../store/scheduleStore'
 
@@ -20,10 +21,23 @@ const Appointment = (props: Props) => {
     const [modalOpen, setModalOpen] = useState<boolean>(true);
     const [confirmationModalOpen, setConfirmationModalOpen] = useState<boolean>(false);
     const [confirmationMessage, setConfirmationMessage] = useState<string>('');
+    const [clientProfile, setClientProfile] = useState<{ id: string, name: string; email: string } | null>(null);
 
     useEffect(() => {
         // Evitar el scroll del fondo al abrir el modal
         document.body.style.overflow = 'hidden';
+        const fetchClientProfile = async () => {
+            try {
+                if (!selectedScheduleBlock) return;
+                const schedule = await scheduleServices.getSchedule(selectedScheduleBlock.id);
+                const clientId = schedule?.userId;
+                const client = await clientServices.getClientById(clientId);
+                if (client) setClientProfile({ id: client.id, name: client.name, email: client.email });
+            } catch (error) {
+                console.error("Error fetching client profile:", error);
+            }
+        };
+        if (selectedScheduleBlock?.state) fetchClientProfile();
         setModalOpen(true);
     }, []);
 
@@ -103,15 +117,25 @@ const Appointment = (props: Props) => {
                     <div className='appointment-bg'></div>
                     <div className='appointment-modal'>
                         <h2>Detalles de la cita</h2>
-                        {selectedScheduleBlock && (
+                        {selectedScheduleBlock &&
                             <div>
                                 <p> {dayjs(selectedDay).format('dddd D [de] MMMM [de] YYYY')} </p>
                                 <p> {`${selectedScheduleBlock.startHour} - ${selectedScheduleBlock.endHour}`} </p>
                                 <h3> {professionalData.name} </h3>
                                 <p> {professionalData.email} </p>
-                                {selectedScheduleBlock.state && <p><strong>Estado:</strong> {selectedScheduleBlock.state}</p>}
+                                {selectedScheduleBlock.state && (
+                                    <div>
+                                        <p><strong>Estado:</strong> {selectedScheduleBlock.state}</p>
+                                        {selectedScheduleBlock.state !== 'bloqueado' && (clientProfile?.id === loggedUser?.id || isProfessional) &&
+                                            <div>
+                                                <p><strong>Cliente:</strong> {clientProfile ? clientProfile.name : 'Cargando...'}</p>
+                                                <p><strong>Email del cliente:</strong> {clientProfile ? clientProfile.email : 'Cargando...'}</p>
+                                            </div>
+                                        }
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        }
                         <div className='appointment-buttons'>
                             <button className='common-btn' onClick={handleClose}>Cerrar</button>
                             {isProfessional && !selectedScheduleBlock?.state && <button className='common-btn appointment-reschedule-button' onClick={handleBlock}>Bloquear</button>}

@@ -124,8 +124,23 @@ const updateClientInfo = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
+const getClientById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const clientId = req.params.id;
+        const client = await UserModel.findById(clientId)
+        if (client) {
+            res.status(200).json(client);
+        } else {
+            res.status(404).json({ error: 'Client not found' });
+        }
+    } catch (error) {
+        next(error);
+    }
+}; 
+
 router.post('/', createClient);
 router.get('/', getClients);
 router.patch('/info/:id', updateClientInfo);
+router.get('/:id', getClientById);
 
 export default router;
